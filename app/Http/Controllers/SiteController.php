@@ -52,7 +52,7 @@ class SiteController extends Controller
      */
     public function show(Site $site)
     {
-        //
+        return view ('sites/show', compact('site'));
     }
 
     /**
@@ -63,7 +63,7 @@ class SiteController extends Controller
      */
     public function edit(Site $site)
     {
-        //
+        return view('sites/edit', compact('site'));
     }
 
     /**
@@ -75,7 +75,9 @@ class SiteController extends Controller
      */
     public function update(Request $request, Site $site)
     {
-        //
+        $site->dominio = $request->dominio;
+        $site->save();
+        return redirect("/sites/$site->id");
     }
 
     /**
@@ -86,6 +88,7 @@ class SiteController extends Controller
      */
     public function destroy(Site $site)
     {
-        //
+        $site->delete();
+        return redirect('/');
     }
 }

@@ -6,19 +6,12 @@
 @stop
 
 @section('content')
-
-@foreach ($sites as $site)
-
-{{ $site->dominio }}{{ $dnszone }} <a href="/sites/{{ $site->id }}/edit">Editar</a>
-
 <form method="POST" action="/sites/{{ $site->id }}">
 {{ csrf_field() }}
-{{ method_field('delete') }}
-<button type="submit">Apagar</button>
+{{ method_field('patch') }}
+ 
+Domínio: <input name="dominio" value="{{ $site->dominio }}">
+<button type="submit"> Salvar </button>
 </form>
-
-<br>
-
-@endforeach
 
 @stop
