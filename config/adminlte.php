@@ -108,11 +108,21 @@ return [
     */
 
     'menu' => [
-        'MAIN NAVIGATION',
+        'Meus sites',
         [
             'text' => 'Solicitar um Site',
             'url'  => 'sites/create',
         ],
+        [
+            'text' => 'Meus sites',
+            'url'  => 'sites',
+        ],
+        'Administração',
+        [
+            'text' => 'Todos Sites',
+            'url'  => 'admin/sites',
+        ],
+ 
     ],
 
     /*
