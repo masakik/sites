@@ -13,7 +13,7 @@ class AdminController extends Controller
         $client = new Client([
              'base_uri' => 'http://aegir.fflch.usp.br/',
         ]);
-        $res = $client->request('GET','/aegir/saas/site.json', ['query' => ['api-key' => 'GKm5xUygoJK3LicKZCDVMQ']]);
+        $res = $client->request('GET','/aegir/saas/site.json', ['query' => ['api-key' => 'SEU-TOKEN']]);
         $sites_aegir = json_decode($res->getBody());
         //dd($sites_aegir);
 
