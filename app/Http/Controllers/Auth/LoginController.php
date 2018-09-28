@@ -49,25 +49,38 @@ class LoginController extends Controller
 
     public function handleProviderCallback()
     {
-        $user = Socialite::driver('senhaunica')->user();
 
-        $authUser = User::where('codpes', $user->id)->first();
-        if (!$authUser)
-        {
-            User::create([
-                'name'     => $user->name,
-                'email'    => $user->email,
-                'codpes' => $user->id,
-            ]);
+        $userSenhaUnica = Socialite::driver('senhaunica')->user();
+        # busca o usuário local
+        $user = User::find($userSenhaUnica->codpes);
+
+        # restrição só para admins
+        $admins = explode(',', trim(env('SENHAUNICA_ADMINS')));
+        if (!in_array($userSenhaUnica->codpes, $admins)) {
+            session()->flash('alert-danger', 'Usuario sem permissao de acesso!');
+            return redirect('/');
         }
-        Auth::login($authUser, true);
-        return redirect('/');
 
+        if (is_null($user)) {
+            $user = new User;
+            $user->id = $userSenhaUnica->codpes;
+            $user->name = $userSenhaUnica->nompes;
+            $user->email = $userSenhaUnica->email;
+            $user->save();
+        } else {
+            # se o usuário EXISTE local
+            # atualiza os dados
+            $user->id = $userSenhaUnica->codpes;
+            $user->name = $userSenhaUnica->nompes;
+            $user->email = $userSenhaUnica->email;
+            $user->save();
+        }
+        Auth::login($user, true);
+        return redirect('/sites');
     }
 
     public function logout(Request $request) {
       Auth::logout();
       return redirect('/');
     }
-
 }

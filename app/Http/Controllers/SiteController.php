@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Site;
 use Illuminate\Http\Request;
+use Auth;
 
 class SiteController extends Controller
 {
@@ -15,7 +16,7 @@ class SiteController extends Controller
     public function index()
     {
         $dnszone = env('DNSZONE');
-        $sites = Site::all();
+        $sites = Site::all()->sortBy('dominio');
         return view('sites/index', compact('sites','dnszone'));
     }
 
@@ -38,10 +39,14 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
+//      $user = Auth::user();
+
       $site = new Site;
       $site->dominio = $request->dominio;
+//      $site->owner = $user->id;
+      $site->owner = \Auth::user()->id;
       $site->save();
-      return redirect('/');
+      return redirect('/sites');
     }
 
     /**
@@ -76,6 +81,7 @@ class SiteController extends Controller
     public function update(Request $request, Site $site)
     {
         $site->dominio = $request->dominio;
+        $site->owner = \Auth::user()->id;
         $site->save();
         return redirect("/sites/$site->id");
     }
