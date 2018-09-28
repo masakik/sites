@@ -16,7 +16,7 @@ class SiteController extends Controller
     public function index()
     {
         $dnszone = env('DNSZONE');
-        $sites = Site::all()->sortBy('dominio');
+        $sites = Site::all()->where('owner',\Auth::user()->id)->sortBy('dominio');
         return view('sites/index', compact('sites','dnszone'));
     }
 
