@@ -17,6 +17,7 @@ class CreateSitesTable extends Migration
             $table->increments('id');
             $table->timestamps();
             $table->string('dominio');
+            $table->integer('owner');
         });
     }
 
