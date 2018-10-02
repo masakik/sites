@@ -119,10 +119,13 @@ return [
         ],
         'Administração',
         [
-            'text' => 'Todos Sites',
+            'text' => 'Todos os Sites',
+            'url'  => 'admin/todos_sites',
+        ],
+        [
+            'text' => 'Todos Sites (AEGIR)',
             'url'  => 'admin/sites',
         ],
- 
     ],
 
     /*

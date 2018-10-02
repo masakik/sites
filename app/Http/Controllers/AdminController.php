@@ -18,7 +18,14 @@ class AdminController extends Controller
         //dd($sites_aegir);
 
         $dnszone = env('DNSZONE');
-        $sites = Site::all();
+        $sites = Site::all()->sortBy('dominio');
         return view('admin/lista-sites', compact('sites','dnszone','sites_aegir'));
+    }
+
+    public function listaTodosSites()
+    {
+        $dnszone = env('DNSZONE');
+        $sites = Site::all()->sortBy('dominio');
+        return view('admin/lista-todos-sites', compact('sites','dnszone'));
     }
 }

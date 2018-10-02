@@ -19,3 +19,4 @@ Route::get('/senhaunica/callback', 'Auth\LoginController@handleProviderCallback'
 Route::post('/logout', 'Auth\LoginController@logout');
 
 Route::get('/admin/sites', 'AdminController@listaSites');
+Route::get('/admin/todos_sites', 'AdminController@listaTodosSites');
