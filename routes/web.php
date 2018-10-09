@@ -20,6 +20,7 @@ Route::post('/logout', 'Auth\LoginController@logout');
 
 Route::get('/admin/sites', 'AdminController@listaSites');
 Route::get('/admin/todos_sites', 'AdminController@listaTodosSites');
+Route::post('/admin/{site}/clone', 'AdminController@cloneSite');
 Route::post('/admin/{site}/disable', 'AdminController@disableSite');
 Route::post('/admin/{site}/enable', 'AdminController@enableSite');
 Route::post('/admin/{site}/delete', 'AdminController@deleteSite');

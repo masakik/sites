@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Site;
 use Illuminate\Http\Request;
 use Auth;
+use GuzzleHttp\Client;
 
 class SiteController extends Controller
 {
@@ -39,13 +40,32 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
-//      $user = Auth::user();
-
       $site = new Site;
       $site->dominio = $request->dominio;
-//      $site->owner = $user->id;
       $site->owner = \Auth::user()->id;
       $site->save();
+
+      $dnszone = env('DNSZONE');
+      $alvo = $site->dominio . $dnszone;
+      $site_modelo = 'modelod8.fflch.usp.br';
+
+      $client = new Client([
+           'base_uri' => 'http://aegir.fflch.usp.br'
+      ]);
+
+      $res = $client->request('POST','/aegir/saas/task/', [
+          'form_params' => [
+              'target' => $site_modelo,
+              'type' => 'clone',
+              'options[new_uri]' => $alvo,
+              'options[database]' => 4,
+              'options[target_platform]' => 155,
+              'options[client_email]' => 'fflch@usp.br',
+              'options[client_name]' => 'fflch',
+              'api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ'
+          ]
+      ]);
+
       return redirect('/sites');
     }
 
