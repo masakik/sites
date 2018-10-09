@@ -58,7 +58,7 @@ $client = new Client([
 </form>
 
 @else
-<form method="POST" action="/admin/{{ $site->id }}">
+<form method="POST" action="/admin/{{ $site->id }}/clone">
 {{ csrf_field() }}
 <button type="submit">Criar</button>
 </form>

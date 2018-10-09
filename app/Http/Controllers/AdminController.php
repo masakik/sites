@@ -15,7 +15,6 @@ class AdminController extends Controller
         ]);
         $res = $client->request('GET','/aegir/saas/site.json', ['query' => ['api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ']]);
         $sites_aegir = json_decode($res->getBody());
-        //dd($sites_aegir);
 
         $dnszone = env('DNSZONE');
         $sites = Site::all()->sortBy('dominio');
@@ -27,6 +26,32 @@ class AdminController extends Controller
         $dnszone = env('DNSZONE');
         $sites = Site::all()->sortBy('dominio');
         return view('admin/lista-todos-sites', compact('sites','dnszone'));
+    }
+
+    public function cloneSite(Site $site)
+    {
+      $dnszone = env('DNSZONE');
+      $alvo = $site->dominio . $dnszone;
+      $site_modelo = 'modelod8.fflch.usp.br';
+
+      $client = new Client([
+           'base_uri' => 'http://aegir.fflch.usp.br'
+      ]);
+
+      $res = $client->request('POST','/aegir/saas/task/', [
+          'form_params' => [
+              'target' => $site_modelo,
+              'type' => 'clone',
+              'options[new_uri]' => $alvo,
+              'options[database]' => 4,
+              'options[target_platform]' => 155,
+              'options[client_email]' => 'fflch@usp.br',
+              'options[client_name]' => 'fflch',
+              'api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ'
+          ]
+      ]);
+
+      return redirect('/sites');
     }
 
     public function disableSite(Site $site)
