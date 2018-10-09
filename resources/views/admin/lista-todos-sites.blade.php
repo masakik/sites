@@ -40,6 +40,31 @@ $client = new Client([
 {{ method_field('delete') }}
 <button type="submit">Apagar</button>
 </form>
+
+@if ($site_status == "habilitado")
+<form method="POST" action="/admin/{{ $site->id }}/disable">
+{{ csrf_field() }}
+<button type="submit">Desabilitar</button>
+</form>
+@elseif ($site_status == "desabilitado")
+<form method="POST" action="/admin/{{ $site->id }}/enable">
+{{ csrf_field() }}
+<button type="submit">Habilitar</button>
+</form>
+
+<form method="POST" action="/admin/{{ $site->id }}/delete">
+{{ csrf_field() }}
+<button type="submit">Deletar</button>
+</form>
+
+@else
+<form method="POST" action="/admin/{{ $site->id }}">
+{{ csrf_field() }}
+<button type="submit">Criar</button>
+</form>
+
+@endif
+
 <br>
 @endforeach
 @stop

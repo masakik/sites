@@ -28,4 +28,64 @@ class AdminController extends Controller
         $sites = Site::all()->sortBy('dominio');
         return view('admin/lista-todos-sites', compact('sites','dnszone'));
     }
+
+    public function disableSite(Site $site)
+    {
+        $dnszone = env('DNSZONE');
+        $alvo = $site->dominio . $dnszone;
+
+        $client = new Client([
+             'base_uri' => 'http://aegir.fflch.usp.br'
+        ]);
+
+        $res = $client->request('POST','/aegir/saas/task/', [
+            'form_params' => [ 
+                'target' => $alvo,
+                'type' => 'disable',
+                'api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ'
+            ]   
+        ]);
+
+        //$result = json_decode($res->getBody()->getContents());
+        return redirect('/');
+    }
+
+    public function enableSite(Site $site)
+    {
+        $dnszone = env('DNSZONE');
+        $alvo = $site->dominio . $dnszone;
+
+        $client = new Client([
+             'base_uri' => 'http://aegir.fflch.usp.br'
+        ]);
+
+        $res = $client->request('POST','/aegir/saas/task/', [
+            'form_params' => [ 
+                'target' => $alvo,
+                'type' => 'enable',
+                'api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ'
+            ]
+        ]);
+        return redirect('/');
+    }
+
+    public function deleteSite(Site $site)
+    {
+        $dnszone = env('DNSZONE');
+        $alvo = $site->dominio . $dnszone;
+
+        $client = new Client([
+             'base_uri' => 'http://aegir.fflch.usp.br'
+        ]);
+
+        $res = $client->request('POST','/aegir/saas/task/', [
+            'form_params' => [
+                'target' => $alvo,
+                'type' => 'delete',
+                'api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ'
+            ]
+        ]);
+        return redirect('/');
+    }
 }
+

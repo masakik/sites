@@ -9,7 +9,13 @@
 
 @foreach ($sites as $site)
 
-    <b>{{ $site->dominio }}{{ $dnszone }}</b> <a href="/sites/{{ $site->id }}/edit">Editar</a>
+@foreach ($sites_aegir as $site_aegir)
+@if ($site->dominio.$dnszone == $site_aegir->title)
+    <?php $status = $site_aegir->status; ?>
+@endif
+@endforeach
+
+    <b>{{ $site->dominio }}{{ $dnszone }} {{ $status or "site não existe" }}</b> <a href="/sites/{{ $site->id }}/edit">Editar</a>
 
 <form method="POST" action="/sites/{{ $site->id }}">
 {{ csrf_field() }}
