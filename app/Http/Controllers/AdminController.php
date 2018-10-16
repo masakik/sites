@@ -32,7 +32,11 @@ class AdminController extends Controller
     {
       $dnszone = env('DNSZONE');
       $alvo = $site->dominio . $dnszone;
-      $site_modelo = 'modelod8.fflch.usp.br';
+      $site_modelo = env('SITE_MODELO');
+      $id_node_bd = env('ID_NODE_BD');
+      $id_node_plataforma = env('ID_NODE_PLATAFORMA');
+      $cliente_email = \Auth::user()->email;
+      $cliente_nome = \Auth::user()->name;      
 
       $client = new Client([
            'base_uri' => 'http://aegir.fflch.usp.br'
@@ -43,10 +47,10 @@ class AdminController extends Controller
               'target' => $site_modelo,
               'type' => 'clone',
               'options[new_uri]' => $alvo,
-              'options[database]' => 4,
-              'options[target_platform]' => 155,
-              'options[client_email]' => 'fflch@usp.br',
-              'options[client_name]' => 'fflch',
+              'options[database]' => $id_node_bd,
+              'options[target_platform]' => $id_node_plataforma,
+              'options[client_email]' => $cliente_email,
+              'options[client_name]' => $cliente_nome,
               'api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ'
           ]
       ]);
