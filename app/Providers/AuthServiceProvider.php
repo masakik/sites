@@ -25,6 +25,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        # admin 
+        Gate::define('admin', function ($user) {
+            $admins_id = explode(',', trim(env('SENHAUNICA_ADMINS')));
+            return in_array($user->codpes, $admins_id);
+
+        });
+
     }
 }
