@@ -11,11 +11,11 @@
 |
 */
 
-Route::get('/', 'IndexController@index');
+Route::get('/', 'IndexController@index')->name('home');
 Route::resource('/sites', 'SiteController');
 
-Route::get('/senhaunica/login', 'Auth\LoginController@redirectToProvider');
-Route::get('/senhaunica/callback', 'Auth\LoginController@handleProviderCallback');
+Route::get('/senhaunica/login', 'Auth\LoginController@redirectToProvider')->name('login');
+Route::get('/callback', 'Auth\LoginController@handleProviderCallback');
 Route::post('/logout', 'Auth\LoginController@logout');
 
 Route::get('/admin/sites', 'AdminController@listaSites');
@@ -24,3 +24,5 @@ Route::post('/admin/{site}/clone', 'AdminController@cloneSite');
 Route::post('/admin/{site}/disable', 'AdminController@disableSite');
 Route::post('/admin/{site}/enable', 'AdminController@enableSite');
 Route::post('/admin/{site}/delete', 'AdminController@deleteSite');
+
+Route::get('/api/sites/owners/{site}', 'SiteController@Owners');

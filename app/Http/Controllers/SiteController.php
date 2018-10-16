@@ -121,4 +121,20 @@ class SiteController extends Controller
         $site->delete();
         return redirect('/');
     }
+
+    public function Owners(Request $request, $site)
+    {
+        /*
+        if($request->apikey != env('CONSUMER_APIKEY'))
+        {
+            return response('Unauthorized action.', 403);
+        }
+        */
+
+        $dominio = str_replace('.fflch.usp.br','',$site);
+        $site = Site::where('dominio',$dominio)->first();
+        $numeros_usp = $site->owner . ',123445';
+
+        return response()->json($numeros_usp);
+    }
 }
