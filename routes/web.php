@@ -24,3 +24,5 @@ Route::post('/admin/{site}/clone', 'AdminController@cloneSite');
 Route::post('/admin/{site}/disable', 'AdminController@disableSite');
 Route::post('/admin/{site}/enable', 'AdminController@enableSite');
 Route::post('/admin/{site}/delete', 'AdminController@deleteSite');
+
+Route::get('/api/sites/owners/{site}', 'SiteController@Owners');
