@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('master')
 
 @section('title', 'Dashboard')
 
@@ -6,6 +6,7 @@
 @stop
 
 @section('content')
+@parent
 
 @foreach ($sites as $site)
 

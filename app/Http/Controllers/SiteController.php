@@ -5,10 +5,16 @@ namespace App\Http\Controllers;
 use App\Site;
 use Illuminate\Http\Request;
 use Auth;
-use GuzzleHttp\Client;
+use App\Jobs\criaSiteAegir;
+
 
 class SiteController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:admin');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -42,34 +48,12 @@ class SiteController extends Controller
     {
       $site = new Site;
       $site->dominio = $request->dominio;
-      $site->owner = \Auth::user()->id;
+      $site->owner = \Auth::user()->codpes;
       $site->save();
 
-      $dnszone = env('DNSZONE');
-      $alvo = $site->dominio . $dnszone;
-      $site_modelo = env('SITE_MODELO');
-      $id_node_bd = env('ID_NODE_BD');
-      $id_node_plataforma = env('ID_NODE_PLATAFORMA');
-      $cliente_email = \Auth::user()->email;
-      $cliente_nome = \Auth::user()->name;
+      criaSiteAegir::dispatch();
 
-      $client = new Client([
-           'base_uri' => 'http://aegir.fflch.usp.br'
-      ]);
-
-      $res = $client->request('POST','/aegir/saas/task/', [
-          'form_params' => [
-              'target' => $site_modelo,
-              'type' => 'clone',
-              'options[new_uri]' => $alvo,
-              'options[database]' => $id_node_bd,
-              'options[target_platform]' => $id_node_plataforma/*,
-              'options[client_email]' => $cliente_email,
-              'options[client_name]' => $cliente_nome*/,
-              'api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ'
-          ]
-      ]);
-
+      $request->session()->flash('alert-info', 'Criação do site em andamento');
       return redirect('/sites');
     }
 

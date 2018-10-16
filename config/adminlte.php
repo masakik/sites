@@ -112,19 +112,23 @@ return [
         [
             'text' => 'Solicitar um Site',
             'url'  => 'sites/create',
+            'can'  => 'admin'
         ],
         [
             'text' => 'Meus sites',
             'url'  => 'sites',
+            'can'  => 'admin'
         ],
         'Administração',
         [
             'text' => 'Todos os Sites',
             'url'  => 'admin/todos_sites',
+            'can'  => 'admin'
         ],
         [
             'text' => 'Todos Sites (AEGIR)',
             'url'  => 'admin/sites',
+            'can'  => 'admin'
         ],
     ],
 
