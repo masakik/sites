@@ -23,7 +23,7 @@ class SiteController extends Controller
     public function index()
     {
         $dnszone = env('DNSZONE');
-        $sites = Site::all()->where('owner',\Auth::user()->id)->sortBy('dominio');
+        $sites = Site::all()->where('owner',\Auth::user()->codpes)->sortBy('dominio');
         return view('sites/index', compact('sites','dnszone'));
     }
 
@@ -48,10 +48,11 @@ class SiteController extends Controller
     {
       $site = new Site;
       $site->dominio = $request->dominio;
+      $alvo = $site->dominio;
       $site->owner = \Auth::user()->codpes;
       $site->save();
 
-      criaSiteAegir::dispatch();
+      criaSiteAegir::dispatch($alvo);
 
       $request->session()->flash('alert-info', 'Criação do site em andamento');
       return redirect('/sites');
