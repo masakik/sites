@@ -12,15 +12,16 @@ use GuzzleHttp\Client;
 class criaSiteAegir implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    private $alvo;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($alvo)
     {
-        //
+      $this->alvo = $alvo;        
     }
 
     /**
@@ -32,7 +33,7 @@ class criaSiteAegir implements ShouldQueue
     {
 
       $dnszone = env('DNSZONE');
-      $alvo = $site->dominio . $dnszone;
+      $alvo = $this->alvo . $dnszone;
       $site_modelo = env('SITE_MODELO');
       $id_node_bd = env('ID_NODE_BD');
       $id_node_plataforma = env('ID_NODE_PLATAFORMA');
