@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('master')
 
 @section('title', 'Dashboard')
 
@@ -6,6 +6,8 @@
 @stop
 
 @section('content')
+@parent
+
 <form method="POST" action="/sites/{{ $site->id }}">
 {{ csrf_field() }}
 {{ method_field('patch') }}
