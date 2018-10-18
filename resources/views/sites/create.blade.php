@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('parent')
 
 @section('title', 'Dashboard')
 
@@ -6,6 +6,7 @@
 @stop
 
 @section('content')
+@parent
         <form method="POST" action="/sites">
         @csrf
         Domínio: <input name="dominio">{{ $dnszone }}<br>
