@@ -49,6 +49,7 @@ class SiteController extends Controller
       $site = new Site;
       $site->dominio = $request->dominio;
       $alvo = $site->dominio;
+      $site->numeros_usp = $request->numeros_usp;
       $site->owner = \Auth::user()->codpes;
       $site->save();
 
@@ -90,7 +91,8 @@ class SiteController extends Controller
     public function update(Request $request, Site $site)
     {
         $site->dominio = $request->dominio;
-        $site->owner = \Auth::user()->id;
+        $site->numeros_usp = $request->numeros_usp;
+        $site->owner = \Auth::user()->codpes;
         $site->save();
         return redirect("/sites/$site->id");
     }
