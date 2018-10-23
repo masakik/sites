@@ -120,7 +120,7 @@ class SiteController extends Controller
 
         $dominio = str_replace('.fflch.usp.br','',$site);
         $site = Site::where('dominio',$dominio)->first();
-        $numeros_usp = $site->owner . ',123445';
+        $numeros_usp = $site->owner . ','. str_replace(' ', '', $site->numeros_usp);
 
         return response()->json($numeros_usp);
     }
