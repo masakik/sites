@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Site;
 use GuzzleHttp\Client;
+use App\Jobs\clonaSiteAegir;
+use App\Jobs\desabilitaSiteAegir;
+use App\Jobs\habilitaSiteAegir;
+use App\Jobs\deletaSiteAegir;
 
 class AdminController extends Controller
 {
@@ -28,93 +32,43 @@ class AdminController extends Controller
         return view('admin/lista-todos-sites', compact('sites','dnszone'));
     }
 
-    public function cloneSite(Site $site)
+    public function cloneSite(Request $request, Site $site)
     {
       $dnszone = env('DNSZONE');
       $alvo = $site->dominio . $dnszone;
-      $site_modelo = env('SITE_MODELO');
-      $id_node_bd = env('ID_NODE_BD');
-      $id_node_plataforma = env('ID_NODE_PLATAFORMA');
-      $cliente_email = \Auth::user()->email;
-      $cliente_nome = \Auth::user()->name;      
+      clonaSiteAegir::dispatch($alvo);
 
-      $client = new Client([
-           'base_uri' => 'http://aegir.fflch.usp.br'
-      ]);
-
-      $res = $client->request('POST','/aegir/saas/task/', [
-          'form_params' => [
-              'target' => $site_modelo,
-              'type' => 'clone',
-              'options[new_uri]' => $alvo,
-              'options[database]' => $id_node_bd,
-              'options[target_platform]' => $id_node_plataforma,
-              'options[client_email]' => $cliente_email,
-              'options[client_name]' => $cliente_nome,
-              'api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ'
-          ]
-      ]);
-
+      $request->session()->flash('alert-info', 'Clonagem do site em andamento');
       return redirect('/sites');
     }
 
-    public function disableSite(Site $site)
+    public function disableSite(Request $request, Site $site)
     {
-        $dnszone = env('DNSZONE');
-        $alvo = $site->dominio . $dnszone;
+      $dnszone = env('DNSZONE');
+      $alvo = $site->dominio . $dnszone;
+      desabilitaSiteAegir::dispatch($alvo);
 
-        $client = new Client([
-             'base_uri' => 'http://aegir.fflch.usp.br'
-        ]);
-
-        $res = $client->request('POST','/aegir/saas/task/', [
-            'form_params' => [ 
-                'target' => $alvo,
-                'type' => 'disable',
-                'api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ'
-            ]   
-        ]);
-
-        //$result = json_decode($res->getBody()->getContents());
-        return redirect('/');
+      $request->session()->flash('alert-info', 'Desabilitação do site em andamento');
+      return redirect('/sites');
     }
 
-    public function enableSite(Site $site)
+    public function enableSite(Request $request, Site $site)
     {
-        $dnszone = env('DNSZONE');
-        $alvo = $site->dominio . $dnszone;
+      $dnszone = env('DNSZONE');
+      $alvo = $site->dominio . $dnszone;
+      habilitaSiteAegir::dispatch($alvo);
 
-        $client = new Client([
-             'base_uri' => 'http://aegir.fflch.usp.br'
-        ]);
-
-        $res = $client->request('POST','/aegir/saas/task/', [
-            'form_params' => [ 
-                'target' => $alvo,
-                'type' => 'enable',
-                'api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ'
-            ]
-        ]);
-        return redirect('/');
+      $request->session()->flash('alert-info', 'Habilitação do site em andamento');
+      return redirect('/sites');
     }
 
-    public function deleteSite(Site $site)
+    public function deleteSite(Request $request, Site $site)
     {
-        $dnszone = env('DNSZONE');
-        $alvo = $site->dominio . $dnszone;
+      $dnszone = env('DNSZONE');
+      $alvo = $site->dominio . $dnszone;
+      deletaSiteAegir::dispatch($alvo);
 
-        $client = new Client([
-             'base_uri' => 'http://aegir.fflch.usp.br'
-        ]);
-
-        $res = $client->request('POST','/aegir/saas/task/', [
-            'form_params' => [
-                'target' => $alvo,
-                'type' => 'delete',
-                'api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ'
-            ]
-        ]);
-        return redirect('/');
+      $request->session()->flash('alert-info', 'Deleção do site em andamento');
+      return redirect('/sites');
     }
 }
-
