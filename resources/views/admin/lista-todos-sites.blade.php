@@ -6,20 +6,13 @@
 @stop
 
 @section('content')
-<?php
-use GuzzleHttp\Client;
-
-$client = new Client([
-             'base_uri' => 'http://aegir.fflch.usp.br',
-        ]);
-
-?>
 
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
             <tr>
                 <th>URL</th>
+                <th>URL2</th>
                 <th>Dono</th>
                 <th>Números USP</th>
                 <th>Status</th>
@@ -30,29 +23,32 @@ $client = new Client([
         <tbody>
 
 @foreach ($sites as $site)
+
+@foreach ($sites_aegir as $site_aegir)
 <?php
-    $res = $client->request('GET','/aegir/saas/site/'.$site->dominio . $dnszone. '.json', ['query' => ['api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ']]);
-    $site_aegir = json_decode($res->getBody());
-    $existe_site = array_key_exists("site_status",$site_aegir);
-    if($existe_site == false){
-        $site_status = "Não Existe";
+    if($site->dominio.$dnszone == $site_aegir->title){
+      if ($site_aegir->status == 1){
+        $site_status_aegir = "Habilitado";
+        $site_aegir_title = $site_aegir->title;
+      }
+      else{
+        $site_status_aegir = "Desabilitado";
+        $site_aegir_title = $site_aegir->title;
+      }
     }
     else{
-        $site_status = $site_aegir->site_status;
-        if($site_status == 1){
-            $site_status = "Habilitado";
-        }
-        else{
-            $site_status = "Desabilitado";
-        }
+      $site_status_aegir = "Não Existe";
+      $site_aegir_title = $site_aegir->title;
     }
 ?>
+@endforeach
 
 <tr>
 <td><a href="http://{{ $site->dominio }}{{ $dnszone }}" target="_blank">{{ $site->dominio }}{{ $dnszone }}</a></td>
+<td><a href="http://{{ $site_aegir_title }}" target="_blank">{{ $site_aegir_title }}</a></td>
 <td> {{ $site->owner }}</td>
 <td> {{ $site->numeros_usp }}</td>
-<td> {{ $site_status }}</td>
+<td> {{ $site_status_aegir }}</td>
 <td> <a href="/sites/{{ $site->id }}/edit" class="btn btn-warning">Editar</a></td>
 <td>
 <form method="POST" action="/sites/{{ $site->id }}">
@@ -60,14 +56,14 @@ $client = new Client([
 {{ method_field('delete') }}
 <button type="submit" class="delete-item btn btn-danger">Apagar</button>
 </form></td>
-@if ($site_status == "Habilitado")
+@if ($site_status_aegir == "Habilitado")
 <td>
 <form method="POST" action="/admin/{{ $site->id }}/disable">
 {{ csrf_field() }}
 <button type="submit" class="btn btn-info">Desabilitar Site</button>
 </form></td>
 
-@elseif ($site_status == "Desabilitado")
+@elseif ($site_status_aegir == "Desabilitado")
 <td><form method="POST" action="/admin/{{ $site->id }}/enable">
 {{ csrf_field() }}
 <button type="submit" class="btn btn-success">Habilitar Site</button>

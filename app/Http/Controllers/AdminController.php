@@ -27,9 +27,14 @@ class AdminController extends Controller
 
     public function listaTodosSites()
     {
+        $client = new Client([
+             'base_uri' => 'http://aegir.fflch.usp.br/',
+        ]);
+        $res = $client->request('GET','/aegir/saas/site.json', ['query' => ['api-key' => 'ZYODpIU-GhDtTJThA2Z-HQ']]);
+        $sites_aegir = json_decode($res->getBody());
         $dnszone = env('DNSZONE');
         $sites = Site::all()->sortBy('dominio');
-        return view('admin/lista-todos-sites', compact('sites','dnszone'));
+        return view('admin/lista-todos-sites', compact('sites','dnszone','sites_aegir'));
     }
 
     public function cloneSite(Request $request, Site $site)
