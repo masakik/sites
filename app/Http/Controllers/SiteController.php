@@ -6,13 +6,17 @@ use App\Site;
 use Illuminate\Http\Request;
 use Auth;
 use App\Jobs\criaSiteAegir;
+use App\Aegir\Aegir;
 
 
 class SiteController extends Controller
 {
+    private $aegir;
+
     public function __construct()
     {
         $this->middleware('can:admin');
+        $this->aegir = new Aegir;
     }
 
     /**
@@ -23,7 +27,14 @@ class SiteController extends Controller
     public function index()
     {
         $dnszone = env('DNSZONE');
-        $sites = Site::all()->where('owner',\Auth::user()->codpes)->sortBy('dominio');
+        //$sites = Site::all()->where('owner',\Auth::user()->codpes)->sortBy('dominio');
+        $sites = Site::all();
+
+        // Busca o status dos sites no aegir
+        foreach($sites as $site){
+            $site->status = $this->aegir->verificaStatus($site->dominio);
+        }
+
         return view('sites/index', compact('sites','dnszone'));
     }
 
@@ -112,7 +123,7 @@ class SiteController extends Controller
     public function Owners(Request $request, $site)
     {
         /*
-        if($request->apikey != env('CONSUMER_APIKEY'))
+        if($request->apikey != env('AEGIR_KEY'))
         {
             return response('Unauthorized action.', 403);
         }

@@ -21,6 +21,7 @@
                 <th>URL</th>
                 <th>Dono</th>
                 <th>Números USP</th>
+                <th>Status</th>
                 <th colspan="2" width="15%">Ações</th>
             </tr>
         </thead>
@@ -30,6 +31,7 @@
 <td><a href="http://{{ $site->dominio }}{{ $dnszone }}" target="_blank">{{ $site->dominio }}{{ $dnszone }}</a></td>
 <td>{{ $site->owner }}</td>
 <td>{{ $site->numeros_usp }}</td>
+<td>{{ $site->status or 'Em processamento' }}</td>
 <td><a href="/sites/{{ $site->id }}/edit" class="btn btn-warning">Editar</a></td>
 <td>
 <form method="POST" action="/sites/{{ $site->id }}">
