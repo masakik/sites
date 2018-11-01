@@ -6,8 +6,11 @@ use App\Site;
 use Illuminate\Http\Request;
 use Auth;
 use App\Jobs\criaSiteAegir;
+use App\Jobs\desabilitaSiteAegir;
+use App\Jobs\habilitaSiteAegir;
+use App\Jobs\deletaSiteAegir;
+use App\Jobs\clonaSiteAegir;
 use App\Aegir\Aegir;
-
 
 class SiteController extends Controller
 {
@@ -32,7 +35,7 @@ class SiteController extends Controller
 
         // Busca o status dos sites no aegir
         foreach($sites as $site){
-            $site->status = $this->aegir->verificaStatus($site->dominio);
+            $site->status = $this->aegir->verificaStatus($site->dominio.$dnszone);
         }
 
         return view('sites/index', compact('sites','dnszone'));
@@ -58,13 +61,14 @@ class SiteController extends Controller
     public function store(Request $request)
     {
       $site = new Site;
+      $dnszone = env('DNSZONE');
       $site->dominio = $request->dominio;
-      $alvo = $site->dominio;
+      $alvo = $site->dominio . $dnszone;
       $site->numeros_usp = $request->numeros_usp;
       $site->owner = \Auth::user()->codpes;
       $site->save();
 
-      criaSiteAegir::dispatch($alvo);
+      clonaSiteAegir::dispatch($alvo);
 
       $request->session()->flash('alert-info', 'Criação do site em andamento');
       return redirect('/sites');
@@ -134,5 +138,47 @@ class SiteController extends Controller
         $numeros_usp = $site->owner . ','. str_replace(' ', '', $site->numeros_usp);
 
         return response()->json($numeros_usp);
+    }
+
+    public function cloneSite(Request $request, Site $site)
+    {
+      $dnszone = env('DNSZONE');
+      $alvo = $site->dominio . $dnszone;
+      clonaSiteAegir::dispatch($alvo);
+
+      $request->session()->flash('alert-info', 'Clonagem do site em andamento');
+      return redirect('/sites');
+    }
+
+    public function disableSite(Request $request, Site $site)
+    {
+      $dnszone = env('DNSZONE');
+      $alvo = $site->dominio . $dnszone;
+      desabilitaSiteAegir::dispatch($alvo);
+
+      $request->session()->flash('alert-info', 'Desabilitação do site em andamento');
+      return redirect('/sites');
+    }
+
+    public function enableSite(Request $request, Site $site)
+    {
+      $dnszone = env('DNSZONE');
+      $alvo = $site->dominio . $dnszone;
+      habilitaSiteAegir::dispatch($alvo);
+
+      $request->session()->flash('alert-info', 'Habilitação do site em andamento');
+      return redirect('/sites');
+    }
+
+    public function deleteSite(Request $request, Site $site)
+    {
+      $dnszone = env('DNSZONE');
+      $alvo = $site->dominio . $dnszone;
+      $site->delete();
+
+      deletaSiteAegir::dispatch($alvo);
+
+      $request->session()->flash('alert-info', 'Deleção do site em andamento');
+      return redirect('/sites');
     }
 }

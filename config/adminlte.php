@@ -119,17 +119,6 @@ return [
             'url'  => 'sites',
             'can'  => 'admin'
         ],
-        'Administração',
-        [
-            'text' => 'Todos os Sites',
-            'url'  => 'admin/todos_sites',
-            'can'  => 'admin'
-        ],
-        [
-            'text' => 'Todos Sites (AEGIR)',
-            'url'  => 'admin/sites',
-            'can'  => 'admin'
-        ],
     ],
 
     /*

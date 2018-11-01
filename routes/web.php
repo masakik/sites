@@ -18,11 +18,9 @@ Route::get('/senhaunica/login', 'Auth\LoginController@redirectToProvider')->name
 Route::get('/callback', 'Auth\LoginController@handleProviderCallback');
 Route::post('/logout', 'Auth\LoginController@logout');
 
-Route::get('/admin/sites', 'AdminController@listaSites');
-Route::get('/admin/todos_sites', 'AdminController@listaTodosSites');
-Route::post('/admin/{site}/clone', 'AdminController@cloneSite');
-Route::post('/admin/{site}/disable', 'AdminController@disableSite');
-Route::post('/admin/{site}/enable', 'AdminController@enableSite');
-Route::post('/admin/{site}/delete', 'AdminController@deleteSite');
+Route::post('/sites/{site}/clone', 'SiteController@cloneSite');
+Route::post('/sites/{site}/disable', 'SiteController@disableSite');
+Route::post('/sites/{site}/enable', 'SiteController@enableSite');
+Route::post('/sites/{site}/delete', 'SiteController@deleteSite');
 
 Route::get('/api/sites/owners/{site}', 'SiteController@Owners');
