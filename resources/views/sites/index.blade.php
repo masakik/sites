@@ -35,27 +35,28 @@
 <td><a href="/sites/{{ $site->id }}/edit" class="btn btn-warning">Editar</a></td>
 @if ($site->status == "Habilitado")
 <td>
+<a href="/sites/{{ $site->id }}/changeowner" class="btn btn-success">Mudar Dono</a>
 <form method="POST" action="/sites/{{ $site->id }}/disable">
 {{ csrf_field() }}
-<button type="submit" class="btn btn-info">Desabilitar Site</button>
+<button type="submit" class="btn btn-info">Desabilitar</button>
 </form></td>
 
 @elseif ($site->status == "Desabilitado")
 <td><form method="POST" action="/sites/{{ $site->id }}/enable">
 {{ csrf_field() }}
-<button type="submit" class="btn btn-success">Habilitar Site</button>
+<button type="submit" class="btn btn-success">Habilitar</button>
 </form>
 
 <form method="POST" action="/sites/{{ $site->id }}/delete">
 {{ csrf_field() }}
-<button type="submit" class="btn btn-dark">Deletar Site</button>
+<button type="submit" class="btn btn-dark">Deletar</button>
 </form></td>
 
 @else
 <td>
 <form method="POST" action="/sites/{{ $site->id }}/clone">
 {{ csrf_field() }}
-<button type="submit" class="btn btn-primary">Recriar Site</button>
+<button type="submit" class="btn btn-primary">Recriar</button>
 </form></td>
 @endif
 
