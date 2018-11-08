@@ -32,10 +32,14 @@
 <td>{{ $site->owner }}</td>
 <td>{{ $site->numeros_usp }}</td>
 <td>{{ $site->status }}</td>
-<td><a href="/sites/{{ $site->id }}/edit" class="btn btn-warning">Editar</a></td>
+<td>
+    <ul  class="list-group">
+        <li class="list-group-item"><a href="/sites/{{ $site->id }}/edit" class="btn btn-warning">Editar</a></li>
+        <li class="list-group-item"><a href="/sites/{{ $site->id }}/changeowner" class="btn btn-success">Mudar Dono</a></li>
+    </ul>
+</td>
 @if ($site->status == "Habilitado")
 <td>
-<a href="/sites/{{ $site->id }}/changeowner" class="btn btn-success">Mudar Dono</a>
 <form method="POST" action="/sites/{{ $site->id }}/disable">
 {{ csrf_field() }}
 <button type="submit" class="btn btn-info">Desabilitar</button>
@@ -52,12 +56,16 @@
 <button type="submit" class="btn btn-dark">Deletar</button>
 </form></td>
 
-@else
+@elseif($site->status != "Servidor Offline")
 <td>
 <form method="POST" action="/sites/{{ $site->id }}/clone">
 {{ csrf_field() }}
 <button type="submit" class="btn btn-primary">Recriar</button>
-</form></td>
+
+
+</form>
+
+</td>
 @endif
 
 </tr>

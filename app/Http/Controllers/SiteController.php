@@ -107,12 +107,16 @@ class SiteController extends Controller
     {
         $site->dominio = $request->dominio;
         $site->numeros_usp = $request->numeros_usp;
-        if (isset($request->owner))
-          $site->owner = $request->owner;
-        else
-          $site->owner = \Auth::user()->codpes;
+        if (isset($request->owner)) {
+            $site->owner = $request->owner;
+            $request->session()->flash('alert-info','Responsável alterado com sucesso');
+        }
+        else {
+            $site->owner = \Auth::user()->codpes;
+            $request->session()->flash('alert-info','Atualização efetuada com sucesso');
+        }
         $site->save();
-        return redirect("/sites/$site->id");
+        return redirect("/sites");
     }
 
     /**
