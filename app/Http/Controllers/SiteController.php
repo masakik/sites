@@ -30,8 +30,8 @@ class SiteController extends Controller
     public function index()
     {
         $dnszone = env('DNSZONE');
-        //$sites = Site::all()->where('owner',\Auth::user()->codpes)->sortBy('dominio');
-        $sites = Site::all();
+        $sites = Site::all()->where('owner',\Auth::user()->codpes)->sortBy('dominio');
+        //$sites = Site::all();
 
         // Busca o status dos sites no aegir
         foreach($sites as $site){
@@ -107,7 +107,10 @@ class SiteController extends Controller
     {
         $site->dominio = $request->dominio;
         $site->numeros_usp = $request->numeros_usp;
-        $site->owner = \Auth::user()->codpes;
+        if (isset($request->owner))
+          $site->owner = $request->owner;
+        else
+          $site->owner = \Auth::user()->codpes;
         $site->save();
         return redirect("/sites/$site->id");
     }
@@ -180,5 +183,16 @@ class SiteController extends Controller
 
       $request->session()->flash('alert-info', 'Deleção do site em andamento');
       return redirect('/sites');
+    }
+
+    /**
+     * Show the form for editing the owner.
+     *
+     * @param  \App\Site  $site
+     * @return \Illuminate\Http\Response
+     */
+    public function changeowner(Site $site)
+    {
+        return view('sites/changeowner', compact('site'));
     }
 }
