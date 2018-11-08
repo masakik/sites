@@ -8,18 +8,21 @@
 @section('content')
 @parent
 
-<p>
-    <a href="{{ route('sites.create') }}" class="btn btn-success">
-        Solicitar um Site
-    </a>
-</p>
+    <form method="get" action="/sites">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Domínio ..." name="dominio">
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-success"> Buscar </button>
+            </span>
+        </div><!-- /input-group -->
+    </form>
 
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>URL</th>
-                <th>Dono</th>
+                <th>Domínio</th>
+                <th>Responsável</th>
                 <th>Números USP</th>
                 <th>Status</th>
                 <th colspan="2" width="15%">Ações</th>

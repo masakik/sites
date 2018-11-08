@@ -112,12 +112,12 @@ return [
         [
             'text' => 'Solicitar um Site',
             'url'  => 'sites/create',
-            'can'  => 'admin'
+            'can'  => 'sites.create'
         ],
         [
             'text' => 'Meus sites',
             'url'  => 'sites',
-            'can'  => 'admin'
+            'can'  => 'sites.create'
         ],
     ],
 
