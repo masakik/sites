@@ -8,18 +8,21 @@
 @section('content')
 @parent
 
-<p>
-    <a href="{{ route('sites.create') }}" class="btn btn-success">
-        Solicitar um Site
-    </a>
-</p>
+    <form method="get" action="/sites">
+        <div class="input-group">
+            <input type="text" class="form-control" placeholder="Domínio ..." name="dominio">
+            <span class="input-group-btn">
+                <button type="submit" class="btn btn-success"> Buscar </button>
+            </span>
+        </div><!-- /input-group -->
+    </form>
 
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>URL</th>
-                <th>Dono</th>
+                <th>Domínio</th>
+                <th>Responsável</th>
                 <th>Números USP</th>
                 <th>Status</th>
                 <th colspan="2" width="15%">Ações</th>
@@ -32,10 +35,14 @@
 <td>{{ $site->owner }}</td>
 <td>{{ $site->numeros_usp }}</td>
 <td>{{ $site->status }}</td>
-<td><a href="/sites/{{ $site->id }}/edit" class="btn btn-warning">Editar</a></td>
+<td>
+    <ul  class="list-group">
+        <li class="list-group-item"><a href="/sites/{{ $site->id }}/edit" class="btn btn-warning">Editar</a></li>
+        <li class="list-group-item"><a href="/sites/{{ $site->id }}/changeowner" class="btn btn-success">Mudar Dono</a></li>
+    </ul>
+</td>
 @if ($site->status == "Habilitado")
 <td>
-<a href="/sites/{{ $site->id }}/changeowner" class="btn btn-success">Mudar Dono</a>
 <form method="POST" action="/sites/{{ $site->id }}/disable">
 {{ csrf_field() }}
 <button type="submit" class="btn btn-info">Desabilitar</button>
@@ -52,12 +59,16 @@
 <button type="submit" class="btn btn-dark">Deletar</button>
 </form></td>
 
-@else
+@elseif($site->status != "Servidor Offline")
 <td>
 <form method="POST" action="/sites/{{ $site->id }}/clone">
 {{ csrf_field() }}
 <button type="submit" class="btn btn-primary">Recriar</button>
-</form></td>
+
+
+</form>
+
+</td>
 @endif
 
 </tr>

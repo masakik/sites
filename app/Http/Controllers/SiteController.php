@@ -11,6 +11,7 @@ use App\Jobs\habilitaSiteAegir;
 use App\Jobs\deletaSiteAegir;
 use App\Jobs\clonaSiteAegir;
 use App\Aegir\Aegir;
+use Illuminate\Support\Facades\Gate;
 
 class SiteController extends Controller
 {
@@ -18,7 +19,6 @@ class SiteController extends Controller
 
     public function __construct()
     {
-        $this->middleware('can:admin');
         $this->aegir = new Aegir;
     }
 
@@ -27,11 +27,26 @@ class SiteController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        //$this->middleware('can:index');
         $dnszone = env('DNSZONE');
-        $sites = Site::all()->where('owner',\Auth::user()->codpes)->sortBy('dominio');
-        //$sites = Site::all();
+        $filters = [];
+
+        // 1. query com a busca
+        if(isset($request->dominio)) {
+            array_push($filters,['dominio','LIKE', '%'.$request->dominio.'%']);
+        }
+
+        // 2. Se usuário comum, mostrar só os que ele é dono.
+        // Admistrador pode mostrar todos
+        if(!Gate::allows('admin')) {
+            array_push($filters,['owner','=', \Auth::user()->codpes]); 
+        }
+
+        // Executa a query
+        $sites = Site::where($filters);
+        $sites = $sites->get();
 
         // Busca o status dos sites no aegir
         foreach($sites as $site){
@@ -48,6 +63,7 @@ class SiteController extends Controller
      */
     public function create()
     {
+        $this->authorize('sites.create');
         $dnszone = env('DNSZONE');
         return view('sites/create', ['dnszone'=>$dnszone]); 
     }
@@ -60,6 +76,7 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
+      $this->authorize('sites.create');
       $site = new Site;
       $dnszone = env('DNSZONE');
       $site->dominio = $request->dominio;
@@ -82,6 +99,7 @@ class SiteController extends Controller
      */
     public function show(Site $site)
     {
+        $this->authorize('sites.view',$site);
         return view ('sites/show', compact('site'));
     }
 
@@ -92,7 +110,8 @@ class SiteController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit(Site $site)
-    {
+    {   
+        $this->authorize('sites.update',$site);
         return view('sites/edit', compact('site'));
     }
 
@@ -105,14 +124,19 @@ class SiteController extends Controller
      */
     public function update(Request $request, Site $site)
     {
+        $this->authorize('sites.update',$site);
         $site->dominio = $request->dominio;
         $site->numeros_usp = $request->numeros_usp;
-        if (isset($request->owner))
-          $site->owner = $request->owner;
-        else
-          $site->owner = \Auth::user()->codpes;
+        if (isset($request->owner)) {
+            $site->owner = $request->owner;
+            $request->session()->flash('alert-info','Responsável alterado com sucesso');
+        }
+        else {
+            $site->owner = \Auth::user()->codpes;
+            $request->session()->flash('alert-info','Atualização efetuada com sucesso');
+        }
         $site->save();
-        return redirect("/sites/$site->id");
+        return redirect("/sites");
     }
 
     /**
@@ -123,6 +147,7 @@ class SiteController extends Controller
      */
     public function destroy(Site $site)
     {
+        $this->authorize('sites.delete',$site);
         $site->delete();
         return redirect('/');
     }
@@ -145,6 +170,7 @@ class SiteController extends Controller
 
     public function cloneSite(Request $request, Site $site)
     {
+      $this->authorize('sites.update',$site);
       $dnszone = env('DNSZONE');
       $alvo = $site->dominio . $dnszone;
       clonaSiteAegir::dispatch($alvo);
@@ -155,6 +181,7 @@ class SiteController extends Controller
 
     public function disableSite(Request $request, Site $site)
     {
+      $this->authorize('sites.update',$site);
       $dnszone = env('DNSZONE');
       $alvo = $site->dominio . $dnszone;
       desabilitaSiteAegir::dispatch($alvo);
@@ -165,6 +192,7 @@ class SiteController extends Controller
 
     public function enableSite(Request $request, Site $site)
     {
+      $this->authorize('sites.update',$site);
       $dnszone = env('DNSZONE');
       $alvo = $site->dominio . $dnszone;
       habilitaSiteAegir::dispatch($alvo);
@@ -175,6 +203,7 @@ class SiteController extends Controller
 
     public function deleteSite(Request $request, Site $site)
     {
+      $this->authorize('sites.delete',$site);
       $dnszone = env('DNSZONE');
       $alvo = $site->dominio . $dnszone;
       $site->delete();
@@ -193,6 +222,7 @@ class SiteController extends Controller
      */
     public function changeowner(Site $site)
     {
+        $this->authorize('sites.update',$site);
         return view('sites/changeowner', compact('site'));
     }
 }

@@ -27,7 +27,9 @@ class Aegir
         // verifica se o aegir está atendendo requisições
         try {
             $this->client->request('GET',"/aegir/saas/site/{$this->aegir_host}.json", 
-                    ['query' => ['api-key' => $this->aegir_key]]);
+                ['query' => ['api-key' => $this->aegir_key],
+                 'connect_timeout' => 1.5
+                ]);
         } catch(\Exception $e) {
             $this->clientStatus = false;
         }
