@@ -12,6 +12,7 @@ use App\Jobs\deletaSiteAegir;
 use App\Jobs\clonaSiteAegir;
 use App\Aegir\Aegir;
 use Illuminate\Support\Facades\Gate;
+use App\Rules\Domain;
 
 class SiteController extends Controller
 {
@@ -76,19 +77,23 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
-      $this->authorize('sites.create');
-      $site = new Site;
-      $dnszone = env('DNSZONE');
-      $site->dominio = $request->dominio;
-      $alvo = $site->dominio . $dnszone;
-      $site->numeros_usp = $request->numeros_usp;
-      $site->owner = \Auth::user()->codpes;
-      $site->save();
+        $request->validate([
+            'dominio' => [new Domain],
+        ]);
 
-      clonaSiteAegir::dispatch($alvo);
+        $this->authorize('sites.create');
+        $site = new Site;
+        $dnszone = env('DNSZONE');
+        $site->dominio = $request->dominio;
+        $alvo = $site->dominio . $dnszone;
+        $site->numeros_usp = $request->numeros_usp;
+        $site->owner = \Auth::user()->codpes;
+        $site->save();
 
-      $request->session()->flash('alert-info', 'Criação do site em andamento');
-      return redirect('/sites');
+        clonaSiteAegir::dispatch($alvo);
+
+        $request->session()->flash('alert-info', 'Criação do site em andamento');
+        return redirect('/sites');
     }
 
     /**
