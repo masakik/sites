@@ -12,6 +12,7 @@ use App\Jobs\deletaSiteAegir;
 use App\Jobs\clonaSiteAegir;
 use App\Aegir\Aegir;
 use Illuminate\Support\Facades\Gate;
+use App\Rules\Numeros_USP;
 
 class SiteController extends Controller
 {
@@ -76,6 +77,11 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
+      $request->validate([
+          'dominio'     => 'required',
+          'numeros_usp' => [new Numeros_USP($request->numeros_usp)],
+      ]);
+
       $this->authorize('sites.create');
       $site = new Site;
       $dnszone = env('DNSZONE');
@@ -124,6 +130,12 @@ class SiteController extends Controller
      */
     public function update(Request $request, Site $site)
     {
+      $request->validate([
+          'dominio'     => 'required',
+          'numeros_usp' => [new Numeros_USP($request->numeros_usp)],
+          'owner' => 'numeric'
+      ]);
+
         $this->authorize('sites.update',$site);
         $site->dominio = $request->dominio;
         $site->numeros_usp = $request->numeros_usp;
