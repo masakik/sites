@@ -13,6 +13,7 @@ use App\Jobs\clonaSiteAegir;
 use App\Aegir\Aegir;
 use Illuminate\Support\Facades\Gate;
 use App\Rules\Numeros_USP;
+use App\Rules\Domain;
 
 class SiteController extends Controller
 {
@@ -78,23 +79,23 @@ class SiteController extends Controller
     public function store(Request $request)
     {
       $request->validate([
-          'dominio'     => 'required',
+          'dominio'     => ['required', new Domain],
           'numeros_usp' => [new Numeros_USP($request->numeros_usp)],
       ]);
 
-      $this->authorize('sites.create');
-      $site = new Site;
-      $dnszone = env('DNSZONE');
-      $site->dominio = $request->dominio;
-      $alvo = $site->dominio . $dnszone;
-      $site->numeros_usp = $request->numeros_usp;
-      $site->owner = \Auth::user()->codpes;
-      $site->save();
+        $this->authorize('sites.create');
+        $site = new Site;
+        $dnszone = env('DNSZONE');
+        $site->dominio = $request->dominio;
+        $alvo = $site->dominio . $dnszone;
+        $site->numeros_usp = $request->numeros_usp;
+        $site->owner = \Auth::user()->codpes;
+        $site->save();
 
-      clonaSiteAegir::dispatch($alvo);
+        clonaSiteAegir::dispatch($alvo);
 
-      $request->session()->flash('alert-info', 'Criação do site em andamento');
-      return redirect('/sites');
+        $request->session()->flash('alert-info', 'Criação do site em andamento');
+        return redirect('/sites');
     }
 
     /**
