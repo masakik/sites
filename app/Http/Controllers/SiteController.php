@@ -13,7 +13,6 @@ use App\Jobs\clonaSiteAegir;
 use App\Aegir\Aegir;
 use Illuminate\Support\Facades\Gate;
 use App\Rules\Numeros_USP;
-use App\Rules\Domain;
 
 class SiteController extends Controller
 {
@@ -65,7 +64,8 @@ class SiteController extends Controller
      */
     public function create()
     {
-        $this->authorize('sites.create');
+        #$this->authorize('sites.create');
+        $this->authorize('admin');
         $dnszone = env('DNSZONE');
         return view('sites/create', ['dnszone'=>$dnszone]); 
     }
@@ -78,12 +78,14 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
-      $request->validate([
-          'dominio'     => ['required', new Domain],
-          'numeros_usp' => [new Numeros_USP($request->numeros_usp)],
-      ]);
+        #$this->authorize('sites.create');
+        $this->authorize('admin');
 
-        $this->authorize('sites.create');
+        $request->validate([
+          'dominio'     => ['required', 'alpha_num','unique:sites'],
+          'numeros_usp' => [new Numeros_USP($request->numeros_usp)],
+        ]);
+
         $site = new Site;
         $dnszone = env('DNSZONE');
         $site->dominio = $request->dominio;
@@ -92,7 +94,7 @@ class SiteController extends Controller
         $site->owner = \Auth::user()->codpes;
         $site->save();
 
-        clonaSiteAegir::dispatch($alvo);
+        //clonaSiteAegir::dispatch($alvo);
 
         $request->session()->flash('alert-info', 'Criação do site em andamento');
         return redirect('/sites');
@@ -131,25 +133,39 @@ class SiteController extends Controller
      */
     public function update(Request $request, Site $site)
     {
-      $request->validate([
-          'dominio'     => 'required',
-          'numeros_usp' => [new Numeros_USP($request->numeros_usp)],
-          'owner' => 'numeric'
-      ]);
-
         $this->authorize('sites.update',$site);
-        $site->dominio = $request->dominio;
-        $site->numeros_usp = $request->numeros_usp;
+
         if (isset($request->owner)) {
+            $request->validate([
+              'owner' => 'integer'
+            ]);
             $site->owner = $request->owner;
             $request->session()->flash('alert-info','Responsável alterado com sucesso');
         }
-        else {
-            $site->owner = \Auth::user()->codpes;
-            $request->session()->flash('alert-info','Atualização efetuada com sucesso');
+
+        if (isset($request->numeros_usp)) {
+            $request->validate([
+              'numeros_usp' => [new Numeros_USP($request->numeros_usp)],
+            ]);
+
+            $site->numeros_usp = $request->numeros_usp;
+            $request->session()->flash('alert-info','Números USP alterados com sucesso');
         }
+
         $site->save();
         return redirect("/sites");
+    }
+
+    /**
+     * Show the form for editing the owner.
+     *
+     * @param  \App\Site  $site
+     * @return \Illuminate\Http\Response
+     */
+    public function changeowner(Site $site)
+    {
+        $this->authorize('sites.update',$site);
+        return view('sites/changeowner', compact('site'));
     }
 
     /**
@@ -160,19 +176,19 @@ class SiteController extends Controller
      */
     public function destroy(Site $site)
     {
-        $this->authorize('sites.delete',$site);
+        $this->authorize('admin');
+        #$this->authorize('sites.delete',$site);
         $site->delete();
-        return redirect('/');
+        return redirect('/sites');
     }
 
+/*
     public function Owners(Request $request, $site)
     {
-        /*
         if($request->apikey != env('AEGIR_KEY'))
         {
             return response('Unauthorized action.', 403);
         }
-        */
 
         $dominio = str_replace('.fflch.usp.br','',$site);
         $site = Site::where('dominio',$dominio)->first();
@@ -194,7 +210,8 @@ class SiteController extends Controller
 
     public function disableSite(Request $request, Site $site)
     {
-      $this->authorize('sites.update',$site);
+      $this->authorize('admin');
+      #$this->authorize('sites.update',$site);
       $dnszone = env('DNSZONE');
       $alvo = $site->dominio . $dnszone;
       desabilitaSiteAegir::dispatch($alvo);
@@ -205,7 +222,8 @@ class SiteController extends Controller
 
     public function enableSite(Request $request, Site $site)
     {
-      $this->authorize('sites.update',$site);
+      $this->authorize('admin');
+      #$this->authorize('sites.update',$site);
       $dnszone = env('DNSZONE');
       $alvo = $site->dominio . $dnszone;
       habilitaSiteAegir::dispatch($alvo);
@@ -216,26 +234,17 @@ class SiteController extends Controller
 
     public function deleteSite(Request $request, Site $site)
     {
-      $this->authorize('sites.delete',$site);
+      $this->authorize('admin');
+      #$this->authorize('sites.delete',$site);
       $dnszone = env('DNSZONE');
       $alvo = $site->dominio . $dnszone;
       $site->delete();
 
-      deletaSiteAegir::dispatch($alvo);
+      //deletaSiteAegir::dispatch($alvo);
 
       $request->session()->flash('alert-info', 'Deleção do site em andamento');
       return redirect('/sites');
     }
+    */
 
-    /**
-     * Show the form for editing the owner.
-     *
-     * @param  \App\Site  $site
-     * @return \Illuminate\Http\Response
-     */
-    public function changeowner(Site $site)
-    {
-        $this->authorize('sites.update',$site);
-        return view('sites/changeowner', compact('site'));
-    }
 }

@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'title' => 'Solicita Site',
+    'title' => env('APP_NAME'),
 
     'title_prefix' => '',
 
@@ -30,9 +30,9 @@ return [
     |
     */
 
-    'logo' => '<b>Solicita</b>Site',
+    'logo' => env('APP_NAME'),
 
-    'logo_mini' => '<b>S</b>S',
+    'logo_mini' => env('APP_NAME'),
 
     /*
     |--------------------------------------------------------------------------
@@ -108,14 +108,14 @@ return [
     */
 
     'menu' => [
-        'Meus sites',
+        '',
         [
             'text' => 'Solicitar um Site',
             'url'  => 'sites/create',
-            'can'  => 'sites.create'
+            'can'  => 'admin'
         ],
         [
-            'text' => 'Meus sites',
+            'text' => 'Meus Sites',
             'url'  => 'sites',
             'can'  => 'sites.create'
         ],

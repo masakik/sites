@@ -12,9 +12,15 @@
 {{ csrf_field() }}
 {{ method_field('patch') }}
  
-<input type="hidden" name="dominio" class="form-control" value="{{ $site->dominio }}">
-Números USP: <input name="numeros_usp" class="form-control" value="{{ $site->numeros_usp }}">
-<button type="submit" class="btn btn-primary"> Salvar </button>
+<h3>Números USP:</h3> 
+
+<input name="numeros_usp" class="form-control" value="{{ $site->numeros_usp }}">
+<br>
+Relação de números USP, separados por vírgula, que terão permissão para administrar o site.
+
+<br>
+<br>
+<button type="submit" class="btn btn-primary"> Enviar </button>
 </form>
 
 @stop

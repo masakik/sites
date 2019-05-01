@@ -7,14 +7,16 @@
 
 @section('content')
 @parent
-<form method="POST" action="/sites/{{ $site->id }}">
+<form method="POST" role="form" class="form-inline" action="/sites/{{ $site->id }}">
 {{ csrf_field() }}
 {{ method_field('patch') }}
- 
-<input type="hidden" name="dominio" class="form-control" value="{{ $site->dominio }}">
-<input type="hidden" name="numeros_usp" class="form-control" value="{{ $site->numeros_usp }}">
-Dono: <input name="owner" class="form-control" value="{{ $site->owner }}">
-<button type="submit" class="btn btn-primary"> Salvar </button>
+
+        <div class="form-group">
+            <label>Número USP do(a) novo(a) responsável pelo site:</label>
+
+             <input name="owner" class="form-control" value="{{ $site->owner }}">
+        </div>
+            <button type="submit" class="btn btn-primary"> Enviar </button>
 </form>
 
 @stop

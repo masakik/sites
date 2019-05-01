@@ -23,6 +23,9 @@ class Numeros_USP implements Rule
      */
     public function passes($attribute, $value)
     {
+        if(empty(trim($value))){
+            return true;
+        }
         $values = explode(',',$value);
         foreach($values as $v) {
             if (!(is_numeric($v))) {

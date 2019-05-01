@@ -14,6 +14,7 @@
 Route::get('/', 'IndexController@index')->name('home');
 Route::resource('/sites', 'SiteController');
 
+# Senha única USP
 Route::get('/senhaunica/login', 'Auth\LoginController@redirectToProvider')->name('login');
 Route::get('/callback', 'Auth\LoginController@handleProviderCallback');
 Route::post('/logout', 'Auth\LoginController@logout');

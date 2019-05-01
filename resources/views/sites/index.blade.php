@@ -23,8 +23,8 @@
             <tr>
                 <th>Domínio</th>
                 <th>Responsável</th>
-                <th>Números USP</th>
-                <th>Status</th>
+                <th>Números USP permitidos</th>
+              {{--  <th>Status</th> --}}
                 <th colspan="2" width="15%">Ações</th>
             </tr>
         </thead>
@@ -34,13 +34,28 @@
 <td><a href="http://{{ $site->dominio }}{{ $dnszone }}" target="_blank">{{ $site->dominio }}{{ $dnszone }}</a></td>
 <td>{{ $site->owner }}</td>
 <td>{{ $site->numeros_usp }}</td>
-<td>{{ $site->status }}</td>
+{{-- <td>{{ $site->status }}</td> --}}
 <td>
     <ul  class="list-group">
-        <li class="list-group-item"><a href="/sites/{{ $site->id }}/edit" class="btn btn-warning">Editar</a></li>
-        <li class="list-group-item"><a href="/sites/{{ $site->id }}/changeowner" class="btn btn-success">Mudar Dono</a></li>
+        <li class="list-group-item"><a href="/sites/{{ $site->id }}/edit" class="btn btn-success">Alterar números USP permitidos</a></li>
+
+        <li class="list-group-item"><a href="/sites/{{ $site->id }}/changeowner" class="btn btn-success">Mudar Responsável</a></li>
+
+        <li class="list-group-item"><a href="/sites/{{ $site->id }}/changeowner" class="btn btn-success">Logon no site</a></li>
+
+        @can('admin')
+        <li class="list-group-item">
+            <form method="POST" action="/sites/{{ $site->id }}">
+            {{csrf_field()}} {{ method_field('delete') }}
+            <button type="submit" class="delete-item btn btn-danger">Deletar</button>
+        </li>
+        @endcan
+</form>
+
     </ul>
 </td>
+
+{{--
 @if ($site->status == "Habilitado")
 <td>
 <form method="POST" action="/sites/{{ $site->id }}/disable">
@@ -64,12 +79,11 @@
 <form method="POST" action="/sites/{{ $site->id }}/clone">
 {{ csrf_field() }}
 <button type="submit" class="btn btn-primary">Recriar</button>
-
-
 </form>
 
 </td>
 @endif
+--}}
 
 </tr>
 </tbody>

@@ -7,10 +7,25 @@
 
 @section('content')
 @parent
-        <form method="POST" action="/sites">
+    <form method="POST" role="form" class="form-inline" action="/sites">
         @csrf
-        Domínio: <input name="dominio" class="form-control" placeholder="NÃO colocar o sufixo fflch.usp.br.">{{ $dnszone }}<br>
-        Números USP: <input name="numeros_usp" class="form-control" placeholder="Relação de números USP, separados por vírgula, que terão permissão para administrar o site."><br>
-        <button type="submit" class="btn btn-primary">Salvar</button>
-        </form>
+        <div class="form-group">
+            <label for="dominio">Domínio:</label>
+                <input name="dominio" class="form-control dominio" placeholder="meuqueridosite" id="dominio"> 
+            <b> {{ $dnszone }} </b>
+        
+        </div>
+        </br>
+        </br>
+
+        <div class="form-group">
+            <label for="numeros_usp">Números USP: </label> 
+            <input name="numeros_usp" class="form-control">             
+        <br>Relação de números USP, separados por vírgula, que terão permissão para administrar o site.
+        </div>
+        </br>
+        </br>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+
 @stop

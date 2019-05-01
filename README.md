@@ -1,7 +1,18 @@
 # solicita-site
 
-Frontend em laravel para gerenciar solicitação de sites. Os sites são gerenciados por um backend SaaS chamado [Aegir](https://www.aegirproject.org/), sendo a comunicação realizada através de requisições Restful API.
+Frontend em laravel para gerenciar sites. 
 
-# Compile Assets:
+Backends disponiveís:
 
+ -Drupal servidor pelo [Aegir(SaaS)](https://www.aegirproject.org/)
+
+
+
+# deploy para desenvolvimento:
+
+    composer install
+    cp .env.example .env # editar com seu ambiente
+    php artisan key:generate
+    php artisan migrate
     php artisan vendor:publish --provider="JeroenNoten\LaravelAdminLte\ServiceProvider" --tag=assets --force
+    php artisan serve
