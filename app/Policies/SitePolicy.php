@@ -16,6 +16,7 @@ class SitePolicy
     public function __construct() {
         $this->is_admin = Gate::allows('admin');
     }
+
     /**
      * Determine whether the user can view the site.
      *

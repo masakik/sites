@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Site;
+use App\User;
 use Illuminate\Http\Request;
 use Auth;
 use App\Jobs\criaSiteAegir;
@@ -13,6 +14,7 @@ use App\Jobs\clonaSiteAegir;
 use App\Aegir\Aegir;
 use Illuminate\Support\Facades\Gate;
 use App\Rules\Numeros_USP;
+use Illuminate\Support\Str;
 
 class SiteController extends Controller
 {
@@ -30,31 +32,41 @@ class SiteController extends Controller
      */
     public function index(Request $request)
     {
-        //$this->middleware('can:index');
+        $this->authorize('sites.create'); // verificar porque isso não funciona
         $dnszone = env('DNSZONE');
-        $filters = [];
+
+        # todos sites
+        $sites = Site::where([]);
 
         // 1. query com a busca
         if(isset($request->dominio)) {
-            array_push($filters,['dominio','LIKE', '%'.$request->dominio.'%']);
+            $sites->OrWhere('dominio', 'LIKE', '%'.$request->dominio.'%');
         }
 
-        // 2. Se usuário comum, mostrar só os que ele é dono.
+        // 2. Se usuário comum, mostrar só os que ele é responsável.
         // Admistrador pode mostrar todos
         if(!Gate::allows('admin')) {
-            array_push($filters,['owner','=', \Auth::user()->codpes]); 
+            $sites->OrWhere('owner', '=', \Auth::user()->codpes);
+            $sites->OrWhere('numeros_usp', 'LIKE', '%'.\Auth::user()->codpes.'%'); 
         }
 
         // Executa a query
-        $sites = Site::where($filters);
         $sites = $sites->get();
 
         // Busca o status dos sites no aegir
+        /*
         foreach($sites as $site){
             $site->status = $this->aegir->verificaStatus($site->dominio.$dnszone);
         }
+        */
 
-        return view('sites/index', compact('sites','dnszone'));
+        // gera um token de login no drupal
+        $hashlogin = Str::random(32);
+        $user = \Auth::user();
+        $user->temp_token = $hashlogin;
+        $user->save();
+
+        return view('sites/index', compact('sites','dnszone','hashlogin'));
     }
 
     /**
@@ -182,21 +194,45 @@ class SiteController extends Controller
         return redirect('/sites');
     }
 
-/*
-    public function Owners(Request $request, $site)
+    public function check(Request $request)
     {
-        if($request->apikey != env('AEGIR_KEY'))
-        {
-            return response('Unauthorized action.', 403);
+
+        $request->validate([
+          'temp_token' => ['required', 'alpha_num'],
+          'codpes'     => ['required','integer'],
+          'site'       => ['required'],
+        ]);
+
+        $user = User::where('codpes',$request->codpes)->first();
+
+        // verifica se token secreto é válido
+        if($request->secretkey != 123)
+            return response()->json([false,'Secret Token Inválido']); 
+
+        // verifica se o temp_token está válido e caso esteja, invalide-o,
+        // pois ele só deve ser usado uma vez
+        if($request->temp_token != $user->temp_token) {
+            return response()->json([false,'Temp Token Inválido']);
+        } else {
+            $user->temp_token = '';
+            $user->save();
         }
 
-        $dominio = str_replace('.fflch.usp.br','',$site);
+        // verifica se site existe
+        $dominio = str_replace('.fflch.usp.br','',$request->site);
         $site = Site::where('dominio',$dominio)->first();
-        $numeros_usp = $site->owner . ','. str_replace(' ', '', $site->numeros_usp);
-
-        return response()->json($numeros_usp);
+        if($site) {
+            // verifica se o número usp em questão pode fazer logon no site
+            $all = $site->owner . ',' . $site->numeros_usp . ',' . env('SENHAUNICA_ADMINS');
+            if(in_array($request->codpes,explode(",",$all))) {
+                return response()->json([true,$user->email]); 
+            }
+            return response()->json([false,'Usuário sem permissão']);
+        }
+        return response()->json([false,'Site não existe']);
     }
 
+/*
     public function cloneSite(Request $request, Site $site)
     {
       $this->authorize('sites.update',$site);
