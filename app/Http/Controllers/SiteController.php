@@ -98,11 +98,15 @@ class SiteController extends Controller
           'numeros_usp' => [new Numeros_USP($request->numeros_usp)],
         ]);
 
+        $numeros_usp = explode(',',$request->numeros_usp);
+        $numeros_usp = array_map('trim', $numeros_usp);
+        $numeros_usp = implode(',',$numeros_usp);
+        
         $site = new Site;
         $dnszone = config('sites.dnszone');
         $site->dominio = $request->dominio;
         $alvo = $site->dominio . $dnszone;
-        $site->numeros_usp = $request->numeros_usp;
+        $site->numeros_usp = $numeros_usp;
         $site->owner = \Auth::user()->codpes;
         $site->save();
 
@@ -160,7 +164,10 @@ class SiteController extends Controller
               'numeros_usp' => [new Numeros_USP($request->numeros_usp)],
             ]);
 
-            $site->numeros_usp = $request->numeros_usp;
+            $numeros_usp = explode(',',$request->numeros_usp);
+            $numeros_usp = array_map('trim', $numeros_usp);
+            $numeros_usp = implode(',',$numeros_usp);
+            $site->numeros_usp = $numeros_usp;
             $request->session()->flash('alert-info','Números USP alterados com sucesso');
         }
 

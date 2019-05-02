@@ -33,7 +33,13 @@
             <tr>
 <td><a href="http://{{ $site->dominio }}{{ $dnszone }}" target="_blank">{{ $site->dominio }}{{ $dnszone }}</a></td>
 <td>{{ $site->owner }}</td>
-<td>{{ $site->numeros_usp }}</td>
+<td>
+  <ul>
+    @foreach(explode(',', $site->numeros_usp) as $numero_usp)
+      <li>{{ $numero_usp }}</li>
+    @endforeach
+  </ul>
+</td>
 {{-- <td>{{ $site->status }}</td> --}}
 <td>
     <ul  class="list-group">
