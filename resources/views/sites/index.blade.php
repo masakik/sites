@@ -43,7 +43,7 @@
         <li class="list-group-item"><a href="/sites/{{ $site->id }}/changeowner" class="btn btn-success">Mudar Responsável</a></li>
         @endcan
 
-        <li class="list-group-item"><a href="http://{{ $site->dominio }}{{ $dnszone }}:8001/loginbytoken/?temp_token={{$hashlogin}}&codpes={{ Auth::user()->codpes }}" class="btn btn-success" target="_blank">Logon no site</a></li>
+        <li class="list-group-item"><a href="http://{{ $site->dominio }}{{ $dnszone }}/loginbytoken/?temp_token={{$hashlogin}}&codpes={{ Auth::user()->codpes }}" class="btn btn-success" target="_blank">Logon no site</a></li>
 
         @can('admin')
         <li class="list-group-item">
