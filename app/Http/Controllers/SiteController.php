@@ -33,7 +33,7 @@ class SiteController extends Controller
     public function index(Request $request)
     {
         $this->authorize('sites.create'); // verificar porque isso não funciona
-        $dnszone = env('DNSZONE');
+        $dnszone = config('sites.dnszone');
 
         # todos sites
         $sites = Site::where([]);
@@ -78,7 +78,7 @@ class SiteController extends Controller
     {
         #$this->authorize('sites.create');
         $this->authorize('admin');
-        $dnszone = env('DNSZONE');
+        $dnszone = config('sites.dnszone');
         return view('sites/create', ['dnszone'=>$dnszone]); 
     }
 
@@ -99,7 +99,7 @@ class SiteController extends Controller
         ]);
 
         $site = new Site;
-        $dnszone = env('DNSZONE');
+        $dnszone = config('sites.dnszone');
         $site->dominio = $request->dominio;
         $alvo = $site->dominio . $dnszone;
         $site->numeros_usp = $request->numeros_usp;
@@ -206,7 +206,7 @@ class SiteController extends Controller
         $user = User::where('codpes',$request->codpes)->first();
 
         // verifica se token secreto é válido
-        if($request->secretkey != 123)
+        if($request->secretkey != config('sites.deploy_secret_key'))
             return response()->json([false,'Secret Token Inválido']); 
 
         // verifica se o temp_token está válido e caso esteja, invalide-o,
@@ -223,7 +223,7 @@ class SiteController extends Controller
         $site = Site::where('dominio',$dominio)->first();
         if($site) {
             // verifica se o número usp em questão pode fazer logon no site
-            $all = $site->owner . ',' . $site->numeros_usp . ',' . env('SENHAUNICA_ADMINS');
+            $all = $site->owner . ',' . $site->numeros_usp . ',' . config('sites.admins');
             if(in_array($request->codpes,explode(",",$all))) {
                 return response()->json([true,$user->email]); 
             }
@@ -236,7 +236,7 @@ class SiteController extends Controller
     public function cloneSite(Request $request, Site $site)
     {
       $this->authorize('sites.update',$site);
-      $dnszone = env('DNSZONE');
+      $dnszone = config('sites.dnszone');
       $alvo = $site->dominio . $dnszone;
       clonaSiteAegir::dispatch($alvo);
 
@@ -248,7 +248,7 @@ class SiteController extends Controller
     {
       $this->authorize('admin');
       #$this->authorize('sites.update',$site);
-      $dnszone = env('DNSZONE');
+      $dnszone = config('sites.dnszone');
       $alvo = $site->dominio . $dnszone;
       desabilitaSiteAegir::dispatch($alvo);
 
@@ -260,7 +260,7 @@ class SiteController extends Controller
     {
       $this->authorize('admin');
       #$this->authorize('sites.update',$site);
-      $dnszone = env('DNSZONE');
+      $dnszone = config('sites.dnszone');
       $alvo = $site->dominio . $dnszone;
       habilitaSiteAegir::dispatch($alvo);
 
@@ -272,7 +272,7 @@ class SiteController extends Controller
     {
       $this->authorize('admin');
       #$this->authorize('sites.delete',$site);
-      $dnszone = env('DNSZONE');
+      $dnszone = config('sites.dnszone');
       $alvo = $site->dominio . $dnszone;
       $site->delete();
 

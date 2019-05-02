@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::resource('sites', 'App\Policies\SitePolicy');
 
         Gate::define('admin', function($user){
-            $admins = explode(',',env('SENHAUNICA_ADMINS'));
+            $admins = explode(',',config('sites.admins'));
             return in_array($user->codpes, $admins);
         });
     }

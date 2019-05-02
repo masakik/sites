@@ -27,7 +27,7 @@ class AuthServiceProvider extends ServiceProvider
 
         # admin 
         Gate::define('admin', function ($user) {
-            $admins_id = explode(',', trim(env('SENHAUNICA_ADMINS')));
+            $admins_id = explode(',', config('sites.admins'));
             return in_array($user->codpes, $admins_id);
 
         });
