@@ -16,7 +16,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Fix para MariaDB ao rodar migrations
         Schema::defaultStringLength(191);
+        
+        // força https na produção
+        if (\App::environment('production')) {
+            \URL::forceScheme('https');
+        }
 
         // gates
         Gate::resource('sites', 'App\Policies\SitePolicy');
