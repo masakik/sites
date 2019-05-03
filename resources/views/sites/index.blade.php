@@ -95,7 +95,6 @@
 
 </tr>
 </tbody>
-<br>
 
 @endforeach
 

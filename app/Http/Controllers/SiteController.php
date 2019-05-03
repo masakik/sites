@@ -51,7 +51,7 @@ class SiteController extends Controller
         }
 
         // Executa a query
-        $sites = $sites->get();
+        $sites = $sites->get()->sortBy(['dominio']);
 
         // Busca o status dos sites no aegir
         /*
