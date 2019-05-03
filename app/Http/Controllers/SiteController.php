@@ -216,13 +216,9 @@ class SiteController extends Controller
         if($request->secretkey != config('sites.deploy_secret_key'))
             return response()->json([false,'Secret Token Inválido']); 
 
-        // verifica se o temp_token está válido e caso esteja, invalide-o,
-        // pois ele só deve ser usado uma vez
+        // verifica se o temp_token está válido
         if($request->temp_token != $user->temp_token) {
             return response()->json([false,'Temp Token Inválido']);
-        } else {
-            $user->temp_token = '';
-            $user->save();
         }
 
         // verifica se site existe
