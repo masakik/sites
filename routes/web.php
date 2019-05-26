@@ -18,6 +18,7 @@ Route::resource('/sites', 'SiteController');
 Route::get('/senhaunica/login', 'Auth\LoginController@redirectToProvider')->name('login');
 Route::get('/callback', 'Auth\LoginController@handleProviderCallback');
 Route::post('/logout', 'Auth\LoginController@logout');
+Route::get('/logout', 'Auth\LoginController@logout');
 
 Route::post('/sites/{site}/clone', 'SiteController@cloneSite');
 Route::post('/sites/{site}/disable', 'SiteController@disableSite');
