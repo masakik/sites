@@ -28,7 +28,7 @@ class Numeros_USP implements Rule
         }
         $values = explode(',',$value);
         foreach($values as $v) {
-            if (!(is_numeric($v))) {
+            if (!(is_numeric(trim($v)))) {
                 return false;
             }
         }
