@@ -6,7 +6,6 @@
 @stop
 
 @section('content')
-@parent
     <form method="POST" role="form" class="form-inline" action="/sites">
         @csrf
         <div class="form-group">
@@ -15,12 +14,12 @@
             <b> {{ $dnszone }} </b>
         
         </div>
-        </br>
-        </br>
+        <br>
+        <br>
 
         <div class="form-group">
             <label for="numeros_usp">Números USP: </label> 
-            <input name="numeros_usp" class="form-control">             
+            <textarea name="numeros_usp" class="form-control" rows="4"></textarea>             
         <br>Relação de números USP, separados por vírgula, que terão permissão para administrar o site.
         </div>
         </br>

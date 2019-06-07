@@ -14,7 +14,7 @@
  
 <h3>Números USP:</h3> 
 
-<input name="numeros_usp" class="form-control" value="{{ $site->numeros_usp }}">
+<textarea name="numeros_usp" class="form-control">{{ $site->numeros_usp }}</textarea>
 <br>
 Relação de números USP, separados por vírgula, que terão permissão para administrar o site.
 

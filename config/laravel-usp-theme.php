@@ -9,7 +9,7 @@ return [
 
     'logout_method' => 'post',
 
-    'login_url' => 'login',
+    'login_url' => '/senhaunica/login',
 
     'menu' => [
         [

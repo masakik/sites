@@ -38,18 +38,19 @@
     @foreach(explode(',', $site->numeros_usp) as $numero_usp)
       <li>{{ $numero_usp }}</li>
     @endforeach
+    @can('sites.update',$site)
+       <a href="/sites/{{ $site->id }}/edit" class="btn btn-info">Alterar Números USP</a>
+    @endcan
   </ul>
 </td>
 {{-- <td>{{ $site->status }}</td> --}}
 <td>
     <ul  class="list-group">
         @can('sites.update',$site)
-        <li class="list-group-item"><a href="/sites/{{ $site->id }}/edit" class="btn btn-success">Alterar números USP permitidos</a></li>
-
-        <li class="list-group-item"><a href="/sites/{{ $site->id }}/changeowner" class="btn btn-success">Mudar Responsável</a></li>
+        <li class="list-group-item"><a href="/sites/{{ $site->id }}/changeowner" class="">Mudar Responsável</a></li>
         @endcan
 
-        <li class="list-group-item"><a href="http://{{ $site->dominio }}{{ $dnszone }}/loginbytoken/?temp_token={{$hashlogin}}&codpes={{ Auth::user()->codpes }}" class="btn btn-success" target="_blank">Logon no site</a></li>
+        <li class="list-group-item"><a href="http://{{ $site->dominio }}{{ $dnszone }}/loginbytoken/?temp_token={{$hashlogin}}&codpes={{ Auth::user()->codpes }}" class="btn btn-info" target="_blank">Logon</a></li>
 
         @can('admin')
         <li class="list-group-item">
