@@ -39,7 +39,7 @@
       <li>{{ $numero_usp }}</li>
     @endforeach
     @can('sites.update',$site)
-       <a href="/sites/{{ $site->id }}/edit" class="btn btn-info">Alterar Números USP</a>
+       <a href="/sites/{{ $site->id }}/edit" class="btn btn-info">Adicionar ou alterar pessoas</a>
     @endcan
   </ul>
 </td>
