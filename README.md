@@ -14,5 +14,5 @@ Backends disponiveís:
     cp .env.example .env # editar com seu ambiente
     php artisan key:generate
     php artisan migrate
-    php artisan vendor:publish --provider="JeroenNoten\LaravelAdminLte\ServiceProvider" --tag=assets --force
+    php artisan vendor:publish --provider="Uspdev\UspTheme\ServiceProvider" --tag=assets --force
     php artisan serve

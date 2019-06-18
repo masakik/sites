@@ -6,6 +6,7 @@
 @stop
 
 @section('content')
+    @parent
     <form method="POST" role="form" class="form-inline" action="/sites">
         @csrf
         <div class="form-group">

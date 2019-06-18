@@ -7,6 +7,7 @@
 @stop
 
 @section('content')
+    @parent
         @auth
             <h3><b>Olá {{ Auth::user()->name }},</b></h3>
             Acesse as opções no menu ao lado

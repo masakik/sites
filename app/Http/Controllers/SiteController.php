@@ -15,6 +15,7 @@ use App\Aegir\Aegir;
 use Illuminate\Support\Facades\Gate;
 use App\Rules\Numeros_USP;
 use Illuminate\Support\Str;
+use Uspdev\Replicado\Pessoa;
 
 class SiteController extends Controller
 {
@@ -36,22 +37,18 @@ class SiteController extends Controller
         $dnszone = config('sites.dnszone');
 
         # todos sites
-        $sites = Site::where([]);
+        $sites = Site::allowed();
 
         // 1. query com a busca
         if(isset($request->dominio)) {
-            $sites->OrWhere('dominio', 'LIKE', '%'.$request->dominio.'%');
+            $sites->where('dominio', 'LIKE', '%'.$request->dominio.'%');
         }
 
-        // 2. Se usuário comum, mostrar só os que ele é responsável.
-        // Admistrador pode mostrar todos
-        if(!Gate::allows('admin')) {
-            $sites->OrWhere('owner', '=', \Auth::user()->codpes);
-            $sites->OrWhere('numeros_usp', 'LIKE', '%'.\Auth::user()->codpes.'%'); 
-        }
+        // Dica de ouro para debugar SQL gerado:
+        //dd($sites->toSql());
 
         // Executa a query
-        $sites = $sites->get()->sortBy(['dominio']);
+        $sites = $sites->orderBy('dominio')->paginate(3);
 
         // Busca o status dos sites no aegir
         /*
