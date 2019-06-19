@@ -23,6 +23,8 @@
       <option>Centro</option>
       <option>Associação</option>
       <option>Laboratório</option>
+      <option>Comissão</option>
+      <option>Outro</option>
     </select>
   </div>
 <br>
