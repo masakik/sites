@@ -12,13 +12,19 @@
 {{ csrf_field() }}
 {{ method_field('patch') }}
  
-<h3>Números USP:</h3> 
-
-<textarea name="numeros_usp" class="form-control">{{ $site->numeros_usp }}</textarea>
-<br>
-Relação de números USP, separados por vírgula, que terão permissão para administrar o site.
-
-<br>
+  <div class="form-group">
+    <label for="categoria">Categoria</label>
+    <select class="form-control" id="categoria" name="categoria">
+      <option selected>{{$site->categoria}}</option>
+      <option>Grupo de estudo</option>
+      <option>Grupo de pesquisa</option>
+      <option>Departamento</option>
+      <option>Administrativo</option>
+      <option>Centro</option>
+      <option>Associação</option>
+      <option>Laboratório</option>
+    </select>
+  </div>
 <br>
 <button type="submit" class="btn btn-primary"> Enviar </button>
 </form>

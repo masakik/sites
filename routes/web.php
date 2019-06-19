@@ -25,5 +25,6 @@ Route::post('/sites/{site}/disable', 'SiteController@disableSite');
 Route::post('/sites/{site}/enable', 'SiteController@enableSite');
 Route::post('/sites/{site}/delete', 'SiteController@deleteSite');
 Route::get('/sites/{site}/changeowner', 'SiteController@changeOwner');
+Route::get('/sites/{site}/novoadmin', 'SiteController@novoAdmin');
 
 Route::get('check', 'SiteController@check');

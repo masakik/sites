@@ -2,6 +2,8 @@
 namespace App\Rules;
 use Illuminate\Contracts\Validation\Rule;
 use Respect\Validation\Validator as v;
+use Uspdev\Replicado\Pessoa;
+
 class Numeros_USP implements Rule
 {
     private $field;
@@ -23,14 +25,11 @@ class Numeros_USP implements Rule
      */
     public function passes($attribute, $value)
     {
-        if(empty(trim($value))){
-            return true;
+        if (!(is_numeric(trim($value)))) {
+            return false;
         }
-        $values = explode(',',$value);
-        foreach($values as $v) {
-            if (!(is_numeric(trim($v)))) {
-                return false;
-            }
+        if(empty(Pessoa::dump($value))) {
+            return false;
         }
         return true;
     }
@@ -41,6 +40,6 @@ class Numeros_USP implements Rule
      */
     public function message()
     {
-        return $this->field . ': Número USP precisa ser númerico';
+        return 'Número USP não válido';
     }
 }

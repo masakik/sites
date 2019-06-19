@@ -87,29 +87,26 @@ class SiteController extends Controller
      */
     public function store(Request $request)
     {
-        #$this->authorize('sites.create');
-        $this->authorize('admin');
+        $this->authorize('sites.create');
 
         $request->validate([
           'dominio'     => ['required', 'alpha_num','unique:sites'],
-          'numeros_usp' => [new Numeros_USP($request->numeros_usp)],
+          'categoria'   => ['required'],
         ]);
-
-        $numeros_usp = explode(',',$request->numeros_usp);
-        $numeros_usp = array_map('trim', $numeros_usp);
-        $numeros_usp = implode(',',$numeros_usp);
         
         $site = new Site;
         $dnszone = config('sites.dnszone');
         $site->dominio = $request->dominio;
-        $alvo = $site->dominio . $dnszone;
-        $site->numeros_usp = $numeros_usp;
+        $site->categoria = $request->categoria;
+        $site->status = 'solicitado';
+        
         $site->owner = \Auth::user()->codpes;
         $site->save();
 
+        //$alvo = $site->dominio . $dnszone;
         //clonaSiteAegir::dispatch($alvo);
 
-        $request->session()->flash('alert-info', 'Criação do site em andamento');
+        $request->session()->flash('alert-info', 'Solictação em andamento');
         return redirect('/sites');
     }
 
@@ -156,16 +153,43 @@ class SiteController extends Controller
             $request->session()->flash('alert-info','Responsável alterado com sucesso');
         }
 
-        if (isset($request->numeros_usp)) {
+        if (isset($request->categoria)) {
+            $site->categoria = $request->categoria;
+            $request->session()->flash('alert-info','categoria alterada com sucesso');
+        }
+
+        if (isset($request->novoadmin)) {
             $request->validate([
-              'numeros_usp' => [new Numeros_USP($request->numeros_usp)],
+              'novoadmin' => ['required',new Numeros_USP($request->numeros_usp)],
             ]);
 
-            $numeros_usp = explode(',',$request->numeros_usp);
+            $numeros_usp = explode(',',$site->numeros_usp);
+            if(!in_array($request->novoadmin, $numeros_usp)){
+                array_push($numeros_usp,$request->novoadmin);
+            }
             $numeros_usp = array_map('trim', $numeros_usp);
             $numeros_usp = implode(',',$numeros_usp);
             $site->numeros_usp = $numeros_usp;
-            $request->session()->flash('alert-info','Números USP alterados com sucesso');
+            $request->session()->flash('alert-info','Administrador adicionado com sucesso');
+        }
+
+        if (isset($request->deleteadmin)) {
+
+            $numeros_usp = explode(',',$site->numeros_usp);
+            if(in_array($request->deleteadmin, $numeros_usp)){
+                $key = array_search($request->deleteadmin, $numeros_usp);
+                unset($numeros_usp[$key]);
+            }
+            $numeros_usp = array_map('trim', $numeros_usp);
+            $numeros_usp = implode(',',$numeros_usp);
+            $site->numeros_usp = $numeros_usp;
+            $request->session()->flash('alert-info','Administrador removido com sucesso');
+        }
+
+        if (isset($request->aprovar)) {
+            $this->authorize('admin');
+            $site->status = 'aprovado';
+            $request->session()->flash('alert-info','Site autorizado com sucesso');
         }
 
         $site->save();
@@ -182,6 +206,12 @@ class SiteController extends Controller
     {
         $this->authorize('sites.update',$site);
         return view('sites/changeowner', compact('site'));
+    }
+
+    public function novoAdmin(Site $site)
+    {
+        $this->authorize('sites.update',$site);
+        return view('sites/novoadmin', compact('site'));
     }
 
     /**

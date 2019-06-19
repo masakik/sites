@@ -7,25 +7,34 @@
 
 @section('content')
     @parent
-    <form method="POST" role="form" class="form-inline" action="/sites">
+    <form method="POST" role="form" action="/sites">
         @csrf
-        <div class="form-group">
-            <label for="dominio">Domínio:</label>
+        Domínio:
+        <div class="form-group form-inline">
+            <label for="dominio"> </label>
                 <input name="dominio" class="form-control dominio" placeholder="meuqueridosite" id="dominio"> 
             <b> {{ $dnszone }} </b>
         
         </div>
-        <br>
-        <br>
+
+
+  <div class="form-group">
+    <label for="categoria">Categoria</label>
+    <select class="form-control" id="categoria" name="categoria">
+      <option>Grupo de estudo</option>
+      <option>Grupo de pesquisa</option>
+      <option>Departamento</option>
+      <option>Administrativo</option>
+      <option>Centro</option>
+      <option>Associação</option>
+      <option>Laboratório</option>
+    </select>
+  </div>
+
 
         <div class="form-group">
-            <label for="numeros_usp">Números USP: </label> 
-            <textarea name="numeros_usp" class="form-control" rows="4"></textarea>             
-        <br>Relação de números USP, separados por vírgula, que terão permissão para administrar o site.
-        </div>
-        </br>
-        </br>
         <button type="submit" class="btn btn-primary">Enviar</button>
+        </div>
     </form>
 
 @stop
