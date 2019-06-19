@@ -29,6 +29,7 @@
       <option>Associação</option>
       <option>Laboratório</option>
       <option>Comissão</option>
+      <option>Evento</option>
       <option>Outro</option>
     </select>
   </div>
