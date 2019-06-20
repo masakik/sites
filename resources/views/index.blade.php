@@ -9,8 +9,7 @@
 @section('content')
     @parent
         @auth
-            <h3><b>Olá {{ Auth::user()->name }},</b></h3>
-            Acesse as opções no menu ao lado
+            <script>window.location = "/sites";</script>
         @else
             Você ainda não fez seu login com a senha única USP <a href="/senhaunica/login"> Faça seu Login! </a>
         @endauth
