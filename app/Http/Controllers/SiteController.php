@@ -147,8 +147,9 @@ class SiteController extends Controller
 
         if (isset($request->owner)) {
             $request->validate([
-              'owner' => 'integer'
+              'owner' => ['required',new Numeros_USP($request->owner)],
             ]);
+
             $site->owner = $request->owner;
             $request->session()->flash('alert-info','Responsável alterado com sucesso');
         }
