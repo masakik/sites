@@ -25,7 +25,7 @@
       <option>Laboratório</option>
       <option>Comissão</option>
       <option>Evento</option>
-      <option>Outro</option>
+      <option>Programa de Pós-Graduação</option>
     </select>
   </div>
 <br>
