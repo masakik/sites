@@ -73,8 +73,7 @@ class SiteController extends Controller
      */
     public function create()
     {
-        #$this->authorize('sites.create');
-        $this->authorize('admin');
+        $this->authorize('sites.create');
         $dnszone = config('sites.dnszone');
         return view('sites/create', ['dnszone'=>$dnszone]); 
     }
