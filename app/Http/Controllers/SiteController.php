@@ -56,14 +56,17 @@ class SiteController extends Controller
             $site->status = $this->aegir->verificaStatus($site->dominio.$dnszone);
         }
         */
-
+        $this->novoToken();
+        $hashlogin = $user = \Auth::user()->temp_token;
+        return view('sites/index', compact('sites','dnszone','hashlogin'));
+    }
+    
+    private function novoToken(){
         // gera um token de login no drupal
         $hashlogin = Str::random(32);
         $user = \Auth::user();
         $user->temp_token = $hashlogin;
         $user->save();
-
-        return view('sites/index', compact('sites','dnszone','hashlogin'));
     }
 
     /**
@@ -118,7 +121,9 @@ class SiteController extends Controller
     public function show(Site $site)
     {
         $this->authorize('sites.view',$site);
-        return view ('sites/show', compact('site'));
+        $this->novoToken();
+        $hashlogin = $user = \Auth::user()->temp_token;
+        return view ('sites/show', compact('site','hashlogin'));
     }
 
     /**
