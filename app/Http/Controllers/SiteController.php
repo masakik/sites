@@ -156,6 +156,8 @@ class SiteController extends Controller
 
             $site->owner = $request->owner;
             $request->session()->flash('alert-info','Responsável alterado com sucesso');
+            $site->save();
+            return redirect("/sites/");
         }
 
         if (isset($request->categoria)) {
