@@ -109,7 +109,7 @@ class SiteController extends Controller
         //clonaSiteAegir::dispatch($alvo);
 
         $request->session()->flash('alert-info', 'Solictação em andamento');
-        return redirect('/sites');
+        return redirect("/sites/$site->id");
     }
 
     /**
@@ -198,7 +198,7 @@ class SiteController extends Controller
         }
 
         $site->save();
-        return redirect("/sites");
+        return redirect("/sites/$site->id");
     }
 
     /**
@@ -235,7 +235,6 @@ class SiteController extends Controller
 
     public function check(Request $request)
     {
-
         $request->validate([
           'temp_token' => ['required', 'alpha_num'],
           'codpes'     => ['required','integer'],
