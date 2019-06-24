@@ -21,11 +21,13 @@
       @if(!empty($numero_usp))
       
           <li class="list-group-item">
+               @can('sites.update',$site)
                     <form method="POST" action="/sites/{{ $site->id }}" style="display:inline">
                     {{csrf_field()}} {{ method_field('patch') }}
                     <input type="hidden" name="deleteadmin" value="{{ $numero_usp }}">
                     <button type="submit" class="delete-item btn"><i class="fas fa-trash-alt"></i></button>
                     </form>
+               @endcan
 {{ $numero_usp }} - {{ \Uspdev\Replicado\Pessoa::dump($numero_usp)['nompes'] }}
                        
           </li>
