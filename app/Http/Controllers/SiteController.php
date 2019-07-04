@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Gate;
 use App\Rules\Numeros_USP;
 use Illuminate\Support\Str;
 use Uspdev\Replicado\Pessoa;
+use Mail;
 
 class SiteController extends Controller
 {
@@ -108,7 +109,15 @@ class SiteController extends Controller
         //$alvo = $site->dominio . $dnszone;
         //clonaSiteAegir::dispatch($alvo);
 
-        $request->session()->flash('alert-info', 'Solictação em andamento');
+
+        $data['dominio'] = $site->dominio;
+        Mail::send('emails.solicitacao', $data, function($message) {
+ 	    $message->to(config('sites.email'), 'STI')
+                    ->from(config('sites.email'), 'STI')
+                    ->subject('Nova Solicitação de Site');
+        });
+
+        $request->session()->flash('alert-info', 'Solicitação em andamento');
         return redirect("/sites/$site->id");
     }
 
