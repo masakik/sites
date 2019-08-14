@@ -23,9 +23,10 @@ class ChamadoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Site $site)
     {
-        //
+        $this->authorize('sites.update',$site);
+        return view('chamados/create'); 
     }
 
     /**

@@ -1,7 +1,8 @@
 <tr>
 <td>
-  <a href="/sites/{{ $site->id }}">{{ $site->dominio }}{{ config('sites.dnszone') }}</a><br>
-  <b>categoria: </b>{{ $site->categoria }}<a href="/sites/{{ $site->id }}/edit"> <i class="fas fa-edit"></i> </a><br>
+  <a href="/sites/{{ $site->id }}">{{ $site->dominio }}{{ config('sites.dnszone') }}</a> 
+  <a href="/sites/{{ $site->id }}/edit"> <i class="fas fa-edit"></i> </a> <br>
+  <b>categoria: </b>{{ $site->categoria }}<br>
   <b>status: </b>
     @if ($site->status == 'solicitado') 
         Aguardando aprovação 
@@ -9,8 +10,7 @@
         Aprovado
     @endif
   <br>
-  <b>chamados abertos: </b> <a href="/"> 0 </a> <a href="/sites/{{ $site->id }}/edit"> <i class="fas fa-plus"></i> </a><br>
-
+  <b>chamados: </b> <a href="/"> 0 abertos</a> <a href="/chamados/{{ $site->id }}/create"> <i class="fas fa-plus"></i> </a><br>
 </td>
 
 <td>

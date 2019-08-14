@@ -93,14 +93,16 @@ class SiteController extends Controller
         $this->authorize('sites.create');
 
         $request->validate([
-          'dominio'     => ['required', 'alpha_num','unique:sites'],
-          'categoria'   => ['required'],
+          'dominio'         => ['required', 'alpha_num','unique:sites'],
+          'categoria'       => ['required'],
+          'justificativa'   => ['required'],
         ]);
-        
+
         $site = new Site;
         $dnszone = config('sites.dnszone');
         $site->dominio = $request->dominio;
         $site->categoria = $request->categoria;
+        $site->justificativa = $request->justificativa;
         $site->status = 'solicitado';
         
         $site->owner = \Auth::user()->codpes;
@@ -169,8 +171,9 @@ class SiteController extends Controller
             return redirect("/sites/");
         }
 
-        if (isset($request->categoria)) {
+        if (isset($request->categoria) || isset($request->justificativa)) {
             $site->categoria = $request->categoria;
+            $site->justificativa = $request->justificativa;
             $request->session()->flash('alert-info','categoria alterada com sucesso');
         }
 

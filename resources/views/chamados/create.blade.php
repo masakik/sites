@@ -13,7 +13,7 @@
         <div class="form-group form-inline">
             <label for="dominio"> </label>
                 <input name="dominio" class="form-control dominio" placeholder="meuqueridosite" id="dominio"> 
-            <b> {{ $dnszone }} </b>
+            <b> </b>
         
         </div>
 
@@ -32,6 +32,11 @@
       <option>Evento</option>
       <option>Programa de Pós-Graduação</option>
     </select>
+  </div>
+
+  <div class="form-group">
+    <label for="exampleFormControlTextarea1">Example textarea</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
   </div>
 
 

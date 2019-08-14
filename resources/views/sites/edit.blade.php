@@ -11,6 +11,11 @@
 <form method="POST" action="/sites/{{ $site->id }}">
 {{ csrf_field() }}
 {{ method_field('patch') }}
+
+  <div class="form-group">
+    <label for="justificativa">Justificativa:</label>
+    <textarea class="form-control" id="justificativa" rows="5" name="justificativa">{{ $site->justificativa}}</textarea>
+  </div>
  
   <div class="form-group">
     <label for="categoria">Categoria</label>

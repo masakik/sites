@@ -19,7 +19,12 @@
 
 
   <div class="form-group">
-    <label for="categoria">Categoria</label>
+    <label for="justificativa">Justificativa:</label>
+    <textarea class="form-control" id="justificativa" rows="5" name="justificativa"></textarea>
+  </div>
+
+  <div class="form-group">
+    <label for="categoria">Categoria:</label>
     <select class="form-control" id="categoria" name="categoria">
       <option>Grupo de estudo</option>
       <option>Grupo de pesquisa</option>
@@ -33,7 +38,6 @@
       <option>Programa de Pós-Graduação</option>
     </select>
   </div>
-
 
         <div class="form-group">
         <button type="submit" class="btn btn-primary">Enviar</button>
