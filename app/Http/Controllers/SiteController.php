@@ -49,7 +49,7 @@ class SiteController extends Controller
         //dd($sites->toSql());
 
         // Executa a query
-        $sites = $sites->orderBy('dominio')->paginate(3);
+        $sites = $sites->orderBy('dominio')->paginate(10);
 
         // Busca o status dos sites no aegir
         /*

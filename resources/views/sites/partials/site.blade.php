@@ -8,6 +8,8 @@
     @elseif ($site->status == 'aprovado') 
         Aprovado
     @endif
+  <br>
+  <b>chamados abertos: </b> <a href="/"> 0 </a> <a href="/sites/{{ $site->id }}/edit"> <i class="fas fa-plus"></i> </a><br>
 
 </td>
 
