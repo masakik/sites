@@ -20,7 +20,7 @@ class CreateChamadosTable extends Migration
             $table->text('descricao');
             $table->text('tipo');
             $table->string('status');
-            $table->dateTime('fechado_em');
+            $table->dateTime('fechado_em')->nullable();
 
             // relacionamento com users
             $table->integer('user_id')->unsigned();
@@ -28,9 +28,6 @@ class CreateChamadosTable extends Migration
             // relacionamento com sites
             $table->integer('site_id')->unsigned();
             $table->foreign('site_id')->references('id')->on('sites')->onDelete('cascade');
-
-
-
         });
     }
 

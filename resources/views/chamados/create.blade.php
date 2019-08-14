@@ -6,37 +6,25 @@
 @stop
 
 @section('content')
-    @parent
-    <form method="POST" role="form" action="/sites">
-        @csrf
-        Domínio:
-        <div class="form-group form-inline">
-            <label for="dominio"> </label>
-                <input name="dominio" class="form-control dominio" placeholder="meuqueridosite" id="dominio"> 
-            <b> </b>
-        
-        </div>
-
+  @parent
+  <form method="POST" role="form" action="/chamados/{{$site->id}}/">
+    @csrf
 
   <div class="form-group">
-    <label for="categoria">Categoria</label>
-    <select class="form-control" id="categoria" name="categoria">
-      <option>Grupo de estudo</option>
-      <option>Grupo de pesquisa</option>
-      <option>Departamento</option>
-      <option>Administrativo</option>
-      <option>Centro</option>
-      <option>Associação</option>
-      <option>Laboratório</option>
-      <option>Comissão</option>
-      <option>Evento</option>
-      <option>Programa de Pós-Graduação</option>
+    <label for="tipo">Categoria</label>
+    <select class="form-control" id="tipo" name="tipo">
+      <option>Problema</option>
+      <option>Solicitação de módulo</option>
+      <option>Agendamento</option>
+      <option>Dúvida</option>
+      <option>Sugestão</option>
+      <option>Reclamação</option>
     </select>
   </div>
 
   <div class="form-group">
-    <label for="exampleFormControlTextarea1">Example textarea</label>
-    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+    <label for="descricao">Descrição</label>
+    <textarea class="form-control" id="descricao" name="descricao" rows="7"></textarea>
   </div>
 
 

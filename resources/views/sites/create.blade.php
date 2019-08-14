@@ -12,7 +12,7 @@
         Domínio:
         <div class="form-group form-inline">
             <label for="dominio"> </label>
-                <input name="dominio" class="form-control dominio" placeholder="meuqueridosite" id="dominio"> 
+                <input name="dominio" class="form-control dominio" placeholder="meuqueridosite" id="dominio" value="{{ old('dominio') }}"> 
             <b> {{ $dnszone }} </b>
         
         </div>
@@ -20,7 +20,7 @@
 
   <div class="form-group">
     <label for="justificativa">Justificativa:</label>
-    <textarea class="form-control" id="justificativa" rows="5" name="justificativa"></textarea>
+    <textarea class="form-control" id="justificativa" rows="5" name="justificativa">{{ old('justificativa') }}</textarea>
   </div>
 
   <div class="form-group">

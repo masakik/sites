@@ -26,7 +26,7 @@ class ChamadoController extends Controller
     public function create(Site $site)
     {
         $this->authorize('sites.update',$site);
-        return view('chamados/create'); 
+        return view('chamados/create',compact('site')); 
     }
 
     /**
@@ -35,9 +35,23 @@ class ChamadoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Site $site)
     {
-        //
+        $request->validate([
+          'descricao'  => ['required'],
+          'tipo'       => ['required'],
+        ]);
+
+        $chamado = new Chamado;
+        $chamado->descricao = $request->descricao;
+        $chamado->tipo = $request->tipo;
+        $chamado->status = 'aberto';
+        $chamado->site_id = $site->id;
+        $chamado->user_id = \Auth::user()->id;
+        $chamado->save();
+
+        $request->session()->flash('alert-info', 'Chamado cadastrado com sucesso');
+        return redirect("/sites/$site->id");
     }
 
     /**
@@ -49,6 +63,9 @@ class ChamadoController extends Controller
     public function show(Chamado $chamado, Site $site)
     {
         dd("to aqui");
+
+        $this->authorize('sites.view',$site);
+        return view('chamados/show',compact('site','chamado')); 
     }
 
     /**

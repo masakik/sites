@@ -174,7 +174,7 @@ class SiteController extends Controller
         if (isset($request->categoria) || isset($request->justificativa)) {
             $site->categoria = $request->categoria;
             $site->justificativa = $request->justificativa;
-            $request->session()->flash('alert-info','categoria alterada com sucesso');
+            $request->session()->flash('alert-info','site atualizado com sucesso');
         }
 
         if (isset($request->novoadmin)) {

@@ -9,7 +9,6 @@
 @parent
 
 <div class="table-responsive">
-
     <table class="table table-striped">
         <thead>
             <tr>
@@ -27,7 +26,8 @@
         </tr>
 </tbody>
 </table>
-
-
 </div>
+
+@include('chamados/index')
 @stop
+
