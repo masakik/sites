@@ -65,7 +65,7 @@
 
 </div>
 
-  <form method="POST" role="form" action="/comentarios/{{$chamado->id}}/">
+  <form method="POST" role="form" action="{{ route('comentarios.store', [$chamado->id]) }}">
       @csrf
 
       <div class="form-group">

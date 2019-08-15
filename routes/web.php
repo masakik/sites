@@ -18,11 +18,11 @@ Route::resource('/sites', 'SiteController');
 Route::get('/chamados/abertos', 'ChamadoController@abertos');
 Route::get('/chamados/{site}/create', 'ChamadoController@create');
 Route::get('/chamados/{site}/', 'ChamadoController@index');
-Route::post('/chamados/{site}/', 'ChamadoController@store')->name('chamados_store');
+Route::post('/chamados/{site}/', 'ChamadoController@store')->name('chamados.store');
 Route::get('/chamados/{site}/{chamado}', 'ChamadoController@show');
 
 # rotas comentários
-Route::post('/comentarios/{chamado}/', 'ComentarioController@store');
+Route::post('/comentarios/{chamado}/', 'ComentarioController@store')->name('comentarios.store');;
 
 # Senha única USP
 Route::get('/senhaunica/login', 'Auth\LoginController@redirectToProvider')->name('login');
