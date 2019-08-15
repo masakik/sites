@@ -13,7 +13,7 @@
     <thead>
       <tr>
         <th>Aberto por</th>
-        <th>Aberto em</th>
+        <th>Em</th>
         <th>Status</th>
         <th>Tipo</th>
         <th>Descrição</th>
@@ -32,7 +32,7 @@
       </tr>
 @empty
     <tr>
-        <td colspan="4">Não há chamados para esse site</td>
+        <td colspan="5">Não há chamados abertos</td>
     </tr>
 @endforelse
 </tbody>

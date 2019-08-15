@@ -24,7 +24,7 @@
       </tr>
 @empty
     <tr>
-        <td colspan="4">Não há chamados para esse site</td>
+        <td colspan="5">Não há chamados para esse site</td>
     </tr>
 @endforelse
 </tbody>
