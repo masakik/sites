@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Comentario;
 use App\Chamado;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class ComentarioController extends Controller
 {
@@ -49,7 +50,7 @@ class ComentarioController extends Controller
         if(isset($request->status)) {
             if($request->status == 'fechar') {
                 $comentario->chamado->status = 'fechado';
-                $comentario->chamado->fechado_em = \Carbon::now();
+                $comentario->chamado->fechado_em = Carbon::now();
             }
             elseif($request->status == 'abrir') {
                 $comentario->chamado->status = 'aberto';
