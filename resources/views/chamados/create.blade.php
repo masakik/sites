@@ -7,7 +7,7 @@
 
 @section('content')
   @parent
-  <form method="POST" role="form" action="/chamados/{{$site->id}}/">
+  <form method="POST" role="form" action="{{ route('chamados.store', [$site->id]) }}">
     @csrf
 
   <div class="form-group">
