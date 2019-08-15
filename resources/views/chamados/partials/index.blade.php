@@ -5,7 +5,7 @@
     <thead>
       <tr>
         <th>Aberto por</th>
-        <th>Aberto em</th>
+        <th>Em</th>
         <th>Status</th>
         <th>Tipo</th>
         <th>Descrição</th>

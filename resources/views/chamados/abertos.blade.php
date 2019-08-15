@@ -34,7 +34,7 @@
       </tr>
 @empty
     <tr>
-        <td colspan="5">Não há chamados abertos</td>
+        <td colspan="6">Não há chamados abertos</td>
     </tr>
 @endforelse
 </tbody>

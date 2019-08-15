@@ -14,7 +14,10 @@
 </td>
 
 <td>
-  <b>Responsável:</b> {{ $site->owner }} - {{ \Uspdev\Replicado\Pessoa::dump($site->owner)['nompes'] }}
+  <b>Responsável:</b> {{ $site->owner }}
+  @if(config('sites.usar_replicado') == true)
+     - {{ \Uspdev\Replicado\Pessoa::dump($site->owner)['nompes'] }}
+  @endif
   <br><br>
   <ul  class="list-group">
     
@@ -30,8 +33,10 @@
                     <button type="submit" class="delete-item btn"><i class="fas fa-trash-alt"></i></button>
                     </form>
                @endcan
-{{ $numero_usp }} - {{ \Uspdev\Replicado\Pessoa::dump($numero_usp)['nompes'] }}
-                       
+{{ $numero_usp }}
+  @if(config('sites.usar_replicado') == true)
+   - {{ \Uspdev\Replicado\Pessoa::dump($numero_usp)['nompes'] }}
+  @endif
           </li>
       @endif
     @endforeach

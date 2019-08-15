@@ -28,8 +28,10 @@ class Numeros_USP implements Rule
         if (!(is_numeric(trim($value)))) {
             return false;
         }
-        if(empty(Pessoa::dump($value))) {
-            return false;
+        if(config('sites.usar_replicado') == true){
+            if(empty(Pessoa::dump($value))) {
+                return false;
+            }
         }
         return true;
     }
