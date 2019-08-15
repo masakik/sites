@@ -12,6 +12,7 @@
   <table class="table table-striped">
     <thead>
       <tr>
+        <th>Site</th>
         <th>Aberto por</th>
         <th>Em</th>
         <th>Status</th>
@@ -24,6 +25,7 @@
 
 @forelse ($chamados->sortBy('created_at') as $chamado)
       <tr>
+        <td>{{ $chamado->site->dominio.config('sites.dnszone') }}</td>
         <td>{{ $chamado->user->name }}</td>
         <td>{{ Carbon\Carbon::parse($chamado->created_at)->format('d/m/Y H:i') }}</td>
         <td>{{ $chamado->status }}</td>

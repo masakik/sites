@@ -8,6 +8,8 @@
 @section('content')
 @parent
 
+<h1>{{ $chamado->site->dominio.config('sites.dnszone') }}</h1>
+
 <div class="table-responsive">
   <table class="table table-striped">
     <thead>
