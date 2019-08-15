@@ -46,6 +46,14 @@ class ComentarioController extends Controller
         $comentario->user_id = \Auth::user()->id;
         $comentario->save();
 
+        if(isset($request->status)) {
+            if($request->status == 'fechar')
+                $comentario->chamado->status = 'fechado';
+            elseif($request->status == 'abrir')
+                $comentario->chamado->status = 'aberto';
+            $comentario->chamado->save();
+        }
+
         $request->session()->flash('alert-info', 'Comentário enviado com sucesso');
         return redirect("/chamados/$chamado->site_id/$chamado->id");
     }

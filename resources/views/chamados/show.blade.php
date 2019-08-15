@@ -65,8 +65,6 @@
 
 </div>
 
-
-
   <form method="POST" role="form" action="/comentarios/{{$chamado->id}}/">
       @csrf
 
@@ -75,10 +73,19 @@
         <textarea class="form-control" id="comentario" name="comentario" rows="7"></textarea>
       </div>
 
-
+      @if($chamado->status == 'aberto')
       <div class="form-group">
-        <button type="submit" class="btn btn-primary">Enviar</button>
+        <button type="submit" class="btn btn-primary" value="">Enviar</button>
       </div>
+
+        <div class="form-group">
+          <button type="submit" class="btn btn-danger" name="status" value="fechar">Enviar e fechar chamado</button>
+      </div>
+      @else
+        <div class="form-group">
+          <button type="submit" class="btn btn-danger" name="status" value="abrir">Enviar e reabrir chamado</button>
+      </div>
+      @endif
   </form>
 
 @stop
