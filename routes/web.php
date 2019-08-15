@@ -13,7 +13,12 @@
 
 Route::get('/', 'IndexController@index')->name('home');
 Route::resource('/sites', 'SiteController');
-Route::resource('/chamados/{site}/', 'ChamadoController');
+
+# rotas para chamados
+Route::get('/chamados/{site}/', 'ChamadoController@index');
+Route::get('/chamados/{site}/create', 'ChamadoController@create');
+Route::post('/chamados/{site}/', 'ChamadoController@store');
+Route::get('/chamados/{site}/{chamado}', 'ChamadoController@show');
 
 # Senha única USP
 Route::get('/senhaunica/login', 'Auth\LoginController@redirectToProvider')->name('login');

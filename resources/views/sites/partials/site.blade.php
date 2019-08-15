@@ -10,7 +10,7 @@
         Aprovado
     @endif
   <br>
-  <b>chamados: </b> <a href="/"> {{ $site->chamados->where('status','aberto')->count() }} abertos</a> <a href="/chamados/{{ $site->id }}/create"> <i class="fas fa-plus"></i> </a><br>
+  <b>chamados: </b> <a href="/chamados/{{ $site->id }}"> {{ $site->chamados->where('status','aberto')->count() }} abertos</a> <a href="/chamados/{{ $site->id }}/create"> <i class="fas fa-plus"></i> </a><br>
 </td>
 
 <td>

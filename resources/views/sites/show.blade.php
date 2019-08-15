@@ -28,6 +28,6 @@
 </table>
 </div>
 
-@include('chamados/index')
+@include('chamados/partials/index')
 @stop
 

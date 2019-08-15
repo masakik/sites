@@ -15,7 +15,8 @@ class ChamadoController extends Controller
      */
     public function index(Site $site)
     {
-        dd("to aqui $site->dominio");
+        $this->authorize('sites.view',$site);
+        return view('chamados/index',compact('site')); 
     }
 
     /**
@@ -60,10 +61,8 @@ class ChamadoController extends Controller
      * @param  \App\Chamado  $chamado
      * @return \Illuminate\Http\Response
      */
-    public function show(Chamado $chamado, Site $site)
+    public function show(Site $site, Chamado $chamado)
     {
-        dd("to aqui");
-
         $this->authorize('sites.view',$site);
         return view('chamados/show',compact('site','chamado')); 
     }
