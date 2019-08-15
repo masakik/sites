@@ -47,10 +47,14 @@ class ComentarioController extends Controller
         $comentario->save();
 
         if(isset($request->status)) {
-            if($request->status == 'fechar')
+            if($request->status == 'fechar') {
                 $comentario->chamado->status = 'fechado';
-            elseif($request->status == 'abrir')
+                $comentario->chamado->fechado_em = \Carbon::now();
+            }
+            elseif($request->status == 'abrir') {
                 $comentario->chamado->status = 'aberto';
+                $comentario->chamado->fechado_em = null;
+            }
             $comentario->chamado->save();
         }
 
