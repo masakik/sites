@@ -33,6 +33,10 @@
 </table>
 </div>
 
+@if(!is_null($chamado->fechado_em))
+<div><b>Fechado em</b>: {{ Carbon\Carbon::parse($chamado->fechado_em)->format('d/m/Y H:i') }}</div>
+@endif
+
 <h2>Descrição</h2>
 <p>{{ $chamado->descricao }}</p>
 
