@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Comentario;
+use App\Chamado;
 use Illuminate\Http\Request;
 
 class ComentarioController extends Controller
@@ -33,9 +34,20 @@ class ComentarioController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Chamado $chamado)
     {
-        //
+        $request->validate([
+          'comentario'  => ['required'],
+        ]);
+
+        $comentario = new Comentario;
+        $comentario->comentario = $request->comentario;
+        $comentario->chamado_id = $chamado->id;
+        $comentario->user_id = \Auth::user()->id;
+        $comentario->save();
+
+        $request->session()->flash('alert-info', 'Comentário enviado com sucesso');
+        return redirect("/chamados/$chamado->site_id/$chamado->id");
     }
 
     /**

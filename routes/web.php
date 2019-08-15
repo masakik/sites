@@ -20,6 +20,9 @@ Route::get('/chamados/{site}/create', 'ChamadoController@create');
 Route::post('/chamados/{site}/', 'ChamadoController@store');
 Route::get('/chamados/{site}/{chamado}', 'ChamadoController@show');
 
+# rotas comentários
+Route::post('/comentarios/{chamado}/', 'ComentarioController@store');
+
 # Senha única USP
 Route::get('/senhaunica/login', 'Auth\LoginController@redirectToProvider')->name('login');
 Route::get('/callback', 'Auth\LoginController@handleProviderCallback');
