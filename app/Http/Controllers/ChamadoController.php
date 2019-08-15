@@ -8,6 +8,19 @@ use Illuminate\Http\Request;
 
 class ChamadoController extends Controller
 {
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function abertos()
+    {
+        $this->authorize('admin');
+        $chamados = Chamado::where('status', 'aberto')->get();
+        return view('chamados/abertos',compact('chamados')); 
+    }
+
     /**
      * Display a listing of the resource.
      *

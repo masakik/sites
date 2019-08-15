@@ -22,6 +22,11 @@ return [
             'url'  => '/sites',
             'can'  => 'sites.create'
         ],
+        [
+            'text' => 'Chamados',
+            'url'  => '/chamados/abertos',
+            'can'  => 'admin'
+        ],
     ],
 
 ];

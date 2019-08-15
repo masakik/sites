@@ -9,9 +9,5 @@
 @parent
 
 @include('chamados/partials/index')
-</tbody>
-</table>
-
-</div>
 
 @stop
