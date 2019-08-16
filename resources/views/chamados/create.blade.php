@@ -20,6 +20,7 @@
     <select class="form-control" id="tipo" name="tipo">
       <option>Problema</option>
       <option>Solicitação de módulo</option>
+      <option>Solicitação</option>
       <option>Dúvida</option>
       <option>Sugestão</option>
       <option>Reclamação</option>

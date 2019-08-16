@@ -9,7 +9,7 @@
         <th>Em</th>
         <th>Status</th>
         <th>Tipo</th>
-        <th>Descrição</th>
+        <th>Chamado</th>
       </tr>
     </thead>
 
