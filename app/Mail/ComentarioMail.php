@@ -34,15 +34,24 @@ class ComentarioMail extends Mailable
      */
     public function build()
     {
-        if($this->comentario->chamado->status == 'fechado' ) {
-            return $this->view('emails.comentario')
-                        ->from(config('sites.email_principal'))
-                        ->to([config('sites.email_principal'),$this->comentario->chamado->user->email])
-                        ->subject("Chamado #{$this->comentario->id} fechado ({$this->comentario->chamado->site->dominio}" . config('sites.dnszone') . ")");
+        // emails dos envolvidos nos comentários
+        // quem abriu o chamado sempre recebe email
+        $emails = [config('sites.email_principal'),$this->comentario->chamado->user->email];
+        foreach($this->comentario->chamado->comentarios as $comment){
+            $emails[] = $comment->user->email;
         }
-            return $this->view('emails.comentario')
-                        ->from(config('sites.email_principal'))
-                        ->to([config('sites.email_principal'),$this->comentario->chamado->user->email])
-                        ->subject("Novo comentário no chamado #{$this->comentario->id} ({$this->comentario->chamado->site->dominio}" . config('sites.dnszone') . ")");
+        $emails = array_unique($emails);
+    
+        // Monta título do email
+        if($this->comentario->chamado->status == 'fechado' ) {
+            $subject = "Chamado #{$this->comentario->id} fechado ({$this->comentario->chamado->site->dominio}" . config('sites.dnszone') . ")";
+        } else {
+            $subject = "Novo comentário no chamado #{$this->comentario->id} ({$this->comentario->chamado->site->dominio}" . config('sites.dnszone') . ")";
+        }
+
+        return $this->view('emails.comentario')
+                    ->from(config('sites.email_principal'))
+                    ->to($emails)
+                    ->subject($subject);
     }
 }
