@@ -39,7 +39,7 @@ class ComentarioController extends Controller
      */
     public function store(Request $request, Chamado $chamado)
     {
-        $this->authorize('sites.view',$site);
+        $this->authorize('sites.view',$chamado->site);
 
         $request->validate([
           'comentario'  => ['required'],
