@@ -5,6 +5,11 @@
 @section('content_header')
 @stop
 
+@section('javascripts_bottom')
+  @parent
+  <script>CKEDITOR.replace( 'justificativa' );</script>
+@stop
+
 @section('content')
 @parent
 

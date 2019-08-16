@@ -5,6 +5,11 @@
 @section('content_header')
 @stop
 
+@section('javascripts_bottom')
+@parent
+<script>CKEDITOR.replace( 'comentario' );</script>
+@stop
+
 @section('content')
 @parent
 
@@ -26,7 +31,7 @@
       <tr>
         <td>{{ $chamado->user->name }}</td>
         <td>{{ Carbon\Carbon::parse($chamado->created_at)->format('d/m/Y H:i') }}</td>
-        <td>{{ $chamado->status }}</td>
+        <td><b>{{ $chamado->status }}</b></td>
         <td>{{ $chamado->tipo }}</td>
         
       </tr>
@@ -40,7 +45,7 @@
 @endif
 
 <h2>Descrição</h2>
-<p>{{ $chamado->descricao }}</p>
+<p>{!! $chamado->descricao !!}</p>
 
 <h2>Comentários</h2>
 <div class="table-responsive">
@@ -58,7 +63,7 @@
 @forelse ($chamado->comentarios->sortBy('created_at') as $comentario)
       <tr>
         <td>{{ Carbon\Carbon::parse($comentario->created_at)->format('d/m/Y H:i') }}</td>
-        <td>{{ $comentario->comentario }}</td>
+        <td>{!! $comentario->comentario !!}</td>
         <td>{{ $comentario->user->name }}</td>
       </tr>
 @empty

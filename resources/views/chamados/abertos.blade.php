@@ -25,12 +25,12 @@
 
 @forelse ($chamados->sortBy('created_at') as $chamado)
       <tr>
-        <td>{{ $chamado->site->dominio.config('sites.dnszone') }}</td>
+        <td> <b> {{ $chamado->site->dominio.config('sites.dnszone') }}</b></td>
         <td>{{ $chamado->user->name }}</td>
         <td>{{ Carbon\Carbon::parse($chamado->created_at)->format('d/m/Y H:i') }}</td>
-        <td>{{ $chamado->status }}</td>
+        <td><b>{{ $chamado->status }}</b></td>
         <td>{{ $chamado->tipo }}</td>
-        <td><a href="/chamados/{{$chamado->site_id}}/{{$chamado->id}}">{{ $chamado->descricao }}</a></td>
+        <td><a href="/chamados/{{$chamado->site_id}}/{{$chamado->id}}">{!! $chamado->descricao !!}</a></td>
       </tr>
 @empty
     <tr>

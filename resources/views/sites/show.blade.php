@@ -22,7 +22,7 @@
             @include('sites/partials/site')
 
         <tr>
-            <td colspan="3"><b>Justificativa: </b>{{ $site->justificativa }}</td>
+            <td colspan="3"><b>Justificativa: </b>{!! $site->justificativa !!}</td>
         </tr>
 </tbody>
 </table>

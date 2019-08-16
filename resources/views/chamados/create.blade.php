@@ -5,6 +5,11 @@
 @section('content_header')
 @stop
 
+@section('javascripts_bottom')
+    @parent
+    <script>CKEDITOR.replace( 'descricao' );</script>
+@stop
+
 @section('content')
   @parent
   <form method="POST" role="form" action="{{ route('chamados.store', [$site->id]) }}">
