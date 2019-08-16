@@ -41,7 +41,7 @@ class ChamadoController extends Controller
      */
     public function create(Site $site)
     {
-        $this->authorize('sites.update',$site);
+        $this->authorize('sites.view',$site);
         return view('chamados/create',compact('site')); 
     }
 
@@ -53,7 +53,7 @@ class ChamadoController extends Controller
      */
     public function store(Request $request, Site $site)
     {
-        $this->authorize('sites.update',$site);
+        $this->authorize('sites.view',$site);
 
         $request->validate([
           'descricao'  => ['required'],
