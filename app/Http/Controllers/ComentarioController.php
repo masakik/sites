@@ -6,6 +6,8 @@ use App\Comentario;
 use App\Chamado;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Mail\ComentarioMail;
+use Mail;
 
 class ComentarioController extends Controller
 {
@@ -37,14 +39,17 @@ class ComentarioController extends Controller
      */
     public function store(Request $request, Chamado $chamado)
     {
+        $this->authorize('sites.update',$chamado->site);
+
         $request->validate([
           'comentario'  => ['required'],
         ]);
+        $user = \Auth::user();
 
         $comentario = new Comentario;
         $comentario->comentario = $request->comentario;
         $comentario->chamado_id = $chamado->id;
-        $comentario->user_id = \Auth::user()->id;
+        $comentario->user_id = $user->id;
         $comentario->save();
 
         if(isset($request->status)) {
@@ -58,6 +63,8 @@ class ComentarioController extends Controller
             }
             $comentario->chamado->save();
         }
+
+        Mail::send(new ComentarioMail($comentario,$user));
 
         $request->session()->flash('alert-info', 'Comentário enviado com sucesso');
         return redirect("/chamados/$chamado->site_id/$chamado->id");

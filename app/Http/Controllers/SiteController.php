@@ -15,6 +15,7 @@ use App\Aegir\Aegir;
 use Illuminate\Support\Facades\Gate;
 use App\Rules\Numeros_USP;
 use Illuminate\Support\Str;
+use App\Mail\SiteMail;
 use Mail;
 
 class SiteController extends Controller
@@ -90,6 +91,7 @@ class SiteController extends Controller
     public function store(Request $request)
     {
         $this->authorize('sites.create');
+        $user = \Auth::user();
 
         $request->validate([
           'dominio'         => ['required', 'alpha_num','unique:sites'],
@@ -104,19 +106,13 @@ class SiteController extends Controller
         $site->justificativa = $request->justificativa;
         $site->status = 'solicitado';
         
-        $site->owner = \Auth::user()->codpes;
+        $site->owner = $user->codpes;
         $site->save();
 
         //$alvo = $site->dominio . $dnszone;
         //clonaSiteAegir::dispatch($alvo);
 
-
-        $data['dominio'] = $site->dominio;
-        Mail::send('emails.solicitacao', $data, function($message) {
- 	    $message->to(config('sites.email_principal'), 'STI')
-                    ->from(config('sites.email_principal'), 'STI')
-                    ->subject('Nova Solicitação de Site');
-        });
+        Mail::send(new SiteMail($site,$user));
 
         $request->session()->flash('alert-info', 'Solicitação em andamento');
         return redirect("/sites/$site->id");

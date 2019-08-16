@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Chamado;
 use App\Site;
 use Illuminate\Http\Request;
+use App\Mail\ChamadoMail;
+use Mail;
 
 class ChamadoController extends Controller
 {
@@ -51,18 +53,22 @@ class ChamadoController extends Controller
      */
     public function store(Request $request, Site $site)
     {
+        $this->authorize('sites.update',$site);
+
         $request->validate([
           'descricao'  => ['required'],
           'tipo'       => ['required'],
         ]);
-
+        $user = \Auth::user();
         $chamado = new Chamado;
         $chamado->descricao = $request->descricao;
         $chamado->tipo = $request->tipo;
         $chamado->status = 'aberto';
         $chamado->site_id = $site->id;
-        $chamado->user_id = \Auth::user()->id;
+        $chamado->user_id = $user->id;
         $chamado->save();
+
+        Mail::send(new ChamadoMail($chamado,$user));
 
         $request->session()->flash('alert-info', 'Chamado cadastrado com sucesso');
         return redirect("/sites/$site->id");
