@@ -26,7 +26,12 @@ class SitePolicy
      */
     public function view(User $user, Site $site)
     {
-        return ($user->codpes == $site->owner) || $this->is_admin;
+        // verifica se o número usp em questão é responsável ou adminstrador de site
+        $all = $site->owner . ',' . $site->numeros_usp . ',' . config('sites.admins');
+        if(in_array($user->codpes,explode(",",$all))) {
+            return true; 
+        }
+        return false;
     }
 
     /**
