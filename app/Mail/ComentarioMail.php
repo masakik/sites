@@ -37,12 +37,12 @@ class ComentarioMail extends Mailable
         if($this->comentario->chamado->status == 'fechado' ) {
             return $this->view('emails.comentario')
                         ->from(config('sites.email_principal'))
-                        ->to([config('sites.email_principal'),$this->user->email])
+                        ->to([config('sites.email_principal'),$this->comentario->chamado->user->email])
                         ->subject("Chamado #{$this->comentario->id} fechado ({$this->comentario->chamado->site->dominio}" . config('sites.dnszone') . ")");
         }
             return $this->view('emails.comentario')
                         ->from(config('sites.email_principal'))
-                        ->to([config('sites.email_principal'),$this->user->email])
+                        ->to([config('sites.email_principal'),$this->comentario->chamado->user->email])
                         ->subject("Novo comentário no chamado #{$this->comentario->id} ({$this->comentario->chamado->site->dominio}" . config('sites.dnszone') . ")");
     }
 }
