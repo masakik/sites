@@ -13,68 +13,32 @@
 @section('content')
 @parent
 
-<h1>{{ $chamado->site->dominio.config('sites.dnszone') }}</h1>
-
-<div class="table-responsive">
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Aberto por</th>
-        <th>Aberto em</th>
-        <th>Status</th>
-        <th>Tipo</th>
-      </tr>
-    </thead>
-
-    <tbody>
-
-      <tr>
-        <td>{{ $chamado->user->name }}</td>
-        <td>{{ Carbon\Carbon::parse($chamado->created_at)->format('d/m/Y H:i') }}</td>
-        <td><b>{{ $chamado->status }}</b></td>
-        <td>{{ $chamado->tipo }}</td>
-        
-      </tr>
-
-</tbody>
-</table>
-</div>
-
-@if(!is_null($chamado->fechado_em))
-<div><b>Fechado em</b>: {{ Carbon\Carbon::parse($chamado->fechado_em)->format('d/m/Y H:i') }}</div>
-@endif
-
-<h2>Descrição</h2>
-<p>{!! $chamado->descricao !!}</p>
-
-<h2>Comentários</h2>
-<div class="table-responsive">
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>Em</th>
-        <th>Comentário</th>
-        <th>Por</th>
-      </tr>
-    </thead>
-
-    <tbody>
+    <div class="card bg-light mb-3">
+      <div class="card-header">{{ $chamado->user->name }} - {{ Carbon\Carbon::parse($chamado->created_at)->format('d/m/Y H:i') }}</div>
+      <div class="card-body">
+        <b>site</b>: {{ $chamado->site->dominio.config('sites.dnszone') }} <br>
+        <b>status</b>: {{ $chamado->status }}<br>
+        <b>tipo</b>: {{ $chamado->tipo }} <br>
+        <p class="card-text">{!! $chamado->descricao !!}</p>
+        @if(!is_null($chamado->fechado_em))
+        <div><b>Fechado em</b>: {{ Carbon\Carbon::parse($chamado->fechado_em)->format('d/m/Y H:i') }}</div>
+        @endif
+      </div>
+    </div>
 
 @forelse ($chamado->comentarios->sortBy('created_at') as $comentario)
-      <tr>
-        <td>{{ Carbon\Carbon::parse($comentario->created_at)->format('d/m/Y H:i') }}</td>
-        <td>{!! $comentario->comentario !!}</td>
-        <td>{{ $comentario->user->name }}</td>
-      </tr>
-@empty
-    <tr>
-        <td colspan="3">Não há comentários</td>
-    </tr>
-@endforelse
-</tbody>
-</table>
 
-</div>
+    <div class="card bg-light mb-3">
+      <div class="card-header">{{ $comentario->user->name }} - {{ Carbon\Carbon::parse($comentario->created_at)->format('d/m/Y H:i') }}</div>
+      <div class="card-body">
+        <p class="card-text">{!! $comentario->comentario !!}</p>
+      </div>
+    </div>
+
+@empty
+    Não há comentários
+@endforelse
+
 
   <form method="POST" role="form" action="{{ route('comentarios.store', [$chamado->id]) }}">
       @csrf

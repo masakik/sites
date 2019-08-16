@@ -12,8 +12,9 @@
   <table class="table table-striped">
     <thead>
       <tr>
+        <th>#</th>
         <th>Site</th>
-        <th>Aberto por</th>
+        <th>Autor(a)</th>
         <th>Em</th>
         <th>Status</th>
         <th>Tipo</th>
@@ -23,8 +24,9 @@
 
     <tbody>
 
-@forelse ($chamados->sortBy('created_at') as $chamado)
+@forelse ($chamados->sortByDesc('created_at') as $chamado)
       <tr>
+        <td> {{ $chamado->id }}</td>
         <td> <b> {{ $chamado->site->dominio.config('sites.dnszone') }}</b></td>
         <td>{{ $chamado->user->name }}</td>
         <td>{{ Carbon\Carbon::parse($chamado->created_at)->format('d/m/Y H:i') }}</td>
@@ -34,7 +36,7 @@
       </tr>
 @empty
     <tr>
-        <td colspan="6">Não há chamados abertos</td>
+        <td colspan="7">Não há chamados abertos</td>
     </tr>
 @endforelse
 </tbody>

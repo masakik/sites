@@ -4,6 +4,7 @@
   <table class="table table-striped">
     <thead>
       <tr>
+        <th>#</th>
         <th>Aberto por</th>
         <th>Em</th>
         <th>Status</th>
@@ -14,8 +15,9 @@
 
     <tbody>
 
-@forelse ($site->chamados->sortBy('created_at') as $chamado)
+@forelse ($site->chamados->sortByDesc('created_at') as $chamado)
       <tr>
+        <td>{{ $chamado->id }}</td>
         <td>{{ $chamado->user->name }}</td>
         <td>{{ Carbon\Carbon::parse($chamado->created_at)->format('d/m/Y H:i') }}</td>
         <td><b>{{ $chamado->status }}</b></td>
