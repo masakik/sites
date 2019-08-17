@@ -39,7 +39,7 @@ class ChamadoMail extends Mailable
         $codpes = $this->chamado->site->owner;
         $owner = User::where('codpes', $codpes)->first();
         if ($owner) {
-            $emails[] = $user->email;
+            $emails[] = $owner->email;
         }
         $emails = array_unique($emails);
         
