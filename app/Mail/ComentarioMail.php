@@ -36,7 +36,9 @@ class ComentarioMail extends Mailable
     {
         // emails dos envolvidos nos comentários
         // quem abriu o chamado sempre recebe email
-        $emails = [config('sites.email_principal'),$this->comentario->chamado->user->email];
+        $emails = [$this->comentario->chamado->user->email];
+        
+        
         foreach($this->comentario->chamado->comentarios as $comment){
             $emails[] = $comment->user->email;
         }
