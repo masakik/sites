@@ -13,3 +13,5 @@ Nome: {{ $user->name }}
 <b>Chamado:</b> {!! $chamado->descricao !!}
 </div>
 
+Sistema de sites fflch: https://sites.fflch.usp.br/
+
