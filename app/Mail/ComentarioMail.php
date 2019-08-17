@@ -38,6 +38,12 @@ class ComentarioMail extends Mailable
         // quem abriu o chamado sempre recebe email
         $emails = [$this->comentario->chamado->user->email];
         
+        // Responsável pelo site
+        $codpes = $this->comentario->chamado->site->owner;
+        $owner = User::where('codpes', $codpes)->first();
+        if ($owner) {
+            $emails[] = $user->email;
+        }
         
         foreach($this->comentario->chamado->comentarios as $comment){
             $emails[] = $comment->user->email;
