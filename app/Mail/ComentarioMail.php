@@ -42,7 +42,7 @@ class ComentarioMail extends Mailable
         $codpes = $this->comentario->chamado->site->owner;
         $owner = User::where('codpes', $codpes)->first();
         if ($owner) {
-            $emails[] = $user->email;
+            $emails[] = $owner->email;
         }
         
         foreach($this->comentario->chamado->comentarios as $comment){
