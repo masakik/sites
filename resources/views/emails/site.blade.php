@@ -18,3 +18,5 @@ Nome: {{ $user->name }}
 <b>Justificativa:</b> {!! $site->justificativa !!}
 </div>
 
+Sistema de sites fflch: https://sites.fflch.usp.br/
+
