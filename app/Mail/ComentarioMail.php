@@ -59,7 +59,8 @@ class ComentarioMail extends Mailable
 
         return $this->view('emails.comentario')
                     ->from(config('sites.email_principal'))
-                    ->to($emails)
+                    ->to(config('sites.email_principal'))
+                    ->bcc($emails)
                     ->subject($subject);
     }
 }
