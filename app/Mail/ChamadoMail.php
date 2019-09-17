@@ -45,7 +45,8 @@ class ChamadoMail extends Mailable
         
         return $this->view('emails.chamado')
                     ->from(config('sites.email_principal'))
-                    ->to($emails)
+                    ->to(config('sites.email_principal'))
+                    ->bcc($emails)
                     ->subject("Novo chamado para o site: {$this->chamado->site->dominio}" . config('sites.dnszone'));
     }
 }
