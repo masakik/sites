@@ -22,7 +22,7 @@
 @forelse ($chamados->sortByDesc('created_at') as $chamado)
       <tr>
         <td> 
-            <uli style="list-style-type: none;">
+            <ul style="list-style-type: none;">
               <li> <b>id:</b> {{ $chamado->id }} </li>
               <li> <b>site:</b>{{ $chamado->site->dominio.config('sites.dnszone') }}</li>
               <li> <b>por:</b> {{ $chamado->user->name }}</li>
