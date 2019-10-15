@@ -1,11 +1,21 @@
+@section('styles')
+@parent
+<style>
+    table {
+        table-layout: fixed;
+        word-wrap: break-word;
+    }
+</style>
+@stop
+
 <h1>Chamados de {{ $site->dominio.config('sites.dnszone') }}</h1>
 
 <div class="table-responsive">
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>Infos</th>
-        <th>Chamado</th>
+        <th style="width: 50%">Infos</th>
+        <th style="width: 50%">Chamado</th>
       </tr>
     </thead>
 
