@@ -20,3 +20,7 @@
 @section('footer')
 FFLCH sites
 @stop
+
+@section('title')
+FFLCH sites
+@stop

@@ -41,7 +41,7 @@ class SiteController extends Controller
         $sites = Site::allowed();
 
         // 1. query com a busca
-        if(isset($request->dominio)) {
+        if(isset($request->dominio) || isset($request->status)) {
             $dominio = explode('.',$request->dominio);
             $sites->where('dominio', 'LIKE', '%'.$dominio[0].'%')
                   ->where('status', $request->status);
