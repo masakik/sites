@@ -16,10 +16,11 @@
         "jansenfelipe/faker-br": "^1.0",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
+        "laravel/ui": "^2.0",
         "laravellegends/pt-br-validator": "^7.0",
         "uspdev/laravel-usp-theme": "^1.0",
-        "uspdev/senhaunica-socialite": "^2.0",
-        "uspdev/replicado": "^1.5"
+        "uspdev/replicado": "^1.5",
+        "uspdev/senhaunica-socialite": "^2.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
