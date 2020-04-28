@@ -39,7 +39,7 @@ Total de sites ainda não aprovados: <b>{{ $sites->where('status','solicitado')-
         <tr>
           <td> 
             @if($site->status == 'aprovado')
-              <a href="http://{{$site->dominio.config('sites.dnszone')}}">
+              <a target="_blank" href="http://{{$site->dominio.config('sites.dnszone')}}">
                 {{$site->dominio.config('sites.dnszone')}}
               </a>
             @else
