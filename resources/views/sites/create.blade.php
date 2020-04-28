@@ -19,7 +19,7 @@
         Domínio:
         <div class="form-group form-inline">
             <label for="dominio"> </label>
-                <input name="dominio" class="form-control dominio" placeholder="meuqueridosite" id="dominio" value="{{ old('dominio') }}"> 
+                <input name="dominio" class="form-control dominio" placeholder="meuqueridosite" id="dominio" value="{{ old('dominio') }}" onkeyup="this.value = this.value.toLowerCase();"> 
             <b> {{ $dnszone }} </b>
         
         </div>
