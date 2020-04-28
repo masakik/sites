@@ -1,12 +1,10 @@
-# solicita-site
+# sites
 
 Frontend em laravel para gerenciar sites. 
 
 Backends disponiveís:
 
  -Drupal servidor pelo [Aegir(SaaS)](https://www.aegirproject.org/)
-
-
 
 # deploy para desenvolvimento:
 

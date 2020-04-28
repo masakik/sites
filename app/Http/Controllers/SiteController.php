@@ -36,13 +36,15 @@ class SiteController extends Controller
     {
         $this->authorize('sites.create'); // verificar porque isso não funciona
         $dnszone = config('sites.dnszone');
-
+ 
         # todos sites
         $sites = Site::allowed();
 
         // 1. query com a busca
         if(isset($request->dominio)) {
-            $sites->where('dominio', 'LIKE', '%'.$request->dominio.'%');
+            $dominio = explode('.',$request->dominio);
+            $sites->where('dominio', 'LIKE', '%'.$dominio[0].'%')
+                  ->where('status', $request->status);
         }
 
         // Dica de ouro para debugar SQL gerado:
