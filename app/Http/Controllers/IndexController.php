@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Site;
 
 class indexController extends Controller
 {
@@ -12,6 +13,6 @@ class indexController extends Controller
     }
 
     public function index(){
-        return view('index');
+        return view('index')->with('sites',Site::get());
     }
 }
