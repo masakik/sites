@@ -103,7 +103,7 @@ class SiteController extends Controller
 
         $site = new Site;
         $dnszone = config('sites.dnszone');
-        $site->dominio = $request->dominio;
+        $site->dominio = strtolower($request->dominio);
         $site->categoria = $request->categoria;
         $site->justificativa = $request->justificativa;
         $site->status = 'solicitado';
