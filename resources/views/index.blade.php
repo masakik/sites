@@ -36,7 +36,7 @@ Total de sites ainda não aprovados: <b>{{ $sites->where('status','solicitado')-
     </tr>
   </thead>
   <tbody>
-    @foreach($sites->sortBy('categoria')->sortBy('dominio') as $site)
+    @foreach($sites->sortBy('categoria') as $site)
         <tr>
           <td> 
             @if($site->status == 'aprovado')

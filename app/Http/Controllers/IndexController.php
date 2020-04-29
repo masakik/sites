@@ -13,6 +13,6 @@ class indexController extends Controller
     }
 
     public function index(){
-        return view('index')->with('sites',Site::get());
+        return view('index')->with('sites',Site::orderBy('dominio', 'ASC')->get());
     }
 }
