@@ -31,11 +31,12 @@ Total de sites ainda não aprovados: <b>{{ $sites->where('status','solicitado')-
     <tr>
       <th scope="col">Site</th>
       <th scope="col">Responsável</th>
-      <th scope="col">status</th>
+      <th scope="col">Categoria</th>
+      <th scope="col">Status</th>
     </tr>
   </thead>
   <tbody>
-    @foreach($sites->sortBy('dominio') as $site)
+    @foreach($sites->sortBy('categoria')->sortBy('dominio') as $site)
         <tr>
           <td> 
             @if($site->status == 'aprovado')
@@ -47,6 +48,7 @@ Total de sites ainda não aprovados: <b>{{ $sites->where('status','solicitado')-
             @endif
           </td>
           <td>{{ $pessoa::dump($site->owner)['nompes'] }}</td>
+          <td>{{ $site->categoria }}</td>
           <td>{{ $site->status }}</td>
         </tr>
     @endforeach
