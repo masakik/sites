@@ -46,9 +46,16 @@
 
 <td>
     <ul class="list-group">
-
+        @if(config('app.env') == 'production')
+          @php($port = '')
+        @else
+          @php($port = ':8088')
+        @endif
         @if($site->status != "solicitado")
-          <li class="list-group-item"><a href="http://{{ $site->dominio }}{{ config('sites.dnszone') }}/loginbytoken/?temp_token={{$hashlogin}}&codpes={{ Auth::user()->codpes }}" class="" target="_blank">Logon <i class="fas fa-sign-in-alt"></i></a></li>
+          <li class="list-group-item">
+            <a href="http://{{ $site->dominio }}{{ config('sites.dnszone') }}{{$port}}/loginbytoken/?temp_token={{$hashlogin}}&codpes={{ Auth::user()->codpes }}" class="" target="_blank">
+              Logon <i class="fas fa-sign-in-alt"></i>
+            </a></li>
         @endif
 
         @can('sites.update',$site)

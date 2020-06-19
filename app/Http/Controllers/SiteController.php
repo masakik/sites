@@ -259,7 +259,7 @@ class SiteController extends Controller
         ]);
 
         $user = User::where('codpes',$request->codpes)->first();
-
+        
         // verifica se token secreto é válido
         if($request->secretkey != config('sites.deploy_secret_key'))
             return response()->json([false,'Secret Token Inválido']); 
@@ -270,7 +270,11 @@ class SiteController extends Controller
         }
 
         // verifica se site existe
-        $dominio = str_replace('.fflch.usp.br','',$request->site);
+        $remover = config('sites.dnszone');
+        if(config('app.env') != 'production'){
+            $remover .= ':8088';
+        }
+        $dominio = str_replace($remover,'',$request->site);
         $site = Site::where('dominio',$dominio)->first();
         if($site) {
             // verifica se o número usp em questão pode fazer logon no site
