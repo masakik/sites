@@ -17,8 +17,8 @@ class CreateSitesTable extends Migration
             $table->increments('id');
             $table->timestamps();
             $table->string('dominio')->unique();
-            $table->string('numeros_usp')->nullable();
-            $table->string('owner');
+            $table->text('numeros_usp')->nullable();
+            $table->integer('owner');
         });
     }
 

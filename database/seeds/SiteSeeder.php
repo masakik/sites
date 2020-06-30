@@ -24,6 +24,6 @@ class SiteSeeder extends Seeder
 
         Site::create($site);
 
-        factory(Site::class, 50)->create();
+        factory(Site::class, 20)->create();
     }
 }

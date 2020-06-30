@@ -29,4 +29,19 @@ class Site extends Model
     public function user(){
         return $this->belongsTo('App\User');
     }
+
+    public static function categorias() {
+    return [
+            'Grupo de estudo',
+            'Grupo de pesquisa',
+            'Departamento',
+            'Administrativo', 
+            'Centro',
+            'Associação',
+            'Laboratório',
+            'Comissão',
+            'Evento',
+            'Programa de Pós-Graduação'
+        ];
+    }
 }
