@@ -39,5 +39,7 @@ Route::get('/sites/{site}/novoadmin', 'SiteController@novoAdmin');
 
 Route::get('check', 'SiteController@check');
 
-
+# Rotas Avisos
+Route::get('/avisos/create','AvisoController@create');
+Route::post('/avisos','AvisoController@store');
 

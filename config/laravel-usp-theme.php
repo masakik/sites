@@ -1,5 +1,17 @@
 <?php
 
+$avisos =  [
+    [
+        'text' => 'Listar',
+        'url'  => '/avisos',
+    ],
+    [
+        'text' => 'Cadastrar',
+        'url'  => '/avisos/create',
+        'can'     => 'admin',
+    ],
+];
+
 return [
 
     'title' => env('APP_NAME'),
@@ -21,6 +33,11 @@ return [
             'text' => 'Meus Sites',
             'url'  => '/sites',
             'can'  => 'sites.create'
+        ],
+        [
+            'text'    => 'Avisos',
+            'submenu' => $avisos,
+            'can'     => 'admin',
         ],
         [
             'text' => 'Chamados',
