@@ -4,6 +4,19 @@
 @include('messages.flash')
 @include('messages.errors')
 
+<form method="get" action="/avisos">
+<div class="row">
+    <div class=" col-sm input-group">
+    <input type="text" class="form-control" name="busca" value="{{ Request()->busca }}">
+    <span class="input-group-btn">
+        <button type="submit" class="btn btn-success"> Buscar </button>
+    </span>
+    </div>
+</div>
+</form>
+</br>
+
+{{ $avisos->appends(request()->query())->links() }}  
 <div class="card">
   <div class="card-body">
     <table class="table table-striped"> 
