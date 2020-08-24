@@ -13,7 +13,6 @@ use App\Jobs\deletaSiteAegir;
 use App\Jobs\clonaSiteAegir;
 use App\Aegir\Aegir;
 use Illuminate\Support\Facades\Gate;
-use App\Rules\Numeros_USP;
 use Illuminate\Support\Str;
 use App\Mail\SiteMail;
 use Mail;
@@ -159,7 +158,7 @@ class SiteController extends Controller
 
         if (isset($request->owner)) {
             $request->validate([
-              'owner' => ['required',new Numeros_USP($request->owner)],
+              'owner' => ['required','codpes'],
             ]);
 
             $site->owner = $request->owner;
@@ -182,7 +181,7 @@ class SiteController extends Controller
 
         if (isset($request->novoadmin)) {
             $request->validate([
-              'novoadmin' => ['required',new Numeros_USP($request->numeros_usp)],
+              'novoadmin' => ['required','codpes'],
             ]);
 
             $numeros_usp = explode(',',$site->numeros_usp);
