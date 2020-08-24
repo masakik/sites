@@ -9,6 +9,8 @@ use Uspdev\Replicado\Pessoa;
 class EmailController extends Controller
 {
     public function emails(){
+
+        $this->authorize('admin');
     
         $owners = Site::select('owner')->get()->toArray();
         $owners = array_unique(array_column($owners,'owner'));
