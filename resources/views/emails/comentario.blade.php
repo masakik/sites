@@ -1,8 +1,13 @@
+Novo comentário no chamado {{$comentario->chamado->site->id}}/{{$comentario->chamado->id}} 
+para o site {{ $comentario->chamado->site->dominio.config('sites.dnszone') }}
+
 <div>
-<b>Autor(a):</b> <br>
 Número USP: {{ $user->codpes }} <br>
 Nome: {{ $user->name }} 
-</div>
+Número do chamado: {{$comentario->chamado->site->id}}/{{$comentario->chamado->id}}
+Chamado: <a href="{{config('app.url')}}/{{$comentario->chamado->site->id}}/{{$comentario->chamado->id}}">
+    {{config('app.url')}}/{{$comentario->chamado->site->id}}/{{$comentario->chamado->id}}
+</a>
 
 <br>
 
@@ -11,5 +16,5 @@ Nome: {{ $user->name }}
 <b>Comentário:</b> {!! $comentario->comentario !!}
 </div>
 
-Sistema de sites fflch: https://sites.fflch.usp.br/
+Mensagem automática do sistema de gestão de sites: {{ config('app.url') }}
 

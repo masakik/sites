@@ -20,16 +20,11 @@ Variáveis obrigatórias no .env:
     ADMINS=12334
     DNSZONE=.fflch.usp.br
 
-    # false or true
-    USAR_REPLICADO=true
     REPLICADO_HOST=
     REPLICADO_PORT=5005
     REPLICADO_DATABASE=fflch
     REPLICADO_USERNAME=fflch
     REPLICADO_PASSWORD=
-    REPLICADO_CODUND=
-
-EMAIL_PRINCIPAL=example@example.com
 
     php artisan key:generate
     php artisan migrate

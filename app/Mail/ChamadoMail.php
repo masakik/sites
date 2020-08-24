@@ -34,7 +34,7 @@ class ChamadoMail extends Mailable
      */
     public function build()
     {
-        $emails = [config('sites.email_principal'),$this->user->email];
+        $emails = [$this->user->email];
         // Responsável pelo site
         $codpes = $this->chamado->site->owner;
         $owner = User::where('codpes', $codpes)->first();
@@ -42,11 +42,17 @@ class ChamadoMail extends Mailable
             $emails[] = $owner->email;
         }
         $emails = array_unique($emails);
-        
+        $subject = "Novo chamado para o site: {$this->chamado->site->dominio}" . config('sites.dnszone');
+
         return $this->view('emails.chamado')
-                    ->from(config('sites.email_principal'))
-                    ->to(config('sites.email_principal'))
-                    ->bcc($emails)
-                    ->subject("Novo chamado para o site: {$this->chamado->site->dominio}" . config('sites.dnszone'));
+                    ->to(config('mail.reply_to.address'))
+                    ->from(config('mail.from.address'))
+                    ->replyTo(config('mail.reply_to.address'))
+                    ->cc($emails)
+                    ->subject($subject)
+                    ->with([
+                        'chamado' => $this->chamado,
+                        'user' => $this->user,
+                    ]);
     }
 }

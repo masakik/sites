@@ -34,9 +34,17 @@ class SiteMail extends Mailable
      */
     public function build()
     {
+        $subject = "Nova solicitação de site: {$this->site->dominio}" . config('sites.dnszone');
+
         return $this->view('emails.site')
-                    ->from(config('sites.email_principal'))
-                    ->to([config('sites.email_principal'),$this->user->email])
-                    ->subject("Nova solicitação de site: {$this->site->dominio}" . config('sites.dnszone'));
+                    ->to(config('mail.reply_to.address'))
+                    ->from(config('mail.from.address'))
+                    ->replyTo(config('mail.reply_to.address'))
+                    ->cc([$this->user->email])
+                    ->subject($subject)
+                    ->with([
+                        'site' => $this->site,
+                        'user' => $this->user,
+                    ]);
     }
 }

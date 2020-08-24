@@ -1,9 +1,12 @@
-<h1>Novo chamado para o site {{ $chamado->site->dominio.config('sites.dnszone') }}</h1>
+Novo chamado para o site {{ $chamado->site->dominio.config('sites.dnszone') }}
 
 <div>
-<b>Solicitante:</b> <br>
 Número USP: {{ $user->codpes }} <br>
 Nome: {{ $user->name }} 
+Número do chamado: {{$chamado->site->id}}/{{$chamado->id}}
+Chamado: <a href="{{config('app.url')}}/{{$chamado->site->id}}/{{$chamado->id}}">
+  {{config('app.url')}}/{{$chamado->site->id}}/{{$chamado->id}}
+</a>
 </div>
 
 <br>
@@ -13,5 +16,5 @@ Nome: {{ $user->name }}
 <b>Chamado:</b> {!! $chamado->descricao !!}
 </div>
 
-Sistema de sites fflch: https://sites.fflch.usp.br/
+Mensagem automática do sistema de gestão de sites: {{ config('app.url') }}
 

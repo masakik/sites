@@ -58,9 +58,15 @@ class ComentarioMail extends Mailable
         }
 
         return $this->view('emails.comentario')
-                    ->from(config('sites.email_principal'))
-                    ->to(config('sites.email_principal'))
-                    ->bcc($emails)
-                    ->subject($subject);
+                    ->to(config('mail.reply_to.address'))
+                    ->from(config('mail.from.address'))
+                    ->replyTo(config('mail.reply_to.address'))
+                    ->cc($emails)
+                    ->subject($subject)
+                    ->with([
+                        'comentario' => $this->comentario,
+                        'user' => $this->user,
+                    ]);
+
     }
 }

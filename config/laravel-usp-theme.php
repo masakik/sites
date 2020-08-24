@@ -5,7 +5,7 @@ return [
     'title' => env('APP_NAME'),
     'dashboard_url' => '/',
 
-    'logout_url' => 'logout',
+    'logout_url' => '/logout',
 
     'logout_method' => 'post',
 
@@ -25,6 +25,11 @@ return [
         [
             'text' => 'Chamados',
             'url'  => '/chamados/abertos',
+            'can'  => 'admin'
+        ],
+        [
+            'text' => 'Emails',
+            'url'  => '/emails',
             'can'  => 'admin'
         ],
     ],
