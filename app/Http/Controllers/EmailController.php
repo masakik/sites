@@ -14,14 +14,18 @@ class EmailController extends Controller
         $owners = array_unique(array_column($owners,'owner'));
         $owners_emails = [];
         foreach($owners as $codpes){
-            array_push($owners_emails,Pessoa::email($codpes));
+            $email = Pessoa::email($codpes);
+            if(!empty($email))
+                array_push($owners_emails,$email);
         }
 
         $admins = Site::select('numeros_usp')->get()->toArray();
         $admins = array_unique(array_column($admins,'numeros_usp'));
         $admins_emails = [];
         foreach($admins as $codpes){
-            array_push($admins_emails,Pessoa::email($codpes));
+            $email = Pessoa::email($codpes);
+            if(!empty($email))
+                array_push($admins_emails,$email);
         }
 
         return view('emails.export')->with([
