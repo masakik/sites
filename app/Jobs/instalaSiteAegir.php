@@ -9,7 +9,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use App\Aegir\Aegir;
 
-class clonaSiteAegir implements ShouldQueue
+class instalaSiteAegir implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
     private $alvo;
@@ -33,9 +33,9 @@ class clonaSiteAegir implements ShouldQueue
     {
         $this->aegir = new Aegir;
         $dominio = $this->alvo;
-        $site_modelo = env('SITE_MODELO');
+        //$site_modelo = env('SITE_MODELO');
         $id_node_bd = env('ID_NODE_BD');
         $id_node_plataforma = env('ID_NODE_PLATAFORMA');
-        $retorno = $this->aegir->clonaSite($dominio);
+        $retorno = $this->aegir->instalaSite($dominio);
     }
 }

@@ -4,10 +4,10 @@
   <a href="/sites/{{ $site->id }}/edit"> <i class="fas fa-edit"></i> </a> <br>
   <b>categoria: </b>{{ $site->categoria }}<br>
   <b>status: </b>
-    @if ($site->status == 'solicitado') 
+    @if ($site->status == 'Solicitado') 
         Aguardando aprovação 
-    @elseif ($site->status == 'aprovado') 
-        Aprovado
+    @elseif ($site->status == 'Aprovado') 
+        Aprovado - {{ $site->status_aegir }}
     @endif
   <br>
   <b>chamados: </b> <a href="/chamados/{{ $site->id }}"> {{ $site->chamados->where('status','aberto')->count() }} abertos</a> <a href="/chamados/{{ $site->id }}/create"> <i class="fas fa-plus"></i> </a><br>
@@ -19,8 +19,7 @@
      - {{ \Uspdev\Replicado\Pessoa::dump($site->owner)['nompes'] }}
   @endif
   <br><br>
-  <ul  class="list-group">
-    
+  <ul class="list-group">
     @if(!empty($site->numeros_usp)) <li class="list-group-item"> <b>Administradores:</b> </li> @endif
     @foreach(explode(',', $site->numeros_usp) as $numero_usp)
       @if(!empty($numero_usp))
@@ -28,7 +27,8 @@
           <li class="list-group-item">
                @can('sites.update',$site)
                     <form method="POST" action="/sites/{{ $site->id }}" style="display:inline">
-                    {{csrf_field()}} {{ method_field('patch') }}
+                    @csrf
+                    @method('patch')
                     <input type="hidden" name="deleteadmin" value="{{ $numero_usp }}">
                     <button type="submit" class="delete-item btn"><i class="fas fa-trash-alt"></i></button>
                     </form>
@@ -40,7 +40,6 @@
           </li>
       @endif
     @endforeach
-
   </ul>
 </td>
 
@@ -51,7 +50,7 @@
         @else
           @php($port = ':8088')
         @endif
-        @if($site->status != "solicitado")
+        @if($site->status != "Solicitado")
           <li class="list-group-item">
             <a href="http://{{ $site->dominio }}{{ config('sites.dnszone') }}{{$port}}/loginbytoken/?temp_token={{$hashlogin}}&codpes={{ Auth::user()->codpes }}" class="" target="_blank">
               Logon <i class="fas fa-sign-in-alt"></i>
@@ -69,55 +68,54 @@
         @can('admin')
             <li class="list-group-item">
                 <form method="POST" action="/sites/{{ $site->id }}">
-                {{csrf_field()}} {{ method_field('delete') }}
-                <button type="submit" class="delete-item btn btn-danger">Deletar <i class="fas fa-trash-alt"></i></button>
+                @csrf
+                @method('delete')
+                <button type="submit" class="delete-item btn btn-danger">Deletar<i class="fas fa-trash-alt"></i></button>
                 </form>
             </li>
 
-            @if($site->status == 'solicitado')
+            @if($site->status == 'Solicitado')
                 <li class="list-group-item">
                     <form method="POST" action="/sites/{{ $site->id }}">
-                    {{csrf_field()}} {{ method_field('patch') }}
+                    @csrf
+                    @method('patch')
                     <input type="hidden" name="aprovar" value="aprovar">
-                    <button type="submit" class="btn btn-success">Aprovar <i class="fas fa-thumbs-up"></i></button>
+                    <button type="submit" class="btn btn-success">Aprovar<i class="fas fa-thumbs-up"></i></button>
                     </form>
                 </li>
             @endif
+
+            @if ($site->status_aegir == "Habilitado")
+              <li class="list-group-item">
+              <form method="POST" action="/sites/{{ $site->id }}/disable">
+              @csrf
+              <button type="submit" class="btn btn-info">Desabilitar</button>
+              </form>
+              </li>
+            @elseif ($site->status_aegir == "Desabilitado")
+              <li class="list-group-item">
+              <form method="POST" action="/sites/{{ $site->id }}/enable">
+              @csrf
+              <button type="submit" class="btn btn-success">Habilitar</button>
+              </form>
+              </li>
+              <li class="list-group-item">
+              <form method="POST" action="/sites/{{ $site->id }}/delete">
+              @csrf
+              <button type="submit" class="btn btn-dark">Deletar</button>
+              </form>
+              </li>
+            @elseif($site->status_aegir != "Servidor Offline" && $site->status == "Aprovado")
+              <li class="list-group-item">
+              <form method="POST" action="/sites/{{ $site->id }}/install">
+              @csrf
+              <button type="submit" class="btn btn-primary">(Re)Criar</button>
+              </form>
+              </li>
+            @endif
+
         @endcan
-
 </form>
-
     </ul>
 </td>
-
-{{--
-@if ($site->status == "Habilitado")
-<td>
-<form method="POST" action="/sites/{{ $site->id }}/disable">
-{{ csrf_field() }}
-<button type="submit" class="btn btn-info">Desabilitar</button>
-</form></td>
-
-@elseif ($site->status == "Desabilitado")
-<td><form method="POST" action="/sites/{{ $site->id }}/enable">
-{{ csrf_field() }}
-<button type="submit" class="btn btn-success">Habilitar</button>
-</form>
-
-<form method="POST" action="/sites/{{ $site->id }}/delete">
-{{ csrf_field() }}
-<button type="submit" class="btn btn-dark">Deletar</button>
-</form></td>
-
-@elseif($site->status != "Servidor Offline")
-<td>
-<form method="POST" action="/sites/{{ $site->id }}/clone">
-{{ csrf_field() }}
-<button type="submit" class="btn btn-primary">Recriar</button>
-</form>
-
-</td>
-@endif
---}}
-
 </tr>

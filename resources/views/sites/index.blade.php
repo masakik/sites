@@ -7,7 +7,6 @@
 @parent
 
 <form method="get" action="/sites">
-
   <div class="row">
     <div class="input-group">
 
@@ -36,7 +35,6 @@
 <div class="row">
 <div class="table-responsive">
 
-
     <table class="table table-striped">
         <thead>
             <tr>
@@ -52,7 +50,7 @@
 @endforeach
 </tbody>
 </table>
-
+{{ $sites->links() }}
 </div>
 </div>
 

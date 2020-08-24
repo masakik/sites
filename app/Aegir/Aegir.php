@@ -78,24 +78,24 @@ class Aegir
         ]);
     }
 
-    public function clonaSite($dominio)
+    public function instalaSite($dominio)
     {
-      $site_modelo = env('SITE_MODELO');
-      $id_node_bd = env('ID_NODE_BD');
-      $id_node_plataforma = env('ID_NODE_PLATAFORMA');
+      $id_node_bd = env('AEGIR_ID_BD');
+      $id_node_plataforma = env('AEGIR_ID_PLATAFORMA');
+      $install_profile = env('AEGIR_INSTALL_PROFILE');
 
       $res = $this->client->request('POST','/aegir/saas/task/', [
           'form_params' => [
-              'target' => $site_modelo,
-              'type' => 'clone',
-              'options[new_uri]' => $dominio,
+              'target' => $dominio,
+              'type' => 'install',
+              'options[profile]' => $install_profile,
               'options[database]' => $id_node_bd,
               'options[target_platform]' => $id_node_plataforma,
               'api-key' => $this->aegir_key
           ]
       ]);
     }
-
+    
     public function deletaSite($dominio)
     {
         $res = $this->client->request('POST','/aegir/saas/task/', [
