@@ -8,12 +8,15 @@ use App\User;
 
 $factory->define(Site::class, function (Faker $faker) {
     $categorias = Site::categorias();
-
+    $status = [
+        'Aprovado',
+        'Solicitado'
+    ];
     return [
         'dominio' => $faker->unique()->word,
         'numeros_usp' => $faker->unique()->docente(),  
         'owner' =>  $faker->unique()->docente(), 
-        'status' => 'Aprovado',
+        'status' => $status[array_rand($status)],
         'categoria' => $categorias[array_rand($categorias)], 
         'justificativa' => $faker->sentence,
     ];

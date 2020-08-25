@@ -40,5 +40,7 @@ Route::get('/sites/{site}/novoadmin', 'SiteController@novoAdmin');
 Route::get('check', 'SiteController@check');
 Route::get('/emails', 'EmailController@emails');
 
+# Rotas Avisos
+Route::resource('/avisos','AvisoController');
 
 
