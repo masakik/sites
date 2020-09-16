@@ -42,8 +42,11 @@ class SiteController extends Controller
         // 1. query com a busca
         if(isset($request->dominio) || isset($request->status)) {
             $dominio = explode('.',$request->dominio);
-            $sites->where('dominio', 'LIKE', '%'.$dominio[0].'%')
-                  ->where('status', $request->status);
+            $sites->where('dominio', 'LIKE', '%'.$dominio[0].'%');
+
+            if(!is_null($request->status)) {
+                $sites->where('status', $request->status);
+            }
         }
 
         // Dica de ouro para debugar SQL gerado:
@@ -114,7 +117,6 @@ class SiteController extends Controller
         $site->save();
 
         Mail::send(new SiteMail($site,$user));
-
         $request->session()->flash('alert-info', 'Solicitação em andamento');
         return redirect("/sites/$site->id");
     }

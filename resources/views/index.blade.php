@@ -22,8 +22,8 @@
   <div class="card-header"><b>Relação dos sites da FFLCH</b></div>
 <div class="card-body">
 
-Total de sites existentes: <b>{{ $sites->where('status','aprovado')->count() }}</b> <br>
-Total de sites ainda não aprovados: <b>{{ $sites->where('status','solicitado')->count() }} </b>
+Total de sites existentes: <b>{{ $sites->where('status','!=','Solicitado')->count() }}</b> <br>
+Total de sites ainda não aprovados: <b>{{ $sites->where('status','Solicitado')->count() }} </b>
 
 <br><br>
 <table class="table table-striped">

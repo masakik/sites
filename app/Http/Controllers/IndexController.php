@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Site;
 
-class indexController extends Controller
+class IndexController extends Controller
 {
     public function __construct()
     {
