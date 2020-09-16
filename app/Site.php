@@ -44,4 +44,13 @@ class Site extends Model
             'Programa de Pós-Graduação'
         ];
     }
+
+    public static function status() {
+        return [
+                'Aprovado - Em Processamento',
+                'Aprovado - Habilitado',
+                'Aprovado - Desabilitado',
+                'Solicitado', 
+            ];
+        }
 }
