@@ -7,19 +7,20 @@
 @parent
 
 <form method="get" action="/sites">
-
   <div class="row">
     <div class="input-group">
 
     <input type="text" class="form-control" placeholder="Domínio ..." name="dominio" value="{{ Request()->dominio }}">
 
     <select class="custom-select" id="status" name="status">
-        <option value="aprovado" @if(Request()->status=="aprovado") selected @endif> 
-            Aprovado
+      <option value="" selected> 
+          Todos
         </option>
-        <option value="solicitado" @if(Request()->status=="solicitado") selected @endif>
-            Solicitado (ainda não aprovado)
+    @foreach (App\Site::status() as $status) 
+      <option value="{{ $status }}" @if(Request()->status=="$status") selected @endif> 
+          {{ $status }}
         </option>
+    @endforeach
     </select>
 
       <span class="input-group-btn">
@@ -36,7 +37,6 @@
 <div class="row">
 <div class="table-responsive">
 
-
     <table class="table table-striped">
         <thead>
             <tr>
@@ -52,7 +52,7 @@
 @endforeach
 </tbody>
 </table>
-
+{{ $sites->links() }}
 </div>
 </div>
 

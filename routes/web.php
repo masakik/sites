@@ -30,10 +30,9 @@ Route::get('/callback', 'Auth\LoginController@handleProviderCallback');
 Route::post('/logout', 'Auth\LoginController@logout');
 Route::get('/logout', 'Auth\LoginController@logout');
 
-Route::post('/sites/{site}/clone', 'SiteController@cloneSite');
+Route::post('/sites/{site}/install', 'SiteController@installSite');
 Route::post('/sites/{site}/disable', 'SiteController@disableSite');
 Route::post('/sites/{site}/enable', 'SiteController@enableSite');
-Route::post('/sites/{site}/delete', 'SiteController@deleteSite');
 Route::get('/sites/{site}/changeowner', 'SiteController@changeOwner');
 Route::get('/sites/{site}/novoadmin', 'SiteController@novoAdmin');
 

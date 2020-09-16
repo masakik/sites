@@ -10,7 +10,7 @@ use App\Jobs\criaSiteAegir;
 use App\Jobs\desabilitaSiteAegir;
 use App\Jobs\habilitaSiteAegir;
 use App\Jobs\deletaSiteAegir;
-use App\Jobs\clonaSiteAegir;
+use App\Jobs\instalaSiteAegir;
 use App\Aegir\Aegir;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
@@ -53,11 +53,14 @@ class SiteController extends Controller
         $sites = $sites->orderBy('dominio')->paginate(10);
 
         // Busca o status dos sites no aegir
-        /*
+        
         foreach($sites as $site){
-            $site->status = $this->aegir->verificaStatus($site->dominio.$dnszone);
+            if ($site->status != 'Solicitado'){
+                $site->status = $this->aegir->verificaStatus($site->dominio.$dnszone);
+                $site->save();
+            }
         }
-        */
+        
         $this->novoToken();
         $hashlogin = $user = \Auth::user()->temp_token;
         return view('sites/index', compact('sites','dnszone','hashlogin'));
@@ -105,13 +108,10 @@ class SiteController extends Controller
         $site->dominio = strtolower($request->dominio);
         $site->categoria = $request->categoria;
         $site->justificativa = $request->justificativa;
-        $site->status = 'solicitado';
+        $site->status = 'Solicitado';
         
         $site->owner = $user->codpes;
         $site->save();
-
-        //$alvo = $site->dominio . $dnszone;
-        //clonaSiteAegir::dispatch($alvo);
 
         Mail::send(new SiteMail($site,$user));
 
@@ -128,6 +128,11 @@ class SiteController extends Controller
     public function show(Site $site)
     {
         $this->authorize('sites.view',$site);
+        $dnszone = config('sites.dnszone');
+        if ($site->status != 'Solicitado'){
+            $site->status = $this->aegir->verificaStatus($site->dominio.$dnszone);
+            $site->save();
+        }
         $this->novoToken();
         $hashlogin = $user = \Auth::user()->temp_token;
         return view ('sites/show', compact('site','hashlogin'));
@@ -155,6 +160,7 @@ class SiteController extends Controller
     public function update(Request $request, Site $site)
     {
         $this->authorize('sites.update',$site);
+        $dnszone = config('sites.dnszone');
 
         if (isset($request->owner)) {
             $request->validate([
@@ -176,7 +182,7 @@ class SiteController extends Controller
 
             $site->categoria = $request->categoria;
             $site->justificativa = $request->justificativa;
-            $request->session()->flash('alert-info','site atualizado com sucesso');
+            $request->session()->flash('alert-info','Site atualizado com sucesso');
         }
 
         if (isset($request->novoadmin)) {
@@ -195,7 +201,6 @@ class SiteController extends Controller
         }
 
         if (isset($request->deleteadmin)) {
-
             $numeros_usp = explode(',',$site->numeros_usp);
             if(in_array($request->deleteadmin, $numeros_usp)){
                 $key = array_search($request->deleteadmin, $numeros_usp);
@@ -209,11 +214,15 @@ class SiteController extends Controller
 
         if (isset($request->aprovar)) {
             $this->authorize('admin');
-            $site->status = 'aprovado';
-            $request->session()->flash('alert-info','Site autorizado com sucesso');
+            $site->status = 'Aprovado - Em Processamento';
+            $alvo = $site->dominio . $dnszone;
+            instalaSiteAegir::dispatch($alvo);
+            $request->session()->flash('alert-info','Site aprovado com sucesso');
         }
 
         $site->save();
+    
+
         return redirect("/sites/$site->id");
     }
 
@@ -245,7 +254,13 @@ class SiteController extends Controller
     {
         $this->authorize('admin');
         #$this->authorize('sites.delete',$site);
+        $dnszone = config('sites.dnszone');
+        $alvo = $site->dominio . $dnszone;
         $site->delete();
+  
+        deletaSiteAegir::dispatch($alvo);
+  
+        request()->session()->flash('alert-info', 'Deleção do site em andamento.');
         return redirect('/sites');
     }
 
@@ -286,18 +301,17 @@ class SiteController extends Controller
         return response()->json([false,'Site não existe']);
     }
 
-/*
-    public function cloneSite(Request $request, Site $site)
+    public function installSite(Request $request, Site $site)
     {
       $this->authorize('sites.update',$site);
       $dnszone = config('sites.dnszone');
       $alvo = $site->dominio . $dnszone;
-      clonaSiteAegir::dispatch($alvo);
+      instalaSiteAegir::dispatch($alvo);
 
-      $request->session()->flash('alert-info', 'Clonagem do site em andamento');
+      $request->session()->flash('alert-info', 'Criação do site em andamento.');
       return redirect('/sites');
     }
-
+    
     public function disableSite(Request $request, Site $site)
     {
       $this->authorize('admin');
@@ -306,7 +320,7 @@ class SiteController extends Controller
       $alvo = $site->dominio . $dnszone;
       desabilitaSiteAegir::dispatch($alvo);
 
-      $request->session()->flash('alert-info', 'Desabilitação do site em andamento');
+      $request->session()->flash('alert-info', 'Desabilitação do site em andamento.');
       return redirect('/sites');
     }
 
@@ -318,23 +332,10 @@ class SiteController extends Controller
       $alvo = $site->dominio . $dnszone;
       habilitaSiteAegir::dispatch($alvo);
 
-      $request->session()->flash('alert-info', 'Habilitação do site em andamento');
+      $request->session()->flash('alert-info', 'Habilitação do site em andamento.');
       return redirect('/sites');
     }
 
-    public function deleteSite(Request $request, Site $site)
-    {
-      $this->authorize('admin');
-      #$this->authorize('sites.delete',$site);
-      $dnszone = config('sites.dnszone');
-      $alvo = $site->dominio . $dnszone;
-      $site->delete();
 
-      //deletaSiteAegir::dispatch($alvo);
-
-      $request->session()->flash('alert-info', 'Deleção do site em andamento');
-      return redirect('/sites');
-    }
-    */
 
 }

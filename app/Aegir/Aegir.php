@@ -19,6 +19,7 @@ class Aegir
         $this->aegir_protocol = env('AEGIR_PROTOCOL');
         $this->aegir_host = env('AEGIR_HOST');
         $this->aegir_key = env('AEGIR_KEY');
+        //$this->aegir_dnszone = env('DNSZONE');
         
         $this->client = new Client([
              'base_uri' => "{$this->aegir_protocol}://{$this->aegir_host}",
@@ -45,12 +46,14 @@ class Aegir
             $body = json_decode($res->getBody());
             if (isset($body->site_status)){
                 if ($body->site_status == 1)
-                    return "Habilitado";
+                    return "Aprovado - Habilitado";
                 elseif ($body->site_status == -1)
-                    return "Desabilitado";
+                    return "Aprovado - Desabilitado";
+                else
+                    return "Aprovado - Em Processamento";
             }
             else
-                return "Em Processamento";
+                return "Aprovado - Em Processamento";
         }
         else 
             return 'Servidor Offline';
@@ -78,24 +81,17 @@ class Aegir
         ]);
     }
 
-    public function clonaSite($dominio)
+    public function instalaSite($dominio)
     {
-      $site_modelo = env('SITE_MODELO');
-      $id_node_bd = env('ID_NODE_BD');
-      $id_node_plataforma = env('ID_NODE_PLATAFORMA');
-
       $res = $this->client->request('POST','/aegir/saas/task/', [
           'form_params' => [
-              'target' => $site_modelo,
-              'type' => 'clone',
-              'options[new_uri]' => $dominio,
-              'options[database]' => $id_node_bd,
-              'options[target_platform]' => $id_node_plataforma,
+              'target' => $dominio,
+              'type' => 'install',
               'api-key' => $this->aegir_key
           ]
       ]);
     }
-
+    
     public function deletaSite($dominio)
     {
         $res = $this->client->request('POST','/aegir/saas/task/', [
