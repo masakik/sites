@@ -15,6 +15,7 @@ use App\Aegir\Aegir;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use App\Mail\SiteMail;
+use App\Mail\AprovaSiteMail;
 use Mail;
 
 class SiteController extends Controller
@@ -219,6 +220,8 @@ class SiteController extends Controller
             $site->status = 'Aprovado - Em Processamento';
             $alvo = $site->dominio . $dnszone;
             instalaSiteAegir::dispatch($alvo);
+            Mail::send(new AprovaSiteMail($site));
+
             $request->session()->flash('alert-info','Site aprovado com sucesso');
         }
 
