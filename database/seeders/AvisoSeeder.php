@@ -1,5 +1,7 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
 
 class AvisoSeeder extends Seeder
@@ -17,8 +19,8 @@ class AvisoSeeder extends Seeder
             'divulgacao_home_ate' => '2020-12-20',
         ];
 
-        App\Aviso::create($entrada);
+        App\Models\Aviso::create($entrada);
 
-        factory(App\Aviso::class, 50)->create();
+        factory(App\Models\Aviso::class, 50)->create();
     }
 }

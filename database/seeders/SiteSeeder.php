@@ -1,7 +1,9 @@
 <?php
 
+namespace Database\Seeders;
+
 use Illuminate\Database\Seeder;
-use App\Site;
+use App\Models\Site;
 
 class SiteSeeder extends Seeder
 {
@@ -24,6 +26,6 @@ class SiteSeeder extends Seeder
 
         Site::create($site);
 
-        factory(Site::class, 20)->create();
+        Site::factory()->count(20)->create();
     }
 }

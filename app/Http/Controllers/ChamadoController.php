@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Chamado;
-use App\Site;
+use App\Models\Chamado;
+use App\Models\Site;
 use Illuminate\Http\Request;
 use App\Mail\ChamadoMail;
 use Mail;
@@ -20,7 +20,7 @@ class ChamadoController extends Controller
     {
         $this->authorize('admin');
         $chamados = Chamado::where('status', 'aberto')->get();
-        return view('chamados/abertos',compact('chamados')); 
+        return view('chamados/abertos',compact('chamados'));
     }
 
     /**
@@ -31,7 +31,7 @@ class ChamadoController extends Controller
     public function index(Site $site)
     {
         $this->authorize('sites.view',$site);
-        return view('chamados/index',compact('site')); 
+        return view('chamados/index',compact('site'));
     }
 
     /**
@@ -42,7 +42,7 @@ class ChamadoController extends Controller
     public function create(Site $site)
     {
         $this->authorize('sites.view',$site);
-        return view('chamados/create',compact('site')); 
+        return view('chamados/create',compact('site'));
     }
 
     /**
@@ -83,7 +83,7 @@ class ChamadoController extends Controller
     public function show(Site $site, Chamado $chamado)
     {
         $this->authorize('sites.view',$site);
-        return view('chamados/show',compact('site','chamado')); 
+        return view('chamados/show',compact('site','chamado'));
     }
 
     /**

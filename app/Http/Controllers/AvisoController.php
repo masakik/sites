@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\AvisoRequest;
-use App\Aviso;
+use App\Models\Aviso;
 
 class AvisoController extends Controller
 {
@@ -54,11 +54,11 @@ class AvisoController extends Controller
     public function update(AvisoRequest $request, Aviso $aviso){
 
         $this->authorize('admin');
-       
+
         $validated = $request->validated();
         $aviso->update($validated);
 
-        return redirect("avisos/$aviso->id"); 
+        return redirect("avisos/$aviso->id");
     }
 
     public function destroy(Aviso $aviso){

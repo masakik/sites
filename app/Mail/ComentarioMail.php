@@ -2,8 +2,8 @@
 
 namespace App\Mail;
 
-use App\User;
-use App\Comentario;
+use App\Models\User;
+use App\Models\Comentario;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
@@ -37,22 +37,22 @@ class ComentarioMail extends Mailable
         // emails dos envolvidos nos comentários
         // quem abriu o chamado sempre recebe email
         $emails = [$this->comentario->chamado->user->email];
-        
+
         // Responsável pelo site
         $codpes = $this->comentario->chamado->site->owner;
         $owner = User::where('codpes', $codpes)->first();
         if ($owner) {
             $emails[] = $owner->email;
         }
-        
+
         foreach($this->comentario->chamado->comentarios as $comment){
             $emails[] = $comment->user->email;
         }
         $emails = array_unique($emails);
-    
+
         // Monta título do email
         if($this->comentario->chamado->status == 'fechado' ) {
-            $subject = "Chamado {$this->comentario->chamado->site->id}/{$this->comentario->chamado->id} 
+            $subject = "Chamado {$this->comentario->chamado->site->id}/{$this->comentario->chamado->id}
                         fechado ({$this->comentario->chamado->site->dominio}" . config('sites.dnszone') . ")";
         } else {
             $subject = "Novo comentário no chamado {$this->comentario->chamado->site->id}/{$this->comentario->chamado->id}

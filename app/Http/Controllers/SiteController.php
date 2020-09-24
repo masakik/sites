@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Site;
-use App\User;
+use App\Models\Site;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Auth;
 use App\Jobs\criaSiteAegir;
@@ -36,7 +36,7 @@ class SiteController extends Controller
     {
         $this->authorize('sites.create'); // verificar porque isso não funciona
         $dnszone = config('sites.dnszone');
- 
+
         # todos sites
         $sites = Site::allowed();
 
@@ -57,19 +57,19 @@ class SiteController extends Controller
         $sites = $sites->orderBy('dominio')->paginate(10);
 
         // Busca o status dos sites no aegir
-        
+
         foreach($sites as $site){
             if ($site->status != 'Solicitado'){
                 $site->status = $this->aegir->verificaStatus($site->dominio.$dnszone);
                 $site->save();
             }
         }
-        
+
         $this->novoToken();
         $hashlogin = $user = \Auth::user()->temp_token;
         return view('sites/index', compact('sites','dnszone','hashlogin'));
     }
-    
+
     private function novoToken(){
         // gera um token de login no drupal
         $hashlogin = Str::random(32);
@@ -87,7 +87,7 @@ class SiteController extends Controller
     {
         $this->authorize('sites.create');
         $dnszone = config('sites.dnszone');
-        return view('sites/create', ['dnszone'=>$dnszone]); 
+        return view('sites/create', ['dnszone'=>$dnszone]);
     }
 
     /**
@@ -113,7 +113,7 @@ class SiteController extends Controller
         $site->categoria = $request->categoria;
         $site->justificativa = $request->justificativa;
         $site->status = 'Solicitado';
-        
+
         $site->owner = $user->codpes;
         $site->save();
 
@@ -148,7 +148,7 @@ class SiteController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function edit(Site $site)
-    {   
+    {
         $this->authorize('sites.update',$site);
         return view('sites/edit', compact('site'));
     }
@@ -226,7 +226,7 @@ class SiteController extends Controller
         }
 
         $site->save();
-    
+
 
         return redirect("/sites/$site->id");
     }
@@ -262,9 +262,9 @@ class SiteController extends Controller
         $dnszone = config('sites.dnszone');
         $alvo = $site->dominio . $dnszone;
         $site->delete();
-  
+
         deletaSiteAegir::dispatch($alvo);
-  
+
         request()->session()->flash('alert-info', 'Deleção do site em andamento.');
         return redirect('/sites');
     }
@@ -278,10 +278,10 @@ class SiteController extends Controller
         ]);
 
         $user = User::where('codpes',$request->codpes)->first();
-        
+
         // verifica se token secreto é válido
         if($request->secretkey != config('sites.deploy_secret_key'))
-            return response()->json([false,'Secret Token Inválido']); 
+            return response()->json([false,'Secret Token Inválido']);
 
         // verifica se o temp_token está válido
         if($request->temp_token != $user->temp_token) {
@@ -299,7 +299,7 @@ class SiteController extends Controller
             // verifica se o número usp em questão pode fazer logon no site
             $all = $site->owner . ',' . $site->numeros_usp . ',' . config('sites.admins');
             if(in_array($request->codpes,explode(",",$all))) {
-                return response()->json([true,$user->email]); 
+                return response()->json([true,$user->email]);
             }
             return response()->json([false,'Usuário sem permissão']);
         }
@@ -316,7 +316,7 @@ class SiteController extends Controller
       $request->session()->flash('alert-info', 'Criação do site em andamento.');
       return redirect('/sites');
     }
-    
+
     public function disableSite(Request $request, Site $site)
     {
       $this->authorize('admin');

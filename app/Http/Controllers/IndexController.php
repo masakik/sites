@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Site;
+use App\Models\Site;
 
 class IndexController extends Controller
 {

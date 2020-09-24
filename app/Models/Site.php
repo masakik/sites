@@ -1,14 +1,17 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class Site extends Model
 {
+
+    use HasFactory;
+
     public function scopeAllowed($query)
     {
         $user = Auth::user();
@@ -23,11 +26,11 @@ class Site extends Model
 
     public function chamados()
     {
-        return $this->hasMany('App\Chamado');
+        return $this->hasMany('App\Models\Chamado');
     }
-    
+
     public function user(){
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 
     public static function categorias() {
@@ -35,7 +38,7 @@ class Site extends Model
             'Grupo de estudo',
             'Grupo de pesquisa',
             'Departamento',
-            'Administrativo', 
+            'Administrativo',
             'Centro',
             'Associação',
             'Laboratório',
@@ -50,7 +53,7 @@ class Site extends Model
                 'Aprovado - Em Processamento',
                 'Aprovado - Habilitado',
                 'Aprovado - Desabilitado',
-                'Solicitado', 
+                'Solicitado',
             ];
         }
 }

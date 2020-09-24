@@ -2,8 +2,8 @@
 
 namespace App\Policies;
 
-use App\User;
-use App\Site;
+use App\Models\User;
+use App\Models\Site;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Illuminate\Support\Facades\Gate;
 
@@ -29,7 +29,7 @@ class SitePolicy
         // verifica se o número usp em questão é responsável ou adminstrador de site
         $all = $site->owner . ',' . $site->numeros_usp . ',' . config('sites.admins');
         if(in_array($user->codpes,explode(",",$all))) {
-            return true; 
+            return true;
         }
         return false;
     }

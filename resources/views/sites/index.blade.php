@@ -13,11 +13,11 @@
     <input type="text" class="form-control" placeholder="Domínio ..." name="dominio" value="{{ Request()->dominio }}">
 
     <select class="custom-select" id="status" name="status">
-      <option value="" selected> 
+      <option value="" selected>
           Todos
         </option>
-    @foreach (App\Site::status() as $status) 
-      <option value="{{ $status }}" @if(Request()->status=="$status") selected @endif> 
+    @foreach (App\Models\Site::status() as $status)
+      <option value="{{ $status }}" @if(Request()->status=="$status") selected @endif>
           {{ $status }}
         </option>
     @endforeach

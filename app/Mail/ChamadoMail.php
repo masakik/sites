@@ -2,8 +2,8 @@
 
 namespace App\Mail;
 
-use App\User;
-use App\Chamado;
+use App\Models\User;
+use App\Models\Chamado;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
