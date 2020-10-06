@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use App\Mail\SiteMail;
 use App\Mail\AprovaSiteMail;
+use App\Mail\TrocaResponsavelMail;
 use Mail;
 
 class SiteController extends Controller
@@ -170,6 +171,8 @@ class SiteController extends Controller
               'owner' => ['required','codpes'],
             ]);
 
+            $novo_responsavel = $request->owner;
+            Mail::send(new TrocaResponsavelMail($site,$novo_responsavel));
             $site->owner = $request->owner;
             $request->session()->flash('alert-info','Responsável alterado com sucesso');
             $site->save();
