@@ -68,9 +68,10 @@
                     @csrf
                     @method('patch')
                     <input type="hidden" name="aprovar" value="aprovar">
-                    <button type="submit" class="btn btn-success">Aprovar<i class="fas fa-thumbs-up"></i></button>
+                    <button type="submit" class="btn btn-success">Aprovar <i class="fas fa-thumbs-up"></i></button>
                     </form>
                 </li>
+                
             @endif
 
             @if ($site->status == "Aprovado - Habilitado")
@@ -94,6 +95,15 @@
                 <button type="submit" class="delete-item btn btn-danger">Deletar<i class="fas fa-trash-alt"></i></button>
                 </form>
             </li>
+            @elseif ($site->status == "Aprovado - Em Processamento") 
+            <li class="list-group-item">
+                    <form method="POST" action="/sites/{{ $site->id }}">
+                    @csrf
+                    @method('patch')
+                    <input type="hidden" name="voltar_solicitacao" value="voltar_solicitacao">
+                    <button type="submit" class="btn btn-secondary">Voltar Solicitação</button>
+                    </form>
+                </li>
             @endif
         @endcan
 </form>
