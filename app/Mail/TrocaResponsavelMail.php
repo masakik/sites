@@ -48,9 +48,11 @@ class TrocaResponsavelMail extends Mailable
                     ->cc([$user->email, $novo_responsavel->email])
                     ->subject($subject)
                     ->with([
-                        'site' => $this->site,
-                        'name' => $user->name,
+                        'site'                  => $this->site,
+                        'name'                  => $user->name,
+                        'nusp'                  => $user->codpes,
                         'name_novo_responsavel' => $novo_responsavel->name,
+                        'nusp_novo_responsavel' => $novo_responsavel->codpes,
                     ]);
     }
 }
