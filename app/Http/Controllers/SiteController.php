@@ -17,6 +17,8 @@ use Illuminate\Support\Str;
 use App\Mail\SiteMail;
 use App\Mail\AprovaSiteMail;
 use App\Mail\TrocaResponsavelMail;
+use App\Mail\NovoAdminMail;
+use App\Mail\DeletaAdminMail;
 use Mail;
 
 class SiteController extends Controller
@@ -195,6 +197,7 @@ class SiteController extends Controller
             $request->validate([
               'novoadmin' => ['required','codpes'],
             ]);
+            $novo_admin = $request->novoadmin;
 
             $numeros_usp = explode(',',$site->numeros_usp);
             if(!in_array($request->novoadmin, $numeros_usp)){
@@ -203,11 +206,13 @@ class SiteController extends Controller
             $numeros_usp = array_map('trim', $numeros_usp);
             $numeros_usp = implode(',',$numeros_usp);
             $site->numeros_usp = $numeros_usp;
+            Mail::send(new NovoAdminMail($site,$novo_admin));
             $request->session()->flash('alert-info','Administrador adicionado com sucesso');
         }
 
         if (isset($request->deleteadmin)) {
             $numeros_usp = explode(',',$site->numeros_usp);
+            $deleta_admin = $request->deleteadmin;
             if(in_array($request->deleteadmin, $numeros_usp)){
                 $key = array_search($request->deleteadmin, $numeros_usp);
                 unset($numeros_usp[$key]);
@@ -215,6 +220,7 @@ class SiteController extends Controller
             $numeros_usp = array_map('trim', $numeros_usp);
             $numeros_usp = implode(',',$numeros_usp);
             $site->numeros_usp = $numeros_usp;
+            Mail::send(new DeletaAdminMail($site,$deleta_admin));
             $request->session()->flash('alert-info','Administrador removido com sucesso');
         }
 

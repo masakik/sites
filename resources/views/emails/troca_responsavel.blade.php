@@ -1,4 +1,4 @@
-<h1>Troca de Responsável do Site</h1>
+<h1>Troca de responsável do site</h1>
 
 <div>
 O site {{ $site->dominio.config('sites.dnszone') }} teve  o reponsável alterado. 

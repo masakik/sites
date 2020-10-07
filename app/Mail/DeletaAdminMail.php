@@ -9,23 +9,23 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class TrocaResponsavelMail extends Mailable
+class DeletaAdminMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $site;
     public $user;
-    public $novo_responsavel;
+    public $deleta_admin;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Site $site, $novo_responsavel)
+    public function __construct(Site $site, $deleta_admin)
     {
         $this->site = $site;
-        $this->novo_responsavel = $novo_responsavel;
+        $this->deleta_admin = $deleta_admin;
     }
 
     /**
@@ -35,23 +35,23 @@ class TrocaResponsavelMail extends Mailable
      */
     public function build()
     {
-        $novo_responsavel = User::where('codpes',$this->novo_responsavel)->first();
+        $deleta_admin = User::where('codpes',$this->deleta_admin)->first();
 
-        $subject = "Troca do reponsável do site {$this->site->dominio}" . config('sites.dnszone');
+        $subject = "Removido um administrador de conteúdo do site {$this->site->dominio}" . config('sites.dnszone');
         $user = User::where('codpes',$this->site->owner)->first();
 
-        return $this->view('emails.troca_responsavel')
+        return $this->view('emails.deleta_admin')
                     ->to(config('mail.reply_to.address'))
                     ->from(config('mail.from.address'))
                     ->replyTo(config('mail.reply_to.address'))
-                    ->cc([$user->email, $novo_responsavel->email])
+                    ->cc([$user->email, $deleta_admin->email])
                     ->subject($subject)
                     ->with([
-                        'site'                  => $this->site,
-                        'name'                  => $user->name,
-                        'nusp'                  => $user->codpes,
-                        'name_novo_responsavel' => $novo_responsavel->name,
-                        'nusp_novo_responsavel' => $novo_responsavel->codpes,
+                        'site'              => $this->site,
+                        'name'              => $user->name,
+                        'nusp'              => $user->codpes,
+                        'name_deleta_admin' => $deleta_admin->name,
+                        'nusp_deleta_admin' => $deleta_admin->codpes,
                     ]);
     }
 }
