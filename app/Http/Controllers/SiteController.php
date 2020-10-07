@@ -225,6 +225,13 @@ class SiteController extends Controller
             $request->session()->flash('alert-info','Site aprovado com sucesso');
         }
 
+        if (isset($request->voltar_solicitacao)) {
+            $this->authorize('admin');
+            $site->status = 'Solicitado';
+            $site->save();
+            $request->session()->flash('alert-info','Site aprovado com sucesso');
+        }        
+
         $site->save();
 
 
