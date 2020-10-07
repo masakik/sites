@@ -8,11 +8,11 @@ Confira nossos tutoriais em: http://sti.fflch.usp.br/drupal
 
 <br>
 <div>
-<b>Novo Responsável:</b> {{ $name_novo_responsavel }} 
+<b>Novo Responsável:</b> {{ $nusp_novo_responsavel }} - {{ $name_novo_responsavel }} 
 </div>
 <br>
 <div>
-<b>Responsável Anterior:</b>  {{ $name }}
+<b>Responsável Anterior:</b>  {{ $nusp }} - {{ $name }}
 </div>
 
 
