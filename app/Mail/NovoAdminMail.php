@@ -9,23 +9,23 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class TrocaResponsavelMail extends Mailable
+class NovoAdminMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $site;
     public $user;
-    public $novo_responsavel;
+    public $novo_admin;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Site $site, $novo_responsavel)
+    public function __construct(Site $site, $novo_admin)
     {
         $this->site = $site;
-        $this->novo_responsavel = $novo_responsavel;
+        $this->novo_admin = $novo_admin;
     }
 
     /**
@@ -35,23 +35,23 @@ class TrocaResponsavelMail extends Mailable
      */
     public function build()
     {
-        $novo_responsavel = User::where('codpes',$this->novo_responsavel)->first();
+        $novo_admin = User::where('codpes',$this->novo_admin)->first();
 
-        $subject = "Troca do reponsável do site {$this->site->dominio}" . config('sites.dnszone');
+        $subject = "Adicionado novo administrador de conteúdo ao site {$this->site->dominio}" . config('sites.dnszone');
         $user = User::where('codpes',$this->site->owner)->first();
 
-        return $this->view('emails.troca_responsavel')
+        return $this->view('emails.novo_admin')
                     ->to(config('mail.reply_to.address'))
                     ->from(config('mail.from.address'))
                     ->replyTo(config('mail.reply_to.address'))
-                    ->cc([$user->email, $novo_responsavel->email])
+                    ->cc([$user->email, $novo_admin->email])
                     ->subject($subject)
                     ->with([
-                        'site'                  => $this->site,
-                        'name'                  => $user->name,
-                        'nusp'                  => $user->codpes,
-                        'name_novo_responsavel' => $novo_responsavel->name,
-                        'nusp_novo_responsavel' => $novo_responsavel->codpes,
+                        'site'              => $this->site,
+                        'name'              => $user->name,
+                        'nusp'              => $user->codpes,
+                        'name_novo_admin' => $novo_admin->name,
+                        'nusp_novo_admin' => $novo_admin->codpes,
                     ]);
     }
 }
