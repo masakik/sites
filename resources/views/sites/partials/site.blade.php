@@ -61,7 +61,6 @@
 
         @can('admin')
             
-
             @if($site->status == 'Solicitado')
                 <li class="list-group-item">
                     <form method="POST" action="/sites/{{ $site->id }}">
@@ -71,7 +70,13 @@
                     <button type="submit" class="btn btn-success">Aprovar <i class="fas fa-thumbs-up"></i></button>
                     </form>
                 </li>
-                
+                <li class="list-group-item">
+                    <form method="POST" action="/sites/{{ $site->id }}">
+                    @csrf
+                    @method('delete')
+                    <button type="submit" class="delete-item btn btn-danger">Deletar <i class="fas fa-trash-alt"></i></button>
+                    </form>
+                </li>          
             @endif
 
             @if ($site->status == "Aprovado - Habilitado")
@@ -88,13 +93,13 @@
               <button type="submit" class="btn btn-success">Habilitar</button>
               </form>
               </li>
-                <li class="list-group-item">
+              <li class="list-group-item">
                 <form method="POST" action="/sites/{{ $site->id }}">
                 @csrf
                 @method('delete')
-                <button type="submit" class="delete-item btn btn-danger">Deletar<i class="fas fa-trash-alt"></i></button>
+                <button type="submit" class="delete-item btn btn-danger">Deletar <i class="fas fa-trash-alt"></i></button>
                 </form>
-            </li>
+              </li>
             @elseif ($site->status == "Aprovado - Em Processamento") 
             <li class="list-group-item">
                     <form method="POST" action="/sites/{{ $site->id }}">

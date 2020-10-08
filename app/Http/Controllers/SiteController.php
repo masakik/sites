@@ -279,7 +279,8 @@ class SiteController extends Controller
         $alvo = $site->dominio . $dnszone;
         $site->delete();
 
-        deletaSiteAegir::dispatch($alvo);
+        if ($site->status == "Aprovado - Desabilitado")
+            deletaSiteAegir::dispatch($alvo);
 
         request()->session()->flash('alert-info', 'Deleção do site em andamento.');
         return redirect('/sites');
@@ -356,7 +357,4 @@ class SiteController extends Controller
       $request->session()->flash('alert-info', 'Habilitação do site em andamento.');
       return redirect('/sites');
     }
-
-
-
 }
