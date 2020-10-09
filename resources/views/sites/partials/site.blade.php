@@ -31,8 +31,8 @@
                     </form>
                @endcan
                
-@if(\App\User::where('codpes',$numero_usp)->first())
-{{ $numero_usp }} - {{ \App\User::where('codpes',$numero_usp)->first()->name }}
+@if(\App\Models\User::where('codpes',$numero_usp)->first())
+{{ $numero_usp }} - {{ \App\Models\User::where('codpes',$numero_usp)->first()->name }}
 @else
 {{ $numero_usp }} - <b>Usuário ainda não fez login</b>
 @endif
