@@ -9,8 +9,7 @@ Confira nossos tutoriais em: http://sti.fflch.usp.br/drupal
 
 <br>
 <div>
-<b>Solicitante:</b> <br>
-Nome: {{ $name }} 
+<b>Solicitante:</b>   {{ $nusp }} - {{ $name }} 
 </div>
 
 <br>

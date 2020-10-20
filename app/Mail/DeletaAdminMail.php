@@ -34,24 +34,46 @@ class DeletaAdminMail extends Mailable
      * @return $this
      */
     public function build()
-    {
-        $deleta_admin = User::where('codpes',$this->deleta_admin)->first();
-
+    {       
         $subject = "Removido um administrador de conteúdo do site {$this->site->dominio}" . config('sites.dnszone');
         $user = User::where('codpes',$this->site->owner)->first();
+        $deleta_admin = User::where('codpes',$this->deleta_admin)->first();
+
+        $cc = array();
+        if ($user){
+            $owner_nusp = $user->codpes;
+            $owner_nome = $user->name;
+            array_push($cc, $user->email);
+        }
+        else{
+            $owner_nusp = "Usuário ainda não fez login";
+            $owner_nome = "Usuário ainda não fez login";   
+        }
+
+        if($deleta_admin){
+            $admin_nusp = $deleta_admin->codpes;
+            $admin_nome = $deleta_admin->name;
+            array_push($cc, $deleta_admin->email);
+        }
+        else{
+            $admin_nusp = $this->deleta_admin;
+            $admin_nome = "Usuário ainda não fez login";
+        }
+            
+        array_push($cc, config('mail.from.address'));
 
         return $this->view('emails.deleta_admin')
                     ->to(config('mail.reply_to.address'))
                     ->from(config('mail.from.address'))
                     ->replyTo(config('mail.reply_to.address'))
-                    ->cc([$user->email, $deleta_admin->email])
+                    ->cc($cc)
                     ->subject($subject)
                     ->with([
                         'site'              => $this->site,
-                        'name'              => $user->name,
-                        'nusp'              => $user->codpes,
-                        'name_deleta_admin' => $deleta_admin->name,
-                        'nusp_deleta_admin' => $deleta_admin->codpes,
+                        'name'              => $owner_nome,
+                        'nusp'              => $owner_nusp,
+                        'name_deleta_admin' => $admin_nome,
+                        'nusp_deleta_admin' => $admin_nusp,
                     ]);
     }
 }
