@@ -8,6 +8,11 @@ Confira nossos tutoriais em: http://sti.fflch.usp.br/drupal
 
 <br>
 <div>
+<b>Responsável pelo site:</b> {{ $nusp }} - {{ $name }} 
+</div>
+
+<br>
+<div>
 <b>Administrador de Conteúdo adicionado:</b> {{ $nusp_novo_admin }} - {{ $name_novo_admin }} 
 </div>
 

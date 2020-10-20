@@ -35,23 +35,45 @@ class TrocaResponsavelMail extends Mailable
      */
     public function build()
     {
-        $novo_responsavel = User::where('codpes',$this->novo_responsavel)->first();
-
         $subject = "Troca do reponsável do site {$this->site->dominio}" . config('sites.dnszone');
         $user = User::where('codpes',$this->site->owner)->first();
+        $novo_responsavel = User::where('codpes',$this->novo_responsavel)->first();
 
+        $cc = array();
+        if ($user){
+            $owner_nusp = $user->codpes;
+            $owner_nome = $user->name;
+            array_push($cc, $user->email);
+        }
+        else{
+            $owner_nusp = "Usuário ainda não fez login";
+            $owner_nome = "Usuário ainda não fez login";   
+        }
+
+        if($novo_responsavel){
+            $novo_responsavel_nusp = $novo_responsavel->codpes;
+            $novo_responsavel_nome = $novo_responsavel->name;
+            array_push($cc, $novo_responsavel->email);
+        }
+        else{
+            $novo_responsavel_nusp = $this->novo_responsavel;
+            $novo_responsavel_nome = "Usuário ainda não fez login";
+        }
+            
+        array_push($cc, config('mail.from.address'));
+  
         return $this->view('emails.troca_responsavel')
                     ->to(config('mail.reply_to.address'))
                     ->from(config('mail.from.address'))
                     ->replyTo(config('mail.reply_to.address'))
-                    ->cc([$user->email, $novo_responsavel->email])
+                    ->cc($cc)
                     ->subject($subject)
                     ->with([
                         'site'                  => $this->site,
-                        'name'                  => $user->name,
-                        'nusp'                  => $user->codpes,
-                        'name_novo_responsavel' => $novo_responsavel->name,
-                        'nusp_novo_responsavel' => $novo_responsavel->codpes,
+                        'name'                  => $owner_nome,
+                        'nusp'                  => $owner_nusp,
+                        'name_novo_responsavel' => $novo_responsavel_nome,
+                        'nusp_novo_responsavel' => $novo_responsavel_nusp,
                     ]);
     }
 }

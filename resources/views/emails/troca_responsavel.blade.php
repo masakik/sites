@@ -10,11 +10,11 @@ Confira nossos tutoriais em: http://sti.fflch.usp.br/drupal
 <div>
 <b>Novo Responsável:</b> {{ $nusp_novo_responsavel }} - {{ $name_novo_responsavel }} 
 </div>
+
 <br>
 <div>
 <b>Responsável Anterior:</b>  {{ $nusp }} - {{ $name }}
 </div>
-
 
 <br>
 Mensagem automática do sistema de gestão de sites: {{ config('app.url') }}
