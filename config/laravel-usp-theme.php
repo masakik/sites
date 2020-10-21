@@ -41,7 +41,7 @@ return [
         ],
         [
             'text' => 'Chamados',
-            'url'  => '/chamados/abertos',
+            'url'  => '/chamados',
             'can'  => 'admin'
         ],
         [
