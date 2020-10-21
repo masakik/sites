@@ -22,7 +22,7 @@
         </option>
     @endforeach
     @foreach ($chamado->fechado_em() as $fechado_em)
-      <option value="{{ $fechado_em }}" @if(Request()->fechado_em=="$fechado_em") selected @endif>
+      <option value="{{ $fechado_em }}" @if(Request()->busc_fechada=="$fechado_em") selected @endif>
           Fechados
         </option>
     @endforeach

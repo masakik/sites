@@ -34,7 +34,7 @@ class ChamadoController extends Controller
 
         if($request->busca  != null AND $request->busc_aberta != null AND $request->busc_fechada){
             $chamados= Site::where('dominio', 'LIKE', "%{$request->busca}%")
-            ->where('status', $request->buscastatus)
+            ->where('status', $request->busc_aberta)
             ->where('fechado_em', $request->busc_fechada)->paginate(10);
         }
         else if(isset($request->busca)){
