@@ -8,33 +8,6 @@
 </style>
 @stop
 
-<form method="get" action="/chamados">
-  <div class="row">
-    <div class="input-group">
-    <input type="text" class="form-control" placeholder="BUSCA POR DOMÍNIO" name="busca" value="{{ Request()->busca }}">
-    <select class="custom-select" id="busc_aberta" name="busc_aberta">
-      <option value="" selected>
-          Todos
-        </option>
-    @foreach ($chamado->status() as $status)
-      <option value="{{ $status }}" @if(Request()->busc_aberta=="$status") selected @endif>
-          Abertos
-        </option>
-    @endforeach
-    @foreach ($chamado->fechado_em() as $fechado_em)
-      <option value="{{ $fechado_em }}" @if(Request()->busc_fechada=="$fechado_em") selected @endif>
-          Fechados
-        </option>
-    @endforeach
-    </select>
-      <span class="input-group-btn">
-        <button type="submit" class="btn btn-success"> Buscar </button>
-      </span>
-    </div>
-  </div>
-</form>
-{{ $chamados->appends(request()->query())->links() }}
-
 <h1>Chamados de {{ $site->dominio.config('sites.dnszone') }}</h1>
 
 <div class="table-responsive">

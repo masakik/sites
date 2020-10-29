@@ -16,10 +16,24 @@ class ChamadoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function abertos()
+    public function abertos(Request $request, Site $site)
     {
         $this->authorize('admin');
-        $chamados = Chamado::where('status', 'aberto')->get();
+
+        if($request->dominio  != null && $request->status != null){
+            $chamados= Site::where('dominio', 'LIKE', "%{$request->dominio}%")
+            ->orWhere('status', $request->status)->paginate(10);
+        }
+        else if(isset($request->dominio)){
+            $chamados= Site::where('dominio', 'LIKE', "%{$request->dominio}%")->paginate(10);
+        }
+        else if(isset($request->status)){
+            $chamados= Chamado::where('status', $request->status)->paginate(10);
+        }
+        else {
+            $chamados= Chamado::paginate(10);
+        }    
+        
         return view('chamados/abertos',compact('chamados'));
     }
 
@@ -28,28 +42,11 @@ class ChamadoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, Site $site)
+    public function index(Site $site)
     {
         $this->authorize('sites.view',$site);
 
-        if($request->busca  != null AND $request->busc_aberta != null AND $request->busc_fechada){
-            $chamados= Site::where('dominio', 'LIKE', "%{$request->busca}%")
-            ->where('status', $request->busc_aberta)
-            ->where('fechado_em', $request->busc_fechada)->paginate(10);
-        }
-        else if(isset($request->busca)){
-            $chamados= Site::where('dominio', 'LIKE', "%{$request->busca}%")->paginate(10);
-        }
-        else if(isset($request->busc_aberta)){
-            $chamados= Chamado::where('status', $request->busc_aberta)->paginate(10);
-        }
-        else if(isset($request->busc_fechada)){
-            $chamados= Chamado::where('fechado_em', $request->busc_fechada)->paginate(10);
-        }
-        else {
-            $chamados= Chamado::paginate(10);
-        }    
-        return view('chamados/index',compact('site','chamados'));
+        return view('chamados/index',compact('site'));
     }
 
     /**
