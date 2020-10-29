@@ -22,4 +22,11 @@ class Chamado extends Model
     public function site(){
         return $this->belongsTo('App\Models\Site');
     }
+    
+    public static function status(){
+        return [
+          'aberto',
+          'fechado'
+        ];
+    }
 }
