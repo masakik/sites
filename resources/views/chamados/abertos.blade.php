@@ -24,7 +24,7 @@
     <input type="text" class="form-control" placeholder="Domínio do Chamado" name="dominio" value="{{ Request()->dominio }}">
     <select class="custom-select" id="status" name="status">
       <option value="" selected>
-          Todos
+          Status do Chamado
         </option>
     @foreach (App\Models\Chamado::status() as $status)
       <option value="{{ $status }}" @if(Request()->status=="$status") selected @endif>
