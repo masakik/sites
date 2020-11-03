@@ -14,7 +14,7 @@
 </td>
 
 <td>
-  <b>Responsável:</b> {{ $site->owner }} - {{ \Uspdev\Replicado\Pessoa::dump($site->owner)['nompes'] }}
+  <b>Responsável:</b> {{ $site->owner }} - {{ \Uspdev\Replicado\Pessoa::dump($site->owner)['nompes'] }} - {{ \Uspdev\Replicado\Pessoa::email($site->owner) }}
 
   <br><br>
   <ul class="list-group">
@@ -32,7 +32,7 @@
                @endcan
                
 @if(\App\Models\User::where('codpes',$numero_usp)->first())
-{{ $numero_usp }} - {{ \App\Models\User::where('codpes',$numero_usp)->first()->name }}
+{{ $numero_usp }} - {{ \App\Models\User::where('codpes',$numero_usp)->first()->name }} - {{ \App\User::where('codpes',$numero_usp)->first()->email }}
 @else
 {{ $numero_usp }} - <b>Usuário ainda não fez login</b>
 @endif
