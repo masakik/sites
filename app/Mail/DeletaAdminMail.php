@@ -39,11 +39,11 @@ class DeletaAdminMail extends Mailable
         $user = User::where('codpes',$this->site->owner)->first();
         $deleta_admin = User::where('codpes',$this->deleta_admin)->first();
 
-        $cc = array();
+        $to = array();
         if ($user){
             $owner_nusp = $user->codpes;
             $owner_nome = $user->name;
-            array_push($cc, $user->email);
+            array_push($to, $user->email);
         }
         else{
             $owner_nusp = "Usuário ainda não fez login";
@@ -53,20 +53,19 @@ class DeletaAdminMail extends Mailable
         if($deleta_admin){
             $admin_nusp = $deleta_admin->codpes;
             $admin_nome = $deleta_admin->name;
-            array_push($cc, $deleta_admin->email);
+            array_push($to, $deleta_admin->email);
         }
         else{
             $admin_nusp = $this->deleta_admin;
             $admin_nome = "Usuário ainda não fez login";
         }
             
-        array_push($cc, config('mail.from.address'));
+        array_push($to, config('mail.from.address'));
 
         return $this->view('emails.deleta_admin')
-                    ->to(config('mail.reply_to.address'))
+                    ->to($to)
                     ->from(config('mail.from.address'))
                     ->replyTo(config('mail.reply_to.address'))
-                    ->cc($cc)
                     ->subject($subject)
                     ->with([
                         'site'              => $this->site,

@@ -36,25 +36,24 @@ class AprovaSiteMail extends Mailable
         $subject = "Site {$this->site->dominio}" . config('sites.dnszone') . " aprovado";
         $user = User::where('codpes',$this->site->owner)->first();
 
-        $cc = array();
+        $to = array();
         if ($user){
             $owner_nusp = $user->codpes;
             $owner_nome = $user->name;
-            array_push($cc, $user->email);
+            array_push($to, $user->email);
         }
         else{
             $owner_nusp = "Usuário ainda não fez login";
             $owner_nome = "Usuário ainda não fez login";  
-            array_push($cc, config('mail.from.address'));
+            array_push($to, config('mail.from.address'));
  
         }
 
         $user = User::where('codpes',$this->site->owner)->first();
             return $this->view('emails.aprova_site')
-                        ->to(config('mail.reply_to.address'))
+                        ->to($to)
                         ->from(config('mail.from.address'))
                         ->replyTo(config('mail.reply_to.address'))
-                        ->cc($cc)
                         ->subject($subject)
                         ->with([
                             'site' => $this->site,

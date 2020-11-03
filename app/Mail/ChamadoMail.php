@@ -45,10 +45,9 @@ class ChamadoMail extends Mailable
         $subject = "Novo chamado para o site: {$this->chamado->site->dominio}" . config('sites.dnszone');
 
         return $this->view('emails.chamado')
-                    ->to(config('mail.reply_to.address'))
+                    ->to($emails)
                     ->from(config('mail.from.address'))
                     ->replyTo(config('mail.reply_to.address'))
-                    ->cc($emails)
                     ->subject($subject)
                     ->with([
                         'chamado' => $this->chamado,

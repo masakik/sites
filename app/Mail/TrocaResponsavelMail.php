@@ -39,11 +39,11 @@ class TrocaResponsavelMail extends Mailable
         $user = User::where('codpes',$this->site->owner)->first();
         $novo_responsavel = User::where('codpes',$this->novo_responsavel)->first();
 
-        $cc = array();
+        $to = array();
         if ($user){
             $owner_nusp = $user->codpes;
             $owner_nome = $user->name;
-            array_push($cc, $user->email);
+            array_push($to, $user->email);
         }
         else{
             $owner_nusp = "Usuário ainda não fez login";
@@ -53,20 +53,19 @@ class TrocaResponsavelMail extends Mailable
         if($novo_responsavel){
             $novo_responsavel_nusp = $novo_responsavel->codpes;
             $novo_responsavel_nome = $novo_responsavel->name;
-            array_push($cc, $novo_responsavel->email);
+            array_push($to, $novo_responsavel->email);
         }
         else{
             $novo_responsavel_nusp = $this->novo_responsavel;
             $novo_responsavel_nome = "Usuário ainda não fez login";
         }
             
-        array_push($cc, config('mail.from.address'));
+        array_push($to, config('mail.from.address'));
   
         return $this->view('emails.troca_responsavel')
-                    ->to(config('mail.reply_to.address'))
+                    ->to($to)
                     ->from(config('mail.from.address'))
                     ->replyTo(config('mail.reply_to.address'))
-                    ->cc($cc)
                     ->subject($subject)
                     ->with([
                         'site'                  => $this->site,

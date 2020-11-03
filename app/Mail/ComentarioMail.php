@@ -60,10 +60,9 @@ class ComentarioMail extends Mailable
         }
 
         return $this->view('emails.comentario')
-                    ->to(config('mail.reply_to.address'))
+                    ->to($emails)
                     ->from(config('mail.from.address'))
                     ->replyTo(config('mail.reply_to.address'))
-                    ->cc($emails)
                     ->subject($subject)
                     ->with([
                         'comentario' => $this->comentario,
