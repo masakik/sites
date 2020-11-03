@@ -32,7 +32,7 @@
                @endcan
                
 @if(\App\Models\User::where('codpes',$numero_usp)->first())
-{{ $numero_usp }} - {{ \App\Models\User::where('codpes',$numero_usp)->first()->name }} - {{ \App\User::where('codpes',$numero_usp)->first()->email }}
+{{ $numero_usp }} - {{ \App\Models\User::where('codpes',$numero_usp)->first()->name }} - {{ \App\Models\User::where('codpes',$numero_usp)->first()->email }}
 @else
 {{ $numero_usp }} - <b>Usuário ainda não fez login</b>
 @endif
