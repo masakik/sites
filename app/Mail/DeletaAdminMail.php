@@ -48,7 +48,7 @@ class DeletaAdminMail extends Mailable
         else{
             $owner_nusp = "Usuário ainda não fez login";
             $owner_nome = "Usuário ainda não fez login";   
-            array_push($to, config('mail.reply_to.address'));
+            array_push($to, config('mail.from.address'));
         }
 
         if($deleta_admin){
