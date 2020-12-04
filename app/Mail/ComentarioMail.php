@@ -52,13 +52,7 @@ class ComentarioMail extends Mailable
         $to = array_unique($to);
 
         // Monta título do email
-        if($this->comentario->chamado->status == 'fechado' ) {
-            $subject = "Chamado {$this->comentario->chamado->site->id}/{$this->comentario->chamado->id}
-                        fechado ({$this->comentario->chamado->site->dominio}" . config('sites.dnszone') . ")";
-        } else {
-            $subject = "Novo comentário no chamado {$this->comentario->chamado->site->id}/{$this->comentario->chamado->id}
-                        ({$this->comentario->chamado->site->dominio}" . config('sites.dnszone') . ")";
-        }
+        $subject = "Atualização do chamado {$this->comentario->chamado->site->id}/{$this->comentario->chamado->id} para o site {$this->comentario->chamado->site->dominio}" . config('sites.dnszone');
 
         return $this->view('emails.comentario')
                     ->to($to)

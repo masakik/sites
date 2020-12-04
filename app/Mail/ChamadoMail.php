@@ -43,7 +43,7 @@ class ChamadoMail extends Mailable
         }
         array_push($to, config('mail.reply_to.address'));
         $to = array_unique($to);
-        $subject = "Novo chamado para o site: {$this->chamado->site->dominio}" . config('sites.dnszone');
+        $subject = "Atualização do chamado {$this->chamado->site->id}/{$this->chamado->id} para o site {$this->chamado->site->dominio}" . config('sites.dnszone');
 
         return $this->view('emails.chamado')
                     ->to($to)
