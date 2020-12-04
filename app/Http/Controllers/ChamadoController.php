@@ -31,7 +31,7 @@ class ChamadoController extends Controller
             $chamados= Chamado::where('status', $request->status)->paginate(10);
         }
         else {
-            $chamados= Chamado::paginate(10);
+            $chamados= Chamado::where('status', 'aberto')->paginate(10);
         }    
         
         return view('chamados/admin',compact('chamados'));
