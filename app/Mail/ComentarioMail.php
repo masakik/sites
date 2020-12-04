@@ -36,19 +36,20 @@ class ComentarioMail extends Mailable
     {
         // emails dos envolvidos nos comentários
         // quem abriu o chamado sempre recebe email
-        $emails = [$this->comentario->chamado->user->email];
+        $to = [$this->comentario->chamado->user->email];
 
         // Responsável pelo site
         $codpes = $this->comentario->chamado->site->owner;
         $owner = User::where('codpes', $codpes)->first();
         if ($owner) {
-            $emails[] = $owner->email;
+            $to[] = $owner->email;
         }
 
         foreach($this->comentario->chamado->comentarios as $comment){
-            $emails[] = $comment->user->email;
+            $to[] = $comment->user->email;
         }
-        $emails = array_unique($emails);
+        array_push($to, config('mail.reply_to.address'));
+        $to = array_unique($to);
 
         // Monta título do email
         if($this->comentario->chamado->status == 'fechado' ) {
@@ -60,7 +61,7 @@ class ComentarioMail extends Mailable
         }
 
         return $this->view('emails.comentario')
-                    ->to($emails)
+                    ->to($to)
                     ->from(config('mail.from.address'))
                     ->replyTo(config('mail.reply_to.address'))
                     ->subject($subject)
