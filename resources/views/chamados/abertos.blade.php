@@ -18,6 +18,27 @@
 </style>
 @stop
 
+<form method="get" action="/chamados">
+  <div class="row">
+    <div class="input-group">
+    <input type="text" class="form-control" placeholder="Domínio do Chamado" name="dominio" value="{{ Request()->dominio }}">
+    <select class="custom-select" id="status" name="status">
+      <option value="" selected>
+          Status do Chamado
+        </option>
+    @foreach (App\Models\Chamado::status() as $status)
+      <option value="{{ $status }}" @if(Request()->status=="$status") selected @endif>
+          {{$status}}
+        </option>
+    @endforeach
+    </select>
+      <span class="input-group-btn">
+        <button type="submit" class="btn btn-success"> Buscar </button>
+      </span>
+    </div>
+  </div>
+</form>
+
 <div class="table-responsive">
   <table class="table table-striped">
     <thead>
