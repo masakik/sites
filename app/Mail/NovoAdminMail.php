@@ -39,34 +39,32 @@ class NovoAdminMail extends Mailable
         $user = User::where('codpes',$this->site->owner)->first();
         $novo_admin = User::where('codpes',$this->novo_admin)->first();
 
-        $cc = array();
+        $to = array();
         if ($user){
             $owner_nusp = $user->codpes;
             $owner_nome = $user->name;
-            array_push($cc, $user->email);
+            array_push($to, $user->email);
         }
         else{
             $owner_nusp = "Usuário ainda não fez login";
-            $owner_nome = "Usuário ainda não fez login";   
+            $owner_nome = "Usuário ainda não fez login";
+            array_push($to, config('mail.reply_to.address')); 
         }
 
         if($novo_admin){
             $admin_nusp = $novo_admin->codpes;
             $admin_nome = $novo_admin->name;
-            array_push($cc, $novo_admin->email);
+            array_push($to, $novo_admin->email);
         }
         else{
             $admin_nusp = $this->novo_admin;
             $admin_nome = "Usuário ainda não fez login";
         }
-            
-        array_push($cc, config('mail.from.address'));
-  
+
         return $this->view('emails.novo_admin')
-                    ->to(config('mail.reply_to.address'))
+                    ->to($to)
                     ->from(config('mail.from.address'))
                     ->replyTo(config('mail.reply_to.address'))
-                    ->cc($cc)
                     ->subject($subject)
                     ->with([
                         'site'            => $this->site,

@@ -16,25 +16,25 @@ class ChamadoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function abertos(Request $request, Site $site)
+    public function admin(Request $request)
     {
         $this->authorize('admin');
 
-        if($request->dominio  != null && $request->status != null){
-            $chamados= Site::where('dominio', 'LIKE', "%{$request->dominio}%")
-            ->orWhere('status', $request->status)->paginate(10);
+        if($request->search != null && $request->status != null){
+            $chamados= Chamado::where('descricao', 'LIKE', "%{$request->search}%")
+                ->where('status', $request->status)->paginate(10);
         }
-        else if(isset($request->dominio)){
-            $chamados= Site::where('dominio', 'LIKE', "%{$request->dominio}%")->paginate(10);
+        else if(isset($request->search)){
+            $chamados= Chamado::where('descricao', 'LIKE', "%{$request->search}%")->paginate(10);
         }
-        else if(isset($request->status)){
+        else if(isset($request->status) && ($request->status=='aberto' || $request->status=='fechado')){
             $chamados= Chamado::where('status', $request->status)->paginate(10);
         }
         else {
             $chamados= Chamado::paginate(10);
         }    
         
-        return view('chamados/abertos',compact('chamados'));
+        return view('chamados/admin',compact('chamados'));
     }
 
     /**

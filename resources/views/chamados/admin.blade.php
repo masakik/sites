@@ -21,7 +21,7 @@
 <form method="get" action="/chamados">
   <div class="row">
     <div class="input-group">
-    <input type="text" class="form-control" placeholder="Domínio do Chamado" name="dominio" value="{{ Request()->dominio }}">
+    <input type="text" class="form-control" placeholder="Buscar ..." name="search" value="{{ Request()->search }}">
     <select class="custom-select" id="status" name="status">
       <option value="" selected>
           Status do Chamado
@@ -62,7 +62,7 @@
               <li> <b>tipo:</b> {{ $chamado->tipo }}</li>
            </ul>
         </td>
-        <td><a href="/chamados/{{$chamado->site_id}}/{{$chamado->id}}">{!! $chamado->descricao !!}</a></td>
+        <td><a href="/chamados/{{$chamado->site_id}}/{{$chamado->id}}">{{ strip_tags($chamado->descricao) }}</a></td>
       </tr>
 @empty
     <tr>

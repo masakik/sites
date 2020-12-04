@@ -42,11 +42,10 @@ class AprovaSiteMail extends Mailable
             $owner_nome = $user->name;
             array_push($to, $user->email);
         }
-        else{
+        else {
             $owner_nusp = "Usuário ainda não fez login";
-            $owner_nome = "Usuário ainda não fez login";  
-            array_push($to, config('mail.from.address'));
- 
+            $owner_nome = "Usuário ainda não fez login";
+            array_push($to, config('mail.reply_to.address')); 
         }
 
         $user = User::where('codpes',$this->site->owner)->first();

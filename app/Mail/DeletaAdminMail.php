@@ -48,6 +48,7 @@ class DeletaAdminMail extends Mailable
         else{
             $owner_nusp = "Usuário ainda não fez login";
             $owner_nome = "Usuário ainda não fez login";   
+            array_push($to, config('mail.reply_to.address'));
         }
 
         if($deleta_admin){
@@ -59,8 +60,6 @@ class DeletaAdminMail extends Mailable
             $admin_nusp = $this->deleta_admin;
             $admin_nome = "Usuário ainda não fez login";
         }
-            
-        array_push($to, config('mail.from.address'));
 
         return $this->view('emails.deleta_admin')
                     ->to($to)

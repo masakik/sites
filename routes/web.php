@@ -23,7 +23,7 @@ Route::get('/', [IndexController::class, 'index'])->name('home');
 Route::resource('/sites', SiteController::class);
 
 # rotas para chamados
-Route::get('/chamados', [ChamadoController::class, 'abertos']);
+Route::get('/chamados', [ChamadoController::class, 'admin']);
 Route::get('/chamados/{site}/create', [ChamadoController::class, 'create']);
 Route::get('/chamados/{site}/', [ChamadoController::class, 'index']);
 Route::post('/chamados/{site}/', [ChamadoController::class, 'store'])->name('chamados.store');

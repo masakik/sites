@@ -25,8 +25,8 @@ class Chamado extends Model
     
     public static function status(){
         return [
-          'Abertos',
-          'Fechados'
+          'aberto',
+          'fechado'
         ];
     }
 }
