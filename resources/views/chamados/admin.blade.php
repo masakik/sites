@@ -1,7 +1,5 @@
 @extends('master')
 
-@section('title', 'Dashboard')
-
 @section('content_header')
 @stop
 
@@ -38,6 +36,8 @@
     </div>
   </div>
 </form>
+
+{{ $chamados->appends(request()->query())->links() }}
 
 <div class="table-responsive">
   <table class="table table-striped">
