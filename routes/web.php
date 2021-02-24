@@ -33,7 +33,7 @@ Route::get('/chamados/{site}/{chamado}', [ChamadoController::class, 'show']);
 Route::post('/comentarios/{chamado}/', [ComentarioController::class, 'store'])->name('comentarios.store');;
 
 # Senha única USP
-Route::get('/senhaunica/login', [LoginController::class, 'redirectToProvider'])->name('login');
+Route::get('/login', [LoginController::class, 'redirectToProvider'])->name('login');
 Route::get('/callback', [LoginController::class, 'handleProviderCallback']);
 Route::post('/logout', [LoginController::class, 'logout']);
 Route::get('/logout', [LoginController::class, 'logout']);

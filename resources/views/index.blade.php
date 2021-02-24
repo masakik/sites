@@ -8,14 +8,6 @@
     @parent
     @auth <script>window.location = "/sites";</script> @endauth
 
-    <div class="row">
-      <div class="col-sm">
-        <a href="/senhaunica/login"> Faça login </a> com a senha única USP para
-        administrar seu site. 
-      </div>
-    </div>
-<br>
-
 @inject('pessoa','Uspdev\Replicado\Pessoa')
 
 <div class="card">

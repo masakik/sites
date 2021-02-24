@@ -14,14 +14,13 @@ $avisos =  [
 
 return [
 
-    'title' => env('APP_NAME'),
-    'dashboard_url' => '/',
-
+    'title' => '',
+    'skin' => env('USP_THEME_SKIN', 'uspdev'),
+    'app_url' => config('app.url'),
     'logout_url' => '/logout',
-
-    'logout_method' => 'post',
-
-    'login_url' => '/senhaunica/login',
+    'logout_method' => 'POST',
+    'logout_url' => config('app.url') . '/logout',
+    'login_url' => config('app.url') . '/login',
 
     'menu' => [
         [
