@@ -55,9 +55,17 @@ class LoginController extends Controller
             $user = new User;
         }
 
+        if(isset($userSenhaUnica->email) && !empty($userSenhaUnica->email)){
+            $email = $userSenhaUnica->email;
+        } else {
+            $email = $userSenhaUnica->emailAlternativo;
+        }
+        
+
+
         // bind do dados retornados
         $user->codpes = $userSenhaUnica->codpes;
-        $user->email = $userSenhaUnica->email;
+        $user->email = $email;
         $user->name = $userSenhaUnica->nompes;
         $user->save();
 
