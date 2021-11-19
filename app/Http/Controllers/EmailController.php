@@ -24,7 +24,11 @@ class EmailController extends Controller
         $admins = Site::select('numeros_usp')->get()->toArray();
         $admins = array_column($admins,'numeros_usp');
         $admins = explode(',',implode(',',$admins));
+
+        $admins = array_map('trim', $admins);
+        $admins = array_filter($admins);
         $admins = array_unique($admins);
+        
         $admins_emails = [];
         foreach($admins as $codpes){
             $email = Pessoa::email($codpes);
