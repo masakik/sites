@@ -170,7 +170,7 @@ class SiteController extends Controller
 
         if (isset($request->owner)) {
             $request->validate([
-              'owner' => ['required','codpes'],
+              'owner' => ['required','codpes','integer'],
             ]);
 
             $novo_responsavel = $request->owner;
@@ -195,7 +195,7 @@ class SiteController extends Controller
 
         if (isset($request->novoadmin)) {
             $request->validate([
-              'novoadmin' => ['required','codpes'],
+              'novoadmin' => ['required','codpes','integer'],
             ]);
             $novo_admin = $request->novoadmin;
 
