@@ -20,6 +20,7 @@ use App\Mail\TrocaResponsavelMail;
 use App\Mail\NovoAdminMail;
 use App\Mail\DeletaAdminMail;
 use Mail;
+use App\Rules\Domain;
 
 class SiteController extends Controller
 {
@@ -105,7 +106,7 @@ class SiteController extends Controller
         $user = \Auth::user();
 
         $request->validate([
-          'dominio'         => ['required', 'alpha_num','unique:sites'],
+          'dominio'         => ['required', 'unique:sites', new Domain],
           'categoria'       => ['required'],
           'justificativa'   => ['required'],
         ]);
@@ -239,7 +240,7 @@ class SiteController extends Controller
             $site->status = 'Solicitado';
             $site->save();
             $request->session()->flash('alert-info','Site aprovado com sucesso');
-        }        
+        }
 
         $site->save();
 
