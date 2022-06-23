@@ -13,7 +13,7 @@
 @section('content')
 @parent
 
-<form method="POST" action="/sites/{{ $site->id }}">
+<form method="POST" action="sites/{{ $site->id }}">
 {{ csrf_field() }}
 {{ method_field('patch') }}
 

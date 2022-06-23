@@ -4,7 +4,7 @@
 @include('messages.flash')
 @include('messages.errors')
 
-<form method="get" action="/avisos">
+<form method="get" action="avisos">
 <div class="row">
     <div class=" col-sm input-group">
     <input type="text" class="form-control" name="busca" value="{{ Request()->busca }}">
@@ -35,7 +35,7 @@
             <a class="row-sm" href="/avisos/{{$aviso->id}}"><i class="fas fa-external-link-alt"></i></a>
            
           
-            <form class="row-sm" method="POST" action="/avisos/{{$aviso->id}}">
+            <form class="row-sm" method="POST" action="avisos/{{$aviso->id}}">
               @csrf
               @method('delete')
               <button type="submit" class=" btn btn-outline-primary btn-sm"><i class="fas fa-trash-alt"></i></button>

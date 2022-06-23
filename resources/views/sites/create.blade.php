@@ -14,7 +14,7 @@
 
 @section('content')
     @parent
-    <form method="POST" role="form" action="/sites">
+    <form method="POST" role="form" action="sites">
         @csrf
         Domínio:
         <div class="form-group form-inline">

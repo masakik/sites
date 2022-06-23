@@ -1,7 +1,7 @@
 <tr>
 <td>
-  <a href="/sites/{{ $site->id }}">{{ $site->dominio }}{{ config('sites.dnszone') }}</a> 
-  <a href="/sites/{{ $site->id }}/edit"> <i class="fas fa-edit"></i> </a> <br>
+  <a href="sites/{{ $site->id }}">{{ $site->dominio }}{{ config('sites.dnszone') }}</a> 
+  <a href="sites/{{ $site->id }}/edit"> <i class="fas fa-edit"></i> </a> <br>
   <b>categoria: </b>{{ $site->categoria }}<br>
   <b>status: </b>
     @if ($site->status == 'Solicitado') 
@@ -10,7 +10,7 @@
         {{ $site->status }}
     @endif
   <br>
-  <b>chamados: </b> <a href="/chamados/{{ $site->id }}"> {{ $site->chamados->where('status','aberto')->count() }} abertos</a> <a href="/chamados/{{ $site->id }}/create"> <i class="fas fa-plus"></i> </a><br>
+  <b>chamados: </b> <a href="chamados/{{ $site->id }}"> {{ $site->chamados->where('status','aberto')->count() }} abertos</a> <a href="chamados/{{ $site->id }}/create"> <i class="fas fa-plus"></i> </a><br>
 </td>
 
 <td>
@@ -23,7 +23,7 @@
       @if(!empty($numero_usp))
           <li class="list-group-item">
                @can('sites.update',$site)
-                    <form method="POST" action="/sites/{{ $site->id }}" style="display:inline">
+                    <form method="POST" action="sites/{{ $site->id }}" style="display:inline">
                     @csrf
                     @method('patch')
                     <input type="hidden" name="deleteadmin" value="{{ $numero_usp }}">
@@ -58,18 +58,18 @@
         @endif
 
         @can('sites.update',$site)
-           <li class="list-group-item"><a href="/sites/{{ $site->id }}/novoadmin">Adicionar administrador <i class="fas fa-user-plus"></i></a></li>
+           <li class="list-group-item"><a href="sites/{{ $site->id }}/novoadmin">Adicionar administrador <i class="fas fa-user-plus"></i></a></li>
         @endcan
 
         @can('sites.update',$site)
-            <li class="list-group-item"><a href="/sites/{{ $site->id }}/changeowner" class="">Mudar responsável </a></li>
+            <li class="list-group-item"><a href="sites/{{ $site->id }}/changeowner" class="">Mudar responsável </a></li>
         @endcan
 
         @can('admin')
             
             @if($site->status == 'Solicitado')
                 <li class="list-group-item">
-                    <form method="POST" action="/sites/{{ $site->id }}">
+                    <form method="POST" action="sites/{{ $site->id }}">
                     @csrf
                     @method('patch')
                     <input type="hidden" name="aprovar" value="aprovar">
@@ -77,7 +77,7 @@
                     </form>
                 </li>
                 <li class="list-group-item">
-                    <form method="POST" action="/sites/{{ $site->id }}">
+                    <form method="POST" action="sites/{{ $site->id }}">
                     @csrf
                     @method('delete')
                     <button type="submit" class="delete-item btn btn-danger">Deletar <i class="fas fa-trash-alt"></i></button>
@@ -87,20 +87,20 @@
 
             @if ($site->status == "Aprovado - Habilitado")
               <li class="list-group-item">
-              <form method="POST" action="/sites/{{ $site->id }}/disable">
+              <form method="POST" action="sites/{{ $site->id }}/disable">
               @csrf
               <button type="submit" class="btn btn-info">Desabilitar</button>
               </form>
               </li>
             @elseif ($site->status == "Aprovado - Desabilitado")
               <li class="list-group-item">
-              <form method="POST" action="/sites/{{ $site->id }}/enable">
+              <form method="POST" action="sites/{{ $site->id }}/enable">
               @csrf
               <button type="submit" class="btn btn-success">Habilitar</button>
               </form>
               </li>
               <li class="list-group-item">
-                <form method="POST" action="/sites/{{ $site->id }}">
+                <form method="POST" action="sites/{{ $site->id }}">
                 @csrf
                 @method('delete')
                 <button type="submit" class="delete-item btn btn-danger">Deletar <i class="fas fa-trash-alt"></i></button>
@@ -108,7 +108,7 @@
               </li>
             @elseif ($site->status == "Aprovado - Em Processamento") 
             <li class="list-group-item">
-                    <form method="POST" action="/sites/{{ $site->id }}">
+                    <form method="POST" action="sites/{{ $site->id }}">
                     @csrf
                     @method('patch')
                     <input type="hidden" name="voltar_solicitacao" value="voltar_solicitacao">

@@ -13,7 +13,7 @@
 @include('messages.errors')
 
 
-<form method="POST" action="/avisos/{{$aviso->id}}"> 
+<form method="POST" action="avisos/{{$aviso->id}}"> 
 @csrf
 @method('patch')
 <div class="card">

@@ -32,7 +32,7 @@
         <li><b>tipo: </b>{{ $chamado->tipo }}</li>
        </li>
       </td>
-        <td><a href="/chamados/{{$chamado->site_id}}/{{$chamado->id}}">{!! strip_tags($chamado->descricao) !!}</a></td>
+        <td><a href="chamados/{{$chamado->site_id}}/{{$chamado->id}}">{!! strip_tags($chamado->descricao) !!}</a></td>
       </tr>
 @empty
     <tr>

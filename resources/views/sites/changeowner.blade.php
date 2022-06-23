@@ -7,7 +7,7 @@
 
 @section('content')
 @parent
-<form method="POST" role="form" class="form-inline" action="/sites/{{ $site->id }}">
+<form method="POST" role="form" class="form-inline" action="sites/{{ $site->id }}">
 {{ csrf_field() }}
 {{ method_field('patch') }}
 

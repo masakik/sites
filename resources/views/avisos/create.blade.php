@@ -13,7 +13,7 @@
 @include('messages.errors')
 
 
-<form method="POST" action="/avisos"> 
+<form method="POST" action="avisos"> 
 @csrf
 <div class="card">
 <div class="card-header">Cadastro de Avisos</div>

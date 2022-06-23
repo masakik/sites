@@ -16,7 +16,7 @@
 </style>
 @stop
 
-<form method="get" action="/chamados">
+<form method="get" action="chamados">
   <div class="row">
     <div class="input-group">
     <input type="text" class="form-control" placeholder="Buscar ..." name="search" value="{{ Request()->search }}">
@@ -62,7 +62,7 @@
               <li> <b>tipo:</b> {{ $chamado->tipo }}</li>
            </ul>
         </td>
-        <td><a href="/chamados/{{$chamado->site_id}}/{{$chamado->id}}">{!! strip_tags($chamado->descricao) !!}</a></td>
+        <td><a href="chamados/{{$chamado->site_id}}/{{$chamado->id}}">{!! strip_tags($chamado->descricao) !!}</a></td>
       </tr>
 @empty
     <tr>

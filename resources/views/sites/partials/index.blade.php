@@ -1,4 +1,4 @@
-<form method="get" action="/sites">
+<form method="get" action="sites">
   <div class="row">
     <div class="input-group">
 

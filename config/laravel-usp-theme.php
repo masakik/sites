@@ -3,11 +3,11 @@
 $avisos =  [
     [
         'text' => 'Listar',
-        'url'  => '/avisos',
+        'url'  => 'avisos',
     ],
     [
         'text' => 'Cadastrar',
-        'url'  => '/avisos/create',
+        'url'  => 'avisos/create',
         'can'     => 'admin',
     ],
 ];
@@ -24,12 +24,12 @@ return [
     'menu' => [
         [
             'text' => 'Solicitar um Site',
-            'url'  => '/sites/create',
+            'url'  => 'sites/create',
             'can'  => 'sites.create'
         ],
         [
             'text' => 'Meus Sites',
-            'url'  => '/sites',
+            'url'  => 'sites',
             'can'  => 'sites.create'
         ],
         [
@@ -39,12 +39,12 @@ return [
         ],
         [
             'text' => 'Chamados',
-            'url'  => '/chamados',
+            'url'  => 'chamados',
             'can'  => 'admin'
         ],
         [
             'text' => 'Emails',
-            'url'  => '/emails',
+            'url'  => 'emails',
             'can'  => 'admin'
         ],
     ],
