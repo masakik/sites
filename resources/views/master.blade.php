@@ -17,10 +17,10 @@
     @include('messages.errors')
 @stop
 
-@section('footer')
+{{-- @section('footer')
 FFLCH sites
-@stop
+@stop --}}
 
 @section('title')
-FFLCH sites
+Sites
 @stop

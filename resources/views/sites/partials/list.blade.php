@@ -1,7 +1,7 @@
 @inject('pessoa','Uspdev\Replicado\Pessoa')
 
 <div class="card">
-  <div class="card-header"><b>Relação dos sites da FFLCH</b></div>
+  <div class="card-header"><b>Relação de sites</b></div>
 <div class="card-body">
 
 Total de sites existentes: <b>{{ $sites->where('status','!=','Solicitado')->count() }}</b> <br>
