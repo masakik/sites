@@ -15,7 +15,11 @@ class Domain implements Rule
      */
     public function passes($attribute, $value)
     {
-        $pattern = "/^((?!-)[A-Za-z0-9-]{1,63}(?<!-))$/";
+        if (config('sites.subdominio')) {
+            $pattern = "/^((?!-)[A-Za-z0-9-.]{1,63}(?<!-))$/";
+        } else {
+            $pattern = "/^((?!-)[A-Za-z0-9-]{1,63}(?<!-))$/";
+        }
 
         return preg_match($pattern, $value);
     }
