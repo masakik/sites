@@ -6,15 +6,13 @@ use App\Models\Site;
 
 class LocalManager
 {
-    protected static function getSite($dominio)
+    public static function verificaStatus($site)
     {
-        $dominio = str_replace(config('sites.dnszone'), '', $dominio);
-        return Site::where('dominio', $dominio)->first();
-    }
-
-    public static function verificaStatus($dominio)
-    {
-        return SELF::getSite($dominio)->status;
+        if ($site->status == 'Servidor Offline') {
+            $site->status = 'Aprovado - Habilitado';
+            $site->save();
+        }
+        return $site->status;
     }
 
     public static function desabilita($site)

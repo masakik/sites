@@ -30,7 +30,13 @@ class SiteManager
 
     public static function verificaStatus(Site $site)
     {
-        return SELF::getManager()->verificaStatus($site->dominio.config('sites.dnszone'));
+        switch (config('sites.siteManager')) {
+            case 'aegir':
+                return SELF::getManager()->verificaStatus($site->dominio.config('sites.dnszone'));
+                break;
+            default:
+                return SELF::getManager()->verificaStatus($site);
+        }
     }
 
     public static function desabilita(Site $site)
