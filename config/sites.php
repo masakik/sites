@@ -6,4 +6,5 @@ return [
     'deploy_secret_key' => env('DEPLOY_SECRET_KEY', false),
     'subdominio' => env('HABILITAR_SUBDOMINIO', false),
     'admins' => env('ADMINS'),
+    'siteManager' => env('SITE_MANAGER', 'aegir'),
 ];

@@ -6,12 +6,6 @@ use App\Models\Site;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Auth;
-use App\Jobs\criaSiteAegir;
-use App\Jobs\desabilitaSiteAegir;
-use App\Jobs\habilitaSiteAegir;
-use App\Jobs\deletaSiteAegir;
-use App\Jobs\instalaSiteAegir;
-use App\Aegir\Aegir;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use App\Mail\SiteMail;
@@ -21,14 +15,13 @@ use App\Mail\NovoAdminMail;
 use App\Mail\DeletaAdminMail;
 use Mail;
 use App\Rules\Domain;
+use App\Services\SiteManager;
 
 class SiteController extends Controller
 {
-    private $aegir;
-
     public function __construct()
     {
-        $this->aegir = new Aegir;
+        // 
     }
 
     /**
@@ -45,11 +38,11 @@ class SiteController extends Controller
         $sites = Site::allowed();
 
         // 1. query com a busca
-        if(isset($request->dominio) || isset($request->status)) {
-            $dominio = explode('.',$request->dominio);
-            $sites->where('dominio', 'LIKE', '%'.$dominio[0].'%');
+        if (isset($request->dominio) || isset($request->status)) {
+            $dominio = explode('.', $request->dominio);
+            $sites->where('dominio', 'LIKE', '%' . $dominio[0] . '%');
 
-            if(!is_null($request->status)) {
+            if (!is_null($request->status)) {
                 $sites->where('status', $request->status);
             }
         }
@@ -60,22 +53,26 @@ class SiteController extends Controller
         // Executa a query
         $sites = $sites->orderBy('dominio')->paginate(10);
 
-        // Busca o status dos sites no aegir
+        // Busca o status dos sites
 
-        foreach($sites as $site){
-            if ($site->status != 'Solicitado'){
-                $site->status = $this->aegir->verificaStatus($site->dominio.$dnszone);
+        foreach ($sites as $site) {
+            if ($site->status != 'Solicitado') {
+                $site->status = SiteManager::verificaStatus($site);
                 $site->save();
             }
         }
 
         $this->novoToken();
         $hashlogin = $user = \Auth::user()->temp_token;
-        return view('sites/index', compact('sites','dnszone','hashlogin'));
+
+        return view('sites/index', compact('sites', 'dnszone', 'hashlogin'));
     }
 
-    private function novoToken(){
-        // gera um token de login no drupal
+    /**
+     * gera um token de login no drupal
+     */
+    private function novoToken()
+    {
         $hashlogin = Str::random(32);
         $user = \Auth::user();
         $user->temp_token = $hashlogin;
@@ -90,8 +87,7 @@ class SiteController extends Controller
     public function create()
     {
         $this->authorize('sites.create');
-        $dnszone = config('sites.dnszone');
-        return view('sites/create', ['dnszone'=>$dnszone]);
+        return view('sites/create', ['dnszone' => config('sites.dnszone')]);
     }
 
     /**
@@ -106,13 +102,12 @@ class SiteController extends Controller
         $user = \Auth::user();
 
         $request->validate([
-          'dominio'         => ['required', 'unique:sites', new Domain],
-          'categoria'       => ['required'],
-          'justificativa'   => ['required'],
+            'dominio'         => ['required', 'unique:sites', new Domain],
+            'categoria'       => ['required'],
+            'justificativa'   => ['required'],
         ]);
 
         $site = new Site;
-        $dnszone = config('sites.dnszone');
         $site->dominio = strtolower($request->dominio);
         $site->categoria = $request->categoria;
         $site->justificativa = $request->justificativa;
@@ -121,7 +116,7 @@ class SiteController extends Controller
         $site->owner = $user->codpes;
         $site->save();
 
-        Mail::send(new SiteMail($site,$user));
+        Mail::send(new SiteMail($site, $user));
         $request->session()->flash('alert-info', 'Solicitação em andamento');
         return redirect("/sites/$site->id");
     }
@@ -129,31 +124,31 @@ class SiteController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Site  $site
+     * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
      */
     public function show(Site $site)
     {
-        $this->authorize('sites.view',$site);
-        $dnszone = config('sites.dnszone');
-        if ($site->status != 'Solicitado'){
-            $site->status = $this->aegir->verificaStatus($site->dominio.$dnszone);
+        $this->authorize('sites.view', $site);
+
+        if ($site->status != 'Solicitado') {
+            $site->status = SiteManager::verificaStatus($site);
             $site->save();
         }
         $this->novoToken();
         $hashlogin = $user = \Auth::user()->temp_token;
-        return view ('sites/show', compact('site','hashlogin'));
+        return view('sites/show', compact('site', 'hashlogin'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Site  $site
+     * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
      */
     public function edit(Site $site)
     {
-        $this->authorize('sites.update',$site);
+        $this->authorize('sites.update', $site);
         return view('sites/edit', compact('site'));
     }
 
@@ -161,23 +156,22 @@ class SiteController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Site  $site
+     * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Site $site)
     {
-        $this->authorize('sites.update',$site);
-        $dnszone = config('sites.dnszone');
+        $this->authorize('sites.update', $site);
 
         if (isset($request->owner)) {
             $request->validate([
-              'owner' => ['required','codpes','integer'],
+                'owner' => ['required', 'codpes', 'integer'],
             ]);
 
             $novo_responsavel = $request->owner;
-            Mail::send(new TrocaResponsavelMail($site,$novo_responsavel));
+            Mail::send(new TrocaResponsavelMail($site, $novo_responsavel));
             $site->owner = $request->owner;
-            $request->session()->flash('alert-info','Responsável alterado com sucesso');
+            $request->session()->flash('alert-info', 'Responsável alterado com sucesso');
             $site->save();
             return redirect("/sites/");
         }
@@ -185,65 +179,63 @@ class SiteController extends Controller
         if (isset($request->categoria) || isset($request->justificativa)) {
 
             $request->validate([
-              'categoria'       => ['required'],
-              'justificativa'   => ['required'],
+                'categoria'       => ['required'],
+                'justificativa'   => ['required'],
             ]);
 
             $site->categoria = $request->categoria;
             $site->justificativa = $request->justificativa;
-            $request->session()->flash('alert-info','Site atualizado com sucesso');
+            $request->session()->flash('alert-info', 'Site atualizado com sucesso');
         }
 
         if (isset($request->novoadmin)) {
             $request->validate([
-              'novoadmin' => ['required','codpes','integer'],
+                'novoadmin' => ['required', 'codpes', 'integer'],
             ]);
             $novo_admin = $request->novoadmin;
 
-            $numeros_usp = explode(',',$site->numeros_usp);
-            if(!in_array($request->novoadmin, $numeros_usp)){
-                array_push($numeros_usp,$request->novoadmin);
+            $numeros_usp = explode(',', $site->numeros_usp);
+            if (!in_array($request->novoadmin, $numeros_usp)) {
+                array_push($numeros_usp, $request->novoadmin);
             }
             $numeros_usp = array_map('trim', $numeros_usp);
-            $numeros_usp = implode(',',$numeros_usp);
+            $numeros_usp = implode(',', $numeros_usp);
             $site->numeros_usp = $numeros_usp;
-            Mail::send(new NovoAdminMail($site,$novo_admin));
-            $request->session()->flash('alert-info','Administrador adicionado com sucesso');
+            Mail::send(new NovoAdminMail($site, $novo_admin));
+            $request->session()->flash('alert-info', 'Administrador adicionado com sucesso');
         }
 
         if (isset($request->deleteadmin)) {
-            $numeros_usp = explode(',',$site->numeros_usp);
+            $numeros_usp = explode(',', $site->numeros_usp);
             $deleta_admin = $request->deleteadmin;
-            if(in_array($request->deleteadmin, $numeros_usp)){
+            if (in_array($request->deleteadmin, $numeros_usp)) {
                 $key = array_search($request->deleteadmin, $numeros_usp);
                 unset($numeros_usp[$key]);
             }
             $numeros_usp = array_map('trim', $numeros_usp);
-            $numeros_usp = implode(',',$numeros_usp);
+            $numeros_usp = implode(',', $numeros_usp);
             $site->numeros_usp = $numeros_usp;
-            Mail::send(new DeletaAdminMail($site,$deleta_admin));
-            $request->session()->flash('alert-info','Administrador removido com sucesso');
+            Mail::send(new DeletaAdminMail($site, $deleta_admin));
+            $request->session()->flash('alert-info', 'Administrador removido com sucesso');
         }
 
         if (isset($request->aprovar)) {
             $this->authorize('admin');
             $site->status = 'Aprovado - Em Processamento';
-            $alvo = $site->dominio . $dnszone;
-            instalaSiteAegir::dispatch($alvo);
+            SiteManager::instala($site);
             Mail::send(new AprovaSiteMail($site));
 
-            $request->session()->flash('alert-info','Site aprovado com sucesso');
+            $request->session()->flash('alert-info', 'Site aprovado com sucesso');
         }
 
         if (isset($request->voltar_solicitacao)) {
             $this->authorize('admin');
             $site->status = 'Solicitado';
             $site->save();
-            $request->session()->flash('alert-info','Site aprovado com sucesso');
+            $request->session()->flash('alert-info', 'Site aprovado com sucesso');
         }
 
         $site->save();
-
 
         return redirect("/sites/$site->id");
     }
@@ -251,37 +243,35 @@ class SiteController extends Controller
     /**
      * Show the form for editing the owner.
      *
-     * @param  \App\Site  $site
+     * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
      */
     public function changeowner(Site $site)
     {
-        $this->authorize('sites.update',$site);
+        $this->authorize('sites.update', $site);
         return view('sites/changeowner', compact('site'));
     }
 
     public function novoAdmin(Site $site)
     {
-        $this->authorize('sites.update',$site);
+        $this->authorize('sites.update', $site);
         return view('sites/novoadmin', compact('site'));
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Site  $site
+     * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
      */
     public function destroy(Site $site)
     {
         $this->authorize('admin');
-        #$this->authorize('sites.delete',$site);
-        $dnszone = config('sites.dnszone');
-        $alvo = $site->dominio . $dnszone;
-        $site->delete();
 
-        if ($site->status == "Aprovado - Desabilitado")
-            deletaSiteAegir::dispatch($alvo);
+        if ($site->status == "Aprovado - Desabilitado") {
+            SiteManager::deleta($site);
+        }
+        $site->delete();
 
         request()->session()->flash('alert-info', 'Deleção do site em andamento.');
         return redirect('/sites');
@@ -290,72 +280,64 @@ class SiteController extends Controller
     public function check(Request $request)
     {
         $request->validate([
-          'temp_token' => ['required', 'alpha_num'],
-          'codpes'     => ['required','integer'],
-          'site'       => ['required'],
+            'temp_token' => ['required', 'alpha_num'],
+            'codpes'     => ['required', 'integer'],
+            'site'       => ['required'],
         ]);
 
-        $user = User::where('codpes',$request->codpes)->first();
+        $user = User::where('codpes', $request->codpes)->first();
 
         // verifica se token secreto é válido
-        if($request->secretkey != config('sites.deploy_secret_key'))
-            return response()->json([false,'Secret Token Inválido']);
+        if ($request->secretkey != config('sites.deploy_secret_key'))
+            return response()->json([false, 'Secret Token Inválido']);
 
         // verifica se o temp_token está válido
-        if($request->temp_token != $user->temp_token) {
-            return response()->json([false,'Temp Token Inválido']);
+        if ($request->temp_token != $user->temp_token) {
+            return response()->json([false, 'Temp Token Inválido']);
         }
 
         // verifica se site existe
         $remover = config('sites.dnszone');
-        if(config('app.env') != 'production'){
+        if (config('app.env') != 'production') {
             $remover .= ':8088';
         }
-        $dominio = str_replace($remover,'',$request->site);
-        $site = Site::where('dominio',$dominio)->first();
-        if($site) {
+        $dominio = str_replace($remover, '', $request->site);
+        $site = Site::where('dominio', $dominio)->first();
+        if ($site) {
             // verifica se o número usp em questão pode fazer logon no site
             $all = $site->owner . ',' . $site->numeros_usp . ',' . config('sites.admins');
-            if(in_array($request->codpes,explode(",",$all))) {
-                return response()->json([true,$user->email]);
+            if (in_array($request->codpes, explode(",", $all))) {
+                return response()->json([true, $user->email]);
             }
-            return response()->json([false,'Usuário sem permissão']);
+            return response()->json([false, 'Usuário sem permissão']);
         }
-        return response()->json([false,'Site não existe']);
+        return response()->json([false, 'Site não existe']);
     }
 
     public function installSite(Request $request, Site $site)
     {
-      $this->authorize('sites.update',$site);
-      $dnszone = config('sites.dnszone');
-      $alvo = $site->dominio . $dnszone;
-      instalaSiteAegir::dispatch($alvo);
+        $this->authorize('admin');
+        siteManager::instala($site);
 
-      $request->session()->flash('alert-info', 'Criação do site em andamento.');
-      return redirect('/sites');
+        $request->session()->flash('alert-info', 'Criação do site em andamento.');
+        return redirect('/sites');
     }
 
     public function disableSite(Request $request, Site $site)
     {
-      $this->authorize('admin');
-      #$this->authorize('sites.update',$site);
-      $dnszone = config('sites.dnszone');
-      $alvo = $site->dominio . $dnszone;
-      desabilitaSiteAegir::dispatch($alvo);
+        $this->authorize('admin');
+        siteManager::desabilita($site);
 
-      $request->session()->flash('alert-info', 'Desabilitação do site em andamento.');
-      return redirect('/sites');
+        $request->session()->flash('alert-info', 'Desabilitação do site em andamento.');
+        return redirect('/sites');
     }
 
     public function enableSite(Request $request, Site $site)
     {
-      $this->authorize('admin');
-      #$this->authorize('sites.update',$site);
-      $dnszone = config('sites.dnszone');
-      $alvo = $site->dominio . $dnszone;
-      habilitaSiteAegir::dispatch($alvo);
+        $this->authorize('admin');
+        siteManager::habilita($site);
 
-      $request->session()->flash('alert-info', 'Habilitação do site em andamento.');
-      return redirect('/sites');
+        $request->session()->flash('alert-info', 'Habilitação do site em andamento.');
+        return redirect('/sites');
     }
 }
