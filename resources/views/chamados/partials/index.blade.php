@@ -8,7 +8,7 @@
 </style>
 @stop
 
-<h1>Chamados de {{ $site->dominio.config('sites.dnszone') }}</h1>
+<h4>Chamados de {{ $site->dominio.config('sites.dnszone') }}</h4>
 
 <div class="table-responsive">
   <table class="table table-striped">

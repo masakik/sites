@@ -6,28 +6,38 @@
 @stop
 
 @section('content')
-@parent
+  @parent
 
-<div class="table-responsive">
+  <div class="table-responsive">
     <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Site</th>
-                <th>Pessoas</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-
-        <tbody>
-            @include('sites/partials/site')
-
+      <thead>
         <tr>
-            <td colspan="3"><b>Justificativa: </b>{!! $site->justificativa !!}</td>
+          <th>Site</th>
+          <th>Pessoas</th>
+          <th>Ações</th>
         </tr>
-</tbody>
-</table>
-</div>
+      </thead>
 
-@include('chamados/partials/index')
+      <tbody>
+          <tr>
+            <td>
+              @include('sites.partials.index-list-site')
+            </td>
+
+            <td>
+              @include('sites.partials.index-list-pessoas')
+            </td>
+
+            <td>
+              @include('sites.partials.index-list-acoes')
+            </td>
+          </tr>
+        <tr>
+          <td colspan="3"><b>Justificativa: </b>{!! $site->justificativa !!}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  @include('chamados/partials/index')
 @stop
-
