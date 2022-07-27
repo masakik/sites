@@ -2,31 +2,29 @@
 
 Frontend em laravel para gerenciar sites. 
 
-# deploy para desenvolvimento:
+Permite interagir com AEGIR (gerenciador do Drupal) ou operar standalone (LOCAL).
+
+## Histórico
+
+1.1.0 - 7/2022
+
+- implementado gerenciador local
+- diversas alterações visuais
+- deve-se atualizar o env com novas variáveis
+
+1.0.7
+
+- Fork do fflch/sites
+
+## Deploy para desenvolvimento
 
     composer install
     cp .env.example .env
 
-Variáveis obrigatórias no .env:
+* Ajustar .env conforme necessário
 
-    DB_DATABASE=sites
-    DB_USERNAME=master
-    DB_PASSWORD=master
-
-    SENHAUNICA_KEY=
-    SENHAUNICA_SECRET=
-    SENHAUNICA_CALLBACK_ID=
-    SENHAUNICA_DEV=yes
-    ADMINS=12334
-    DNSZONE=.fflch.usp.br
-
-    REPLICADO_HOST=
-    REPLICADO_PORT=5005
-    REPLICADO_DATABASE=fflch
-    REPLICADO_USERNAME=fflch
-    REPLICADO_PASSWORD=
-
-    php artisan key:generate
-    php artisan migrate
-    php artisan vendor:publish --provider="Uspdev\UspTheme\ServiceProvider" --tag=assets --force
-    php artisan serve
+```
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```
