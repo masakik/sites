@@ -6,7 +6,7 @@ Permite interagir com AEGIR (gerenciador do Drupal) ou operar standalone (LOCAL)
 
 ## Histórico
 
-1.2.0 4/8/2022
+1.2.0 - 4/8/2022
 
 - migrando para senhaunica-socialite de v2 para v4
 - implementando busca por categorias
