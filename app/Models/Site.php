@@ -9,32 +9,44 @@ use Illuminate\Support\Facades\Gate;
 
 class Site extends Model
 {
-
     use HasFactory;
 
+    /**
+     * Escopo que permite filtrar os sites a serem exibidos pelo codpes de quem estiver logado
+     * 
+     * Deve ser chamado $sites = Site::allowed();, pode incluir outras entradas de query
+     */
     public function scopeAllowed($query)
     {
         $user = Auth::user();
         if (!Gate::allows('admin')) {
             $query->OrWhere('owner', '=', $user->codpes);
             // melhorar essa query!!! está insegura
-            $query->OrWhere('numeros_usp', 'LIKE', '%'.$user->codpes.'%');
+            $query->OrWhere('numeros_usp', 'LIKE', '%' . $user->codpes . '%');
             return $query;
         }
         return $query;
     }
 
+    /**
+     * Relacionamento com chamados
+     */
     public function chamados()
     {
         return $this->hasMany('App\Models\Chamado');
     }
 
-    public function user(){
+    /**
+     * Relacionamento com users
+     */
+    public function user()
+    {
         return $this->belongsTo('App\Models\User');
     }
 
-    public static function categorias() {
-    return [
+    public static function categorias()
+    {
+        return [
             'Grupo de estudo',
             'Grupo de pesquisa',
             'Departamento',
@@ -48,12 +60,13 @@ class Site extends Model
         ];
     }
 
-    public static function status() {
+    public static function status()
+    {
         return [
-                'Aprovado - Em Processamento',
-                'Aprovado - Habilitado',
-                'Aprovado - Desabilitado',
-                'Solicitado',
-            ];
-        }
+            'Aprovado - Em Processamento',
+            'Aprovado - Habilitado',
+            'Aprovado - Desabilitado',
+            'Solicitado',
+        ];
+    }
 }
