@@ -2,11 +2,12 @@
 
 @section('content')
   @parent
-
-  @include('sites.partials.index-search')
-  
-  <div class="container-fluid mt-3">
+  <div class="container-fluid">
     <div class="row">
+      @include('sites.partials.index-search')
+    </div>
+
+    <div class="row mt-3">
       {{ $sites->links() }}
       <div class="table-responsive">
         <table class="table table-sm table-striped">
