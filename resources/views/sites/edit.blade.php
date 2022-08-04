@@ -1,45 +1,38 @@
-@extends('master')
+@extends('layouts.app')
 
-@section('title', 'Dashboard')
+@section('content')
+  @parent
 
-@section('content_header')
+  <div class="h5">
+    Editando <a href="sites/{{ $site->id }}">{{ $site->dominio }}{{ config('sites.dnszone') }}</a>
+  </div>
+
+  <form method="POST" action="sites/{{ $site->id }}">
+    @csrf
+    @method('patch')
+
+    <div class="form-group">
+      <label for="justificativa">Justificativa:</label>
+      <textarea class="form-control" id="justificativa" rows="5" name="justificativa">{{ $site->justificativa }}</textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="categoria">Categoria</label>
+      <select class="form-control" id="categoria" name="categoria">
+        @foreach (App\Models\Site::categorias() as $categoria)
+          <option {{ (old('categoria') == $categoria || $site->categoria == $categoria) ? 'selected' : '' }}>{{ $categoria }}</option>
+        @endforeach
+      </select>
+    </div>
+    <br>
+    <button type="submit" class="btn btn-primary"> Enviar </button>
+  </form>
+
 @stop
 
 @section('javascripts_bottom')
   @parent
-  <script>CKEDITOR.replace( 'justificativa' );</script>
-@stop
-
-@section('content')
-@parent
-
-<form method="POST" action="sites/{{ $site->id }}">
-{{ csrf_field() }}
-{{ method_field('patch') }}
-
-  <div class="form-group">
-    <label for="justificativa">Justificativa:</label>
-    <textarea class="form-control" id="justificativa" rows="5" name="justificativa">{{ $site->justificativa }}</textarea>
-  </div>
- 
-  <div class="form-group">
-    <label for="categoria">Categoria</label>
-    <select class="form-control" id="categoria" name="categoria">
-      <option selected>{{$site->categoria}}</option>
-      <option>Grupo de estudo</option>
-      <option>Grupo de pesquisa</option>
-      <option>Departamento</option>
-      <option>Administrativo</option>
-      <option>Centro</option>
-      <option>Associação</option>
-      <option>Laboratório</option>
-      <option>Comissão</option>
-      <option>Evento</option>
-      <option>Programa de Pós-Graduação</option>
-    </select>
-  </div>
-<br>
-<button type="submit" class="btn btn-primary"> Enviar </button>
-</form>
-
+  <script>
+    CKEDITOR.replace('justificativa');
+  </script>
 @stop

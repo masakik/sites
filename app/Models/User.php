@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
+use Uspdev\SenhaunicaSocialite\Traits\HasSenhaunica;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -11,6 +13,7 @@ class User extends Authenticatable
 
     use HasFactory;
     use Notifiable;
+    use HasRoles, HasSenhaunica;
 
     /**
      * The attributes that are mass assignable.

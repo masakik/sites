@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use Mail;
 use App\Models\Site;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Auth;
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Str;
-use App\Mail\SiteMail;
-use App\Mail\AprovaSiteMail;
-use App\Mail\TrocaResponsavelMail;
-use App\Mail\NovoAdminMail;
-use App\Mail\DeletaAdminMail;
-use Mail;
 use App\Rules\Domain;
+use App\Mail\SiteMail;
+use App\Mail\NovoAdminMail;
+use Illuminate\Support\Str;
+use App\Mail\AprovaSiteMail;
+use Illuminate\Http\Request;
+use App\Mail\DeletaAdminMail;
 use App\Services\SiteManager;
+use Illuminate\Validation\Rule;
+use App\Mail\TrocaResponsavelMail;
+use Illuminate\Support\Facades\Gate;
 
 class SiteController extends Controller
 {
@@ -103,7 +104,7 @@ class SiteController extends Controller
 
         $request->validate([
             'dominio'         => ['required', 'unique:sites', new Domain],
-            'categoria'       => ['required'],
+            'categoria'       => ['required', Rule::in(Site::categorias())],
             'justificativa'   => ['required'],
         ]);
 

@@ -1,22 +1,20 @@
-@extends('laravel-usp-theme::master')
+@extends('layouts.app')
 
 @section('content')
-@include('messages.flash')
-@include('messages.errors')
-
-<div class="card">
-  <div class="card-header">
-    <strong>Exibição </strong>
-    <a class="btn btn-outline-success btn-sm" href="/avisos/{{$aviso->id}}/edit" role="button">Editar</a>
-  </div>
+  @parent
+  <div class="card">
+    <div class="card-header">
+      <strong>Exibição </strong>
+      <a class="btn btn-outline-success btn-sm" href="/avisos/{{ $aviso->id }}/edit" role="button">Editar</a>
+    </div>
     <div class="row">
       <div class="col-sm-8">
         <div class="card">
           <div class="card-body">
             <div class="card-title">
-                <strong>Título do Aviso: </strong>
+              <strong>Título do Aviso: </strong>
             </div>
-              <p>{{$aviso->titulo}}</p>
+            <p>{{ $aviso->titulo }}</p>
           </div>
         </div>
       </div>
@@ -26,29 +24,26 @@
             <div class="card-title">
               <strong>Divulgação Até: </strong>
             </div>
-              <p>{{$aviso->divulgacao_home_ate}}</p>
+            <p>{{ $aviso->divulgacao_home_ate }}</p>
           </div>
         </div>
       </div>
     </div>
     <div class="row">
-      <div class="col-sm"> 
-        <div class="card">  
+      <div class="col-sm">
+        <div class="card">
           <div class="card-body">
             <div class="card-title">
               <strong>Corpo do Aviso: </strong>
             </div>
-              <p>{{$aviso->corpo}}</p>
-          </div> 
-        </div>      
+            <p>{{ $aviso->corpo }}</p>
+          </div>
+        </div>
       </div>
     </div>
-</div>
-<br>
-<div class="col-sm form-group">
-  <a class="btn btn-success" href="/avisos" role="button">Voltar</a>
-</div>
-
-
-
-@endsection('content')
+  </div>
+  <br>
+  <div class="col-sm form-group">
+    <a class="btn btn-success" href="/avisos" role="button">Voltar</a>
+  </div>
+@endsection

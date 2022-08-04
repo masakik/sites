@@ -22,6 +22,14 @@ use App\Http\Controllers\AvisoController;
 Route::get('/', [IndexController::class, 'index'])->name('home');
 Route::resource('/sites', SiteController::class);
 
+Route::post('/sites/{site}/install', [SiteController::class, 'installSite']);
+Route::post('/sites/{site}/disable', [SiteController::class, 'disableSite']);
+Route::post('/sites/{site}/enable', [SiteController::class, 'enableSite']);
+Route::get('/sites/{site}/changeowner', [SiteController::class, 'changeOwner']);
+Route::get('/sites/{site}/novoadmin', [SiteController::class, 'novoAdmin']);
+
+Route::get('check', [SiteController::class, 'check']);
+
 # rotas para chamados
 Route::get('/chamados', [ChamadoController::class, 'admin']);
 Route::get('/chamados/{site}/create', [ChamadoController::class, 'create']);
@@ -32,19 +40,6 @@ Route::get('/chamados/{site}/{chamado}', [ChamadoController::class, 'show']);
 # rotas comentários
 Route::post('/comentarios/{chamado}/', [ComentarioController::class, 'store'])->name('comentarios.store');;
 
-# Senha única USP
-Route::get('/login', [LoginController::class, 'redirectToProvider'])->name('login');
-Route::get('/callback', [LoginController::class, 'handleProviderCallback']);
-Route::post('/logout', [LoginController::class, 'logout']);
-Route::get('/logout', [LoginController::class, 'logout']);
-
-Route::post('/sites/{site}/install', [SiteController::class, 'installSite']);
-Route::post('/sites/{site}/disable', [SiteController::class, 'disableSite']);
-Route::post('/sites/{site}/enable', [SiteController::class, 'enableSite']);
-Route::get('/sites/{site}/changeowner', [SiteController::class, 'changeOwner']);
-Route::get('/sites/{site}/novoadmin', [SiteController::class, 'novoAdmin']);
-
-Route::get('check', [SiteController::class, 'check']);
 Route::get('/emails', [EmailController::class, 'emails']);
 
 # Rotas Avisos

@@ -1,13 +1,6 @@
-@extends('master')
-
-@section('title', 'Dashboard')
-
-@section('content_header')
-@stop
+@extends('layouts.app')
 
 @section('content')
-@parent
-
-@include('chamados/partials/index')
-
+  @parent
+  @include('chamados/partials/index')
 @stop

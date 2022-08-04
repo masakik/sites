@@ -1,10 +1,6 @@
-@extends('master')
-
-@section('content_header')
-    <h1>Sites</h1>
-@stop
+@extends('layouts.app')
 
 @section('content')
-    @parent
-    @include('sites.partials.list')
-@endsection('content')
+  @parent
+  @include('sites.partials.list')
+@endsection
