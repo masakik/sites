@@ -1,6 +1,6 @@
 <div>
   <b>Responsável:</b> {{ $site->owner }}
-  - {{ \Uspdev\Replicado\Pessoa::dump($site->owner)['nompes'] ?? 'NA' }}
+  - {{ \Uspdev\Replicado\Pessoa::dump($site->owner)['nompes'] ?? 'Usuário ainda não fez login' }}
   - {{ \Uspdev\Replicado\Pessoa::email($site->owner) }}
 
   @can('sites.update', $site)

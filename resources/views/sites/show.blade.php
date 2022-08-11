@@ -28,7 +28,7 @@
             </td>
           </tr>
         <tr>
-          <td colspan="3"><b>Justificativa: </b>{!! $site->justificativa !!}</td>
+          <td colspan="3"><b>Justificativa: </b>{!! nl2br($site->justificativa) !!}</td>
         </tr>
       </tbody>
     </table>

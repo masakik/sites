@@ -1,6 +1,8 @@
 <div class="h5">
   <a href="sites/{{ $site->id }}">{{ $site->dominio }}{{ config('sites.dnszone') }}</a>
-  <a href="sites/{{ $site->id }}/edit"> <i class="fas fa-edit"></i> </a>
+  @can('sites.update', $site)
+    <a href="sites/{{ $site->id }}/edit"> <i class="fas fa-edit"></i> </a>
+  @endcan
 </div>
 
 <div>
@@ -15,6 +17,12 @@
     {{ $site->status }}
   @endif
 </div>
+
+@can('admin')
+  <div>
+    Servidor: {{ json_encode($site->config, JSON_UNESCAPED_UNICODE) }}
+  </div>
+@endcan
 
 <div>
   <b>chamados: </b>

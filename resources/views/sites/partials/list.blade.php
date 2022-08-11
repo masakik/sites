@@ -29,7 +29,7 @@ Total de sites ainda não aprovados: <b>{{ $sites->where('status','Solicitado')-
               {{$site->dominio.config('sites.dnszone')}}
             @endif
           </td>
-          <td>{{ $pessoa::dump($site->owner)['nompes'] }}</td>
+          <td>{{ $pessoa::dump($site->owner)['nompes'] ?? '-' }}</td>
           <td>{{ $site->categoria }}</td>
           <td>{{ $site->status }}</td>
         </tr>
