@@ -17,24 +17,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
         Paginator::useBootstrap();
-
-        // Fix para MariaDB ao rodar migrations
-        Schema::defaultStringLength(191);
-
-        // força https na produção
-        if (\App::environment('production')) {
-            \URL::forceScheme('https');
-        }
-
-        // gates
-        Gate::resource('sites', 'App\Policies\SitePolicy');
-
-        Gate::define('admin', function($user){
-            $admins = explode(',',config('sites.admins'));
-            return in_array($user->codpes, $admins);
-        });
     }
 
     /**

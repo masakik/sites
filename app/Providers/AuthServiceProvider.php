@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Policies\SitePolicy;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -24,5 +25,8 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+
+        // gates
+        Gate::resource('sites', 'App\Policies\SitePolicy');
     }
 }
