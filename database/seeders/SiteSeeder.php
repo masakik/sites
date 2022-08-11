@@ -21,7 +21,8 @@ class SiteSeeder extends Seeder
             'owner' => 11170411,
             'status' => 'Solicitado',
             'categoria' => 'Grupo de Estudos',
-            'justificativa' => 'Divulgacao'
+            'justificativa' => 'Seed de Site de Divulgação',
+            'config' => ['manager' => 'aegir'],
         ];
 
         Site::create($site);

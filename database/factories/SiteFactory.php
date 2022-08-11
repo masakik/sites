@@ -30,7 +30,7 @@ class SiteFactory extends Factory
             'owner' =>  $this->faker->unique()->docente(),
             'status' => $status[array_rand($status)],
             'categoria' => $categorias[array_rand($categorias)],
-            'justificativa' => $this->faker->sentence,
+            'justificativa' => $this->faker->sentence(rand(6,30)),
         ];
     }
 }
