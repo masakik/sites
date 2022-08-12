@@ -2,13 +2,13 @@
 
 @section('styles')
     @parent
-    <link rel="stylesheet" href="/css/sites.css">
+    <link rel="stylesheet" href="css/sites.css">
 @stop
 
-@section('javascripts_head')
+@section('javascripts_bottom')
     @parent
-    <script src="/js/sites.js"></script>
-    <script src="https://cdn.ckeditor.com/4.12.1/standard/ckeditor.js"></script>
+    <script src="js/sites.js"></script>
+    <script src="https://cdn.ckeditor.com/4.19.1/standard/ckeditor.js"></script>
 @stop
 
 @section('content')
