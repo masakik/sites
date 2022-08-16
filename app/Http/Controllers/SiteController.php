@@ -168,6 +168,7 @@ class SiteController extends Controller
         $this->authorize('sites.update', $site);
 
         if (isset($request->owner)) {
+            // troca de responsável
             $request->validate([
                 'owner' => ['required', 'codpes', 'integer'],
             ]);
@@ -177,11 +178,11 @@ class SiteController extends Controller
             $site->owner = $request->owner;
             $request->session()->flash('alert-info', 'Responsável alterado com sucesso');
             $site->save();
-            return redirect("/sites/");
+            return back();
         }
 
         if (isset($request->categoria) || isset($request->justificativa)) {
-
+            // site update
             $request->validate([
                 'categoria'       => ['required'],
                 'justificativa'   => ['required'],
@@ -193,6 +194,7 @@ class SiteController extends Controller
         }
 
         if (isset($request->novoadmin)) {
+            // adicona admin
             $request->validate([
                 'novoadmin' => ['required', 'codpes', 'integer'],
             ]);
@@ -210,6 +212,7 @@ class SiteController extends Controller
         }
 
         if (isset($request->deleteadmin)) {
+            // remove admin
             $numeros_usp = explode(',', $site->numeros_usp);
             $deleta_admin = $request->deleteadmin;
             if (in_array($request->deleteadmin, $numeros_usp)) {
@@ -224,6 +227,7 @@ class SiteController extends Controller
         }
 
         if (isset($request->aprovar)) {
+            // aprovar
             $this->authorize('admin');
             $site->status = 'Aprovado - Em Processamento';
             SiteManager::instala($site);
@@ -324,7 +328,7 @@ class SiteController extends Controller
         siteManager::instala($site);
 
         $request->session()->flash('alert-info', 'Criação do site em andamento.');
-        return redirect('/sites');
+        return back();
     }
 
     public function disableSite(Request $request, Site $site)
@@ -333,7 +337,7 @@ class SiteController extends Controller
         siteManager::desabilita($site);
 
         $request->session()->flash('alert-info', 'Desabilitação do site em andamento.');
-        return redirect('/sites');
+        return back();
     }
 
     public function enableSite(Request $request, Site $site)
@@ -342,6 +346,6 @@ class SiteController extends Controller
         siteManager::habilita($site);
 
         $request->session()->flash('alert-info', 'Habilitação do site em andamento.');
-        return redirect('/sites');
+        return back();
     }
 }
