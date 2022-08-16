@@ -67,7 +67,7 @@ class ComentarioController extends Controller
         Mail::send(new ComentarioMail($comentario,$user));
 
         $request->session()->flash('alert-info', 'Comentário enviado com sucesso');
-        return redirect("/chamados/$chamado->site_id/$chamado->id");
+        return redirect(route('chamados.show', $chamado));
     }
 
     /**
