@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Uspdev\Replicado\Pessoa;
 
 class Site extends Model
 {
@@ -33,6 +34,30 @@ class Site extends Model
             $value[$key] = $value[$key] ?? $default;
         }
         return $value;
+    }
+
+    /**
+     * Acessor para criar o atributo url
+     */
+    public function getUrlAttribute()
+    {
+        return $this->dominio . config('sites.dnszone');
+    }
+
+    /**
+     * Acessor para criar ownerName
+     */
+    public function getOwnerNameAttribute()
+    {
+        return Pessoa::dump($this->owner)['nompes'] ?? 'Usuário ainda não fez login';
+    }
+
+    /**
+     * Acessor para criar ownerEmail
+     */
+    public function getOwnerEmailAttribute()
+    {
+        return Pessoa::email($this->owner);
     }
 
     /**
