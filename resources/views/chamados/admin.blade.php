@@ -56,7 +56,7 @@
                 <li> <b>tipo:</b> {{ $chamado->tipo }}</li>
               </ul>
             </td>
-            <td><a href="chamados/{{ $chamado->site_id }}/{{ $chamado->id }}">{!! strip_tags($chamado->descricao) !!}</a></td>
+            <td><a href="{{ route('chamados.show', $chamado) }}">{!! strip_tags($chamado->descricao) !!}</a></td>
           </tr>
         @empty
           <tr>

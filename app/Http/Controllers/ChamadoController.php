@@ -32,8 +32,8 @@ class ChamadoController extends Controller
         }
         else {
             $chamados= Chamado::where('status', 'aberto')->paginate(10);
-        }    
-        
+        }
+
         return view('chamados/admin',compact('chamados'));
     }
 
@@ -71,8 +71,8 @@ class ChamadoController extends Controller
         $this->authorize('sites.view',$site);
 
         $request->validate([
-          'descricao'  => ['required'],
-          'tipo'       => ['required'],
+            'descricao'  => ['required'],
+            'tipo'       => ['required'],
         ]);
         $user = \Auth::user();
         $chamado = new Chamado;
@@ -92,13 +92,13 @@ class ChamadoController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Chamado  $chamado
+     * @param  \App\Models\Chamado $chamado
      * @return \Illuminate\Http\Response
      */
-    public function show(Site $site, Chamado $chamado)
+    public function show(Chamado $chamado)
     {
-        $this->authorize('sites.view',$site);
-        return view('chamados/show',compact('site','chamado'));
+        $this->authorize('sites.view', $chamado->site);
+        return view('chamados/show', compact('chamado'));
     }
 
     /**

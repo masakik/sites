@@ -32,10 +32,10 @@ Route::get('check', [SiteController::class, 'check']);
 
 # rotas para chamados
 Route::get('/chamados', [ChamadoController::class, 'admin']);
+Route::get('/chamados/{chamado}', [ChamadoController::class, 'show'])->name('chamados.show');
 Route::get('/chamados/{site}/create', [ChamadoController::class, 'create']);
-Route::get('/chamados/{site}/', [ChamadoController::class, 'index']);
+// Route::get('/chamados/{site}/', [ChamadoController::class, 'index']);
 Route::post('/chamados/{site}/', [ChamadoController::class, 'store'])->name('chamados.store');
-Route::get('/chamados/{site}/{chamado}', [ChamadoController::class, 'show']);
 
 # rotas comentários
 Route::post('/comentarios/{chamado}/', [ComentarioController::class, 'store'])->name('comentarios.store');;
@@ -44,5 +44,10 @@ Route::get('/emails', [EmailController::class, 'emails']);
 
 # Rotas Avisos
 Route::resource('/avisos', AvisoController::class);
+
+# Configurações
+Route::get('/settings', function() {
+    return view('settings');
+});
 
 

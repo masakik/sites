@@ -4,33 +4,41 @@
 @section('content')
   @parent
 
+  <h4>
+    @can('admin')
+      <a href="chamados">Chamados</a> <i class="fas fa-angle-right"></i>
+    @endcan
+    Chamado #{{ $chamado->id }} de <a href="sites/{{ $chamado->site->id }}">{{ $chamado->site->url }}</a>
+    @include('chamados.partials.status-badge')
+  </h4>
+
   <div class="card bg-light mb-3">
-    <div class="card-header">{{ $chamado->user->name }} -
-      {{ Carbon\Carbon::parse($chamado->created_at)->format('d/m/Y H:i') }}</div>
-    <div class="card-body">
-      <b>site</b>: {{ $chamado->site->dominio . config('sites.dnszone') }} <br>
-      <b>status</b>: {{ $chamado->status }}<br>
-      <b>tipo</b>: {{ $chamado->tipo }} <br>
-      <p class="card-text">{!! $chamado->descricao !!}</p>
+    <div class="card-header">
+      {{ $chamado->user->name }} -
+      {{ Carbon\Carbon::parse($chamado->created_at)->format('d/m/Y H:i') }}
+      | <b>tipo</b>: {{ $chamado->tipo }}
       @if (!is_null($chamado->fechado_em))
-        <div><b>Fechado em</b>: {{ Carbon\Carbon::parse($chamado->fechado_em)->format('d/m/Y H:i') }}</div>
+        | <b>Fechado em</b>: {{ Carbon\Carbon::parse($chamado->fechado_em)->format('d/m/Y H:i') }}
       @endif
+    </div>
+    <div class="card-body">
+      {!! $chamado->descricao !!}
     </div>
   </div>
 
   @forelse ($chamado->comentarios->sortBy('created_at') as $comentario)
     <div class="card bg-light mb-3">
       <div class="card-header">{{ $comentario->user->name }} -
-        {{ Carbon\Carbon::parse($comentario->created_at)->format('d/m/Y H:i') }}</div>
+        {{ Carbon\Carbon::parse($comentario->created_at)->format('d/m/Y H:i') }}
+      </div>
       <div class="card-body">
-        <p class="card-text">{!! $comentario->comentario !!}</p>
+        {!! trim($comentario->comentario) !!}
       </div>
     </div>
 
   @empty
     Não há comentários
   @endforelse
-
 
   <form method="POST" role="form" action="{{ route('comentarios.store', [$chamado->id]) }}">
     @csrf

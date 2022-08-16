@@ -1,46 +1,49 @@
 @section('styles')
-@parent
-<style>
+  @parent
+  <style>
     table {
-        table-layout: fixed;
-        word-wrap: break-word;
+      table-layout: fixed;
+      word-wrap: break-word;
     }
-</style>
+  </style>
 @stop
-
-<h4>Chamados de {{ $site->dominio.config('sites.dnszone') }}</h4>
 
 <div class="table-responsive">
   <table class="table table-striped">
     <thead>
       <tr>
         <th style="width: 50%">Infos</th>
-        <th style="width: 50%">Chamado</th>
+        <th style="width: 50%">Descrição</th>
       </tr>
     </thead>
 
     <tbody>
-
-@forelse ($site->chamados->sortByDesc('created_at') as $chamado)
-      <tr>
-       <td>
-       <ul style="list-style-type: none;">
-        <li><b>id: </b>{{ $chamado->id }}</li>
-        <li><b>por: </b>{{ $chamado->user->name }}</li>
-        <li><b>em: </b>{{ Carbon\Carbon::parse($chamado->created_at)->format('d/m/Y H:i') }}</li>
-        <li><b>status: </b>{{ $chamado->status }}</li>
-        <li><b>tipo: </b>{{ $chamado->tipo }}</li>
-       </li>
-      </td>
-        <td><a href="chamados/{{$chamado->site_id}}/{{$chamado->id}}">{!! strip_tags($chamado->descricao) !!}</a></td>
-      </tr>
-@empty
-    <tr>
-        <td colspan="6">Não há chamados para esse site</td>
-    </tr>
-@endforelse
-</tbody>
-</table>
+      @forelse ($site->chamados->sortByDesc('created_at') as $chamado)
+        <tr>
+          <td>
+            <ul style="list-style-type: none;">
+              <li>
+                <b>#</b>{{ $chamado->id }} 
+                | <b>tipo: </b>{{ $chamado->tipo }}
+                @include('chamados.partials.status-badge')
+              </li>
+              <li>
+                <b>em: </b>{{ Carbon\Carbon::parse($chamado->created_at)->format('d/m/Y H:i') }},
+                <b>por: </b>{{ $chamado->user->name }}
+              </li>
+              <li></li>
+            </ul>
+          </td>
+          <td>
+            <a href="{{ route('chamados.show', $chamado) }}">{!! strip_tags($chamado->descricao) !!}</a>
+          </td>
+        </tr>
+      @empty
+        <tr>
+          <td colspan="6">Não há chamados para esse site</td>
+        </tr>
+      @endforelse
+    </tbody>
+  </table>
 
 </div>
-

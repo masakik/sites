@@ -1,17 +1,12 @@
 <div>
   <b>Responsável:</b> {{ $site->owner }}
-  - {{ \Uspdev\Replicado\Pessoa::dump($site->owner)['nompes'] ?? 'Usuário ainda não fez login' }}
-  - {{ \Uspdev\Replicado\Pessoa::email($site->owner) }}
-
-  @can('sites.update', $site)
-    <a href="sites/{{ $site->id }}/changeowner" class="btn btn-sm btn-outline-warning" title="Mudar responsável">
-      <i class="fas fa-exchange-alt"></i>
-    </a>
-  @endcan
+  - {{ $site->ownerName }}
+  - {{ $site->ownerEmail }}
+  @includeWhen(Gate::check('sites.update', $site), 'sites.partials.changeowner-btn')
 </div>
 
 @if ($site->config['manager'] == 'aegir')
-  <li class="list-group-item">
+  <div>
     <b>Administradores:</b>
 
     @can('sites.update', $site)
@@ -23,5 +18,5 @@
     @foreach (explode(',', $site->numeros_usp) as $numero_usp)
       @include('sites.partials.list-administrador')
     @endforeach
-  </li>
+  </div>
 @endif
