@@ -3,7 +3,7 @@
 <div>
 O site {{ $site->dominio.config('sites.dnszone') }} teve  o reponsável alterado. 
 <br>
-Confira nossos tutoriais em: http://sti.fflch.usp.br/drupal
+@include('emails.partials.tutoriais')
 </div>
 
 <br>

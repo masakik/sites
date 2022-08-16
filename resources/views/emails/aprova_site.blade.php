@@ -4,7 +4,7 @@
 O site {{ $site->dominio.config('sites.dnszone') }} foi aprovado e está
 na fila de processamento. Dentro de alguns instantes estará disponível para uso. 
 <br>
-Confira nossos tutoriais em: http://sti.fflch.usp.br/drupal
+@include('emails.partials.tutoriais')
 </div>
 
 <br>

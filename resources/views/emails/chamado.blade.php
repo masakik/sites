@@ -4,8 +4,8 @@ Novo chamado para o site {{ $chamado->site->dominio.config('sites.dnszone') }}
 Número USP: {{ $user->codpes }} <br>
 Nome: {{ $user->name }}   <br>
 Número do chamado: {{$chamado->site->id}}/{{$chamado->id}}  <br>
-Chamado: <a href="{{config('app.url')}}/chamados/{{$chamado->site->id}}/{{$chamado->id}}">
-  {{config('app.url')}}/chamados/{{$chamado->site->id}}/{{$chamado->id}}
+Chamado: <a href="{{ route('chamados.show', $chamado) }}">
+  {{ route('chamados.show', $chamado) }}
 </a>
 </div>
 
