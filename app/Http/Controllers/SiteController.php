@@ -2,29 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
-use Mail;
+use App\Mail\AprovaSiteMail;
+use App\Mail\DeletaAdminMail;
+use App\Mail\NovoAdminMail;
+use App\Mail\SiteMail;
+use App\Mail\TrocaResponsavelMail;
 use App\Models\Site;
 use App\Models\User;
 use App\Rules\Domain;
-use App\Mail\SiteMail;
-use App\Mail\NovoAdminMail;
-use Illuminate\Support\Str;
-use App\Mail\AprovaSiteMail;
-use Illuminate\Http\Request;
-use App\Mail\DeletaAdminMail;
 use App\Services\SiteManager;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use App\Mail\TrocaResponsavelMail;
-use Illuminate\Support\Facades\Gate;
+use Mail;
 
 class SiteController extends Controller
 {
-    public function __construct()
-    {
-        // 
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -106,9 +99,9 @@ class SiteController extends Controller
         $user = \Auth::user();
 
         $request->validate([
-            'dominio'         => ['required', 'unique:sites', new Domain],
-            'categoria'       => ['required', Rule::in(Site::categorias())],
-            'justificativa'   => ['required'],
+            'dominio' => ['required', 'unique:sites', new Domain],
+            'categoria' => ['required', Rule::in(Site::categorias())],
+            'justificativa' => ['required'],
         ]);
 
         $site = new Site;
@@ -184,8 +177,8 @@ class SiteController extends Controller
         if (isset($request->categoria) || isset($request->justificativa)) {
             // site update
             $request->validate([
-                'categoria'       => ['required'],
-                'justificativa'   => ['required'],
+                'categoria' => ['required'],
+                'justificativa' => ['required'],
             ]);
 
             $site->categoria = $request->categoria;
@@ -289,15 +282,16 @@ class SiteController extends Controller
     {
         $request->validate([
             'temp_token' => ['required', 'alpha_num'],
-            'codpes'     => ['required', 'integer'],
-            'site'       => ['required'],
+            'codpes' => ['required', 'integer'],
+            'site' => ['required'],
         ]);
 
         $user = User::where('codpes', $request->codpes)->first();
 
         // verifica se token secreto é válido
-        if ($request->secretkey != config('sites.deploy_secret_key'))
+        if ($request->secretkey != config('sites.deploy_secret_key')) {
             return response()->json([false, 'Secret Token Inválido']);
+        }
 
         // verifica se o temp_token está válido
         if ($request->temp_token != $user->temp_token) {
