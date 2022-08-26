@@ -24,13 +24,19 @@ class SiteFactory extends Factory
     {
         $categorias = Site::categorias();
         $status = Site::status();
+        $managers = ['local', 'drupal', 'wordpress'];
         return [
             'dominio' => $this->faker->unique()->word,
             'numeros_usp' => $this->faker->unique()->docente(),
-            'owner' =>  $this->faker->unique()->docente(),
+            'owner' => $this->faker->unique()->docente(),
             'status' => $status[array_rand($status)],
             'categoria' => $categorias[array_rand($categorias)],
-            'justificativa' => $this->faker->sentence(rand(6,30)),
+            'justificativa' => $this->faker->sentence(rand(6, 30)),
+            'config' => [
+                'manager' => $managers[array_rand($managers)],
+                'host' => '',
+                'path' => '',
+            ],
         ];
     }
 }
