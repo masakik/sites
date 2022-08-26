@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Site;
 
 class IndexController extends Controller
 {
-    public function index(){
-        if(auth()->check()){
+    public function index()
+    {
+        if (auth()->check()) {
             return redirect('/sites');
         } else {
-            return view('index')->with('sites',Site::orderBy('dominio', 'ASC')->get());
+            $sites = Site::orderBy('dominio', 'ASC')->orderBy('categoria', 'ASC')->get();
+            return view('index')->with('sites', $sites);
         }
-        
+
     }
 }
