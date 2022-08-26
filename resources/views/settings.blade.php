@@ -12,7 +12,7 @@
   <br>
   DNSZONE = {{ config('sites.dnszone') }}<br>
   Habilitar subdomínio = {{ config('sites.subdominio') ? 'SIM' : 'NÃO' }}<br>
-  <div>
+  <div class="mt-3">
     Chamados = {{ config('sites.chamados') }}<br>
     <small>
       Qual subsistema de chamados vai usar. Se "local", usa o sistema interno.
@@ -20,7 +20,7 @@
       A implementar o uso do sistema uspdev/chamados.<br>
     </small>
   </div>
-  <div>
+  <div class="mt-3">
     SITE_MANAGER = {{ config('sites.siteManager') }}<br>
     <small class="ml-2">
       Indica o gerenciador de site a ser utilizado.
@@ -28,12 +28,28 @@
       Pretende-se implementar wordpress.<br>
     </small>
   </div>
-  TUTORIAIS_URL = {{ config('sites.tutoriaisUrl') }}<br>
+  <div class="mt-3">
+    TUTORIAIS_URL = {{ config('sites.tutoriaisUrl') }}<br>
+  </div>
 
-  {{-- @if (config('services.senhaunica.client_id'))
-    <h4>Senha única</h4>
-    Ambiente dev: {{ config('senhaunica.dev') }}<br>
-    Key: {{ config('services.senhaunica.client_id') }}<br>
-    Callback id: {{ config('senhaunica.callback_id') }}<br>
-  @endif --}}
+  @if (config('services.senhaunica.client_id'))
+    <div class="mt-3">
+      <h4>
+        <span class="badge badge-secondary">LIB</span>
+        Senha única
+        <a target="_senhaunica" href="https://github.com/uspdev/senhaunica-socialite" title="Github ..">
+          <i class="fab fa-github"></i>
+        </a>
+      </h4>
+      <div class="ml-2">
+        @if (config('services.senhaunica.client_secret') == 'sua_super_chave_segura')
+          <span class="text-danger">Senhaunica não configurada</span>
+        @else
+          Ambiente dev: {{ config('senhaunica.dev') }}<br>
+          Key: {{ Illuminate\Support\Str::mask(config('services.senhaunica.client_id'), '*', 3) }}<br>
+          Callback id: {{ config('senhaunica.callback_id') }}<br>
+        @endif
+      </div>
+    </div>
+  @endif
 @endsection

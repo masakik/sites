@@ -19,11 +19,6 @@ $menu = [
         'can' => 'sites.create',
     ],
     [
-        'text' => 'Meus Sites',
-        'url' => 'sites',
-        'can' => 'sites.create',
-    ],
-    [
         'text' => '<span class="text-danger">Avisos</span>',
         'submenu' => $avisos,
         'can' => 'admin',
@@ -48,9 +43,9 @@ $right_menu = [
         'key' => 'senhaunica-socialite',
     ],
     [
-        'text' => '<span class="text-danger" title="COnfigurações da aplicação"><i class="fas fa-cog"></i></span>',
+        'text' => '<span class="text-danger" title="Configurações da aplicação"><i class="fas fa-cog"></i></span>',
         'url' => 'settings',
-        'can' => 'admin',
+        'can' => 'gerente',
     ],
 ];
 
