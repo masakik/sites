@@ -1,12 +1,11 @@
 <?php
 
-use App\Http\Controllers\IndexController;
-use App\Http\Controllers\SiteController;
+use App\Http\Controllers\AvisoController;
 use App\Http\Controllers\ChamadoController;
 use App\Http\Controllers\ComentarioController;
-use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\EmailController;
-use App\Http\Controllers\AvisoController;
+use App\Http\Controllers\IndexController;
+use App\Http\Controllers\SiteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +16,7 @@ use App\Http\Controllers\AvisoController;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 Route::get('/', [IndexController::class, 'index'])->name('home');
 Route::resource('/sites', SiteController::class);
@@ -38,7 +37,7 @@ Route::get('/chamados/{site}/create', [ChamadoController::class, 'create']);
 Route::post('/chamados/{site}/', [ChamadoController::class, 'store'])->name('chamados.store');
 
 # rotas comentários
-Route::post('/comentarios/{chamado}/', [ComentarioController::class, 'store'])->name('comentarios.store');;
+Route::post('/comentarios/{chamado}/', [ComentarioController::class, 'store'])->name('comentarios.store');
 
 Route::get('/emails', [EmailController::class, 'emails']);
 
@@ -46,8 +45,6 @@ Route::get('/emails', [EmailController::class, 'emails']);
 Route::resource('/avisos', AvisoController::class);
 
 # Configurações
-Route::get('/settings', function() {
+Route::get('/settings', function () {
     return view('settings');
 });
-
-
