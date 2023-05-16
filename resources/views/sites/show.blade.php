@@ -8,18 +8,22 @@
       Site {{ $site->url }} &nbsp;
       @include('sites.partials.status-badge') &nbsp;
       @include('sites.partials.site-edit-btn') &nbsp;
-      @include('sites.partials.logon-btn') &nbsp;
+      @includeWhen($site->config['manager'] == 'drupal', 'sites.partials.logon-btn') &nbsp;
       @includeWhen(Gate::check('admin'), 'sites.partials.admin-btns')
     </div>
     <div class="card-body">
       <div class="row">
         <div class="col-md-6">
           @include('sites.show.partials.principal')
-        </div>
-        <div class="col-md-6">
           @include('sites.show.partials.pessoas')
         </div>
+        <div class="col-md-6">
+          @if ($site->config['manager'] == 'wordpress')
+            @include('sites.show.partials.wordpress')
+          @endif
+        </div>
       </div>
+
       @if (config('sites.chamados') == 'local')
         <div class="row mt-3">
           <div class="col-md-12">

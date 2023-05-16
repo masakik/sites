@@ -1,7 +1,7 @@
 Categoria: <b>{{ $site->categoria }}</b>
 @can('admin')
   <div>
-    Servidor: {{ json_encode($site->config, JSON_UNESCAPED_UNICODE) }}
+    Gerenciador: <b>{{ $site->config['manager'] ?? '-' }}</b>
   </div>
 @endcan
 <div>

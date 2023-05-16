@@ -22,9 +22,11 @@ class Site extends Model
     ];
 
     protected $configDefaults = [
-        'manager' => 'local',
-        'host' => 'não setado',
-        'path' => 'não setado',
+        'manager' => 'wordpress',
+        'host' => 'localhost',
+        'port' => '2221',
+        'path' => '/home/dominio',
+        'suUser' => null,
     ];
 
     public function getConfigAttribute($value)

@@ -10,7 +10,7 @@
   @endcan
 </div>
 
-@if ($site->config['manager'] == 'aegir')
+@if ($site->config['manager'] != 'local')
   <li class="list-group-item">
     <b>Administradores:</b>
 

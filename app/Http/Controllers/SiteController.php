@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Cms\Wordpress;
 use App\Mail\AprovaSiteMail;
 use App\Mail\DeletaAdminMail;
 use App\Mail\NovoAdminMail;
@@ -124,17 +125,26 @@ class SiteController extends Controller
      * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function show(Site $site)
+    public function show(Request $request, Site $site)
     {
         $this->authorize('sites.view', $site);
+
+        if (isset($request->get) && $request->get == 'wp_detalhes') {
+            $wp = new Wordpress($site);
+            $html = view('sites.ajax.wp-detalhes', compact('wp', 'site'))->render();
+            return $html;
+        }
 
         if ($site->status != 'Solicitado') {
             $site->status = SiteManager::verificaStatus($site);
             $site->save();
         }
-        $this->novoToken();
-        $hashlogin = $user = \Auth::user()->temp_token;
-        return view('sites/show', compact('site', 'hashlogin'));
+
+        if ($site->config['manager'] == 'drupal') {
+            $this->novoToken(); // gera novo token em $user->temp_token
+        }
+
+        return view('sites/show', compact('site'));
     }
 
     /**
@@ -160,6 +170,13 @@ class SiteController extends Controller
     {
         $this->authorize('sites.update', $site);
 
+        // if (isset($request->acao) && in_array($request->acao, ['config'])) {
+        //     //
+        // } else {
+        //     $request->session()->flash('alert-info', 'Ação inválida');
+        //     return back();
+        // }
+
         if (isset($request->owner)) {
             // troca de responsável
             $request->validate([
@@ -179,15 +196,20 @@ class SiteController extends Controller
             $request->validate([
                 'categoria' => ['required'],
                 'justificativa' => ['required'],
+                'dominio' => ['nullable'],
+                'manager' => ['required'],
             ]);
 
             $site->categoria = $request->categoria;
             $site->justificativa = $request->justificativa;
+            $site->dominio = $request->dominio ? $request->dominio : $site->dominio;
+            $config['manager'] = $request->manager;
+            $site->config = array_merge($site->config, $config);
             $request->session()->flash('alert-info', 'Site atualizado com sucesso');
         }
 
         if (isset($request->novoadmin)) {
-            // adicona admin
+            // adiciona admin
             $request->validate([
                 'novoadmin' => ['required', 'codpes', 'integer'],
             ]);
@@ -232,8 +254,23 @@ class SiteController extends Controller
         if (isset($request->voltar_solicitacao)) {
             $this->authorize('admin');
             $site->status = 'Solicitado';
-            $site->save();
             $request->session()->flash('alert-info', 'Site aprovado com sucesso');
+        }
+
+        if (isset($request->acao) && $request->acao == 'config') {
+            $this->authorize('admin');
+            $request->validate([
+                'host' => ['nullable'],
+                'port' => ['nullable', 'integer'],
+                'path' => ['nullable'],
+            ]);
+
+            $config['host'] = $request->host;
+            $config['port'] = $request->port;
+            $config['path'] = $request->path;
+            $site->config = $config;
+
+            $request->session()->flash('alert-info', 'Config atualizado com sucesso');
         }
 
         $site->save();

@@ -9,7 +9,7 @@
 
 @can('admin')
   <div>
-    <b>Servidor:</b> {{ json_encode($site->config, JSON_UNESCAPED_UNICODE) }}
+    <b class=""><i class="fas fa-lock text-danger"></i> Servidor:</b> {{ $site->config['manager'] }}
   </div>
 @endcan
 @if(config('sites.chamados') == 'local')
