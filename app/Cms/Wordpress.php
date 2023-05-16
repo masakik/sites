@@ -24,13 +24,16 @@ class Wordpress
 
     /**
      * Coleta as informações da instalação WP e guarda no objeto
+     * 
+     * Retorna: cli, core, plugins, themes, configs, optiuons 
      */
     public function info()
     {
         $returns = $this->exec('info');
         // dd($returns);
         foreach ($returns as $k => $v) {
-            $this->$k = json_decode($v, true);
+            $value = json_decode($v, true);
+            $this->$k = $value ? $value : [];
         }
         return true;
     }
