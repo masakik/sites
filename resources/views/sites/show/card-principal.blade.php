@@ -2,7 +2,7 @@
   <div class="card-header py-1">
     <i class="fas fa-university"></i>
     Site
-    @include('sites.partials.site-edit-btn') &nbsp;
+    @include('sites.partials.principal-edit-btn') &nbsp;
   </div>
   <div class="card-body py-1">
     <div>Host: <b>{{ $site->url }}</b></div>

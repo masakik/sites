@@ -4,10 +4,10 @@
   @parent
 
   <div class="card">
-    <div class="card-header h4 form-inline py-1">
+    <div class="card-header h4 form-inline">
       Site {{ $site->dominio }} &nbsp;
       @include('sites.partials.status-badge') &nbsp;
-      @includeWhen($site->config['manager'] == 'drupal', 'sites.partials.logon-btn') &nbsp;
+      @include('sites.partials.logon-btn') &nbsp;
       @includeWhen(Gate::check('admin'), 'sites.partials.admin-btns')
     </div>
     <div class="card-body">
