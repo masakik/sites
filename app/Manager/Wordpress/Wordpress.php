@@ -1,31 +1,34 @@
 <?php
 namespace App\Manager\Wordpress;
 
-class Wordpress
+use App\Manager\Manager;
+
+class Wordpress extends Manager
 {
-    /** Mensagem caso tenha algum erro que impeça de coletar informações do WP */
+    // variáveis no Manager
     public $error = null;
     public $errorMsg; // erro nao fatal
 
+    // variáveis locais retornadas por exec
+    public $cli;
+    public $core;
+    public $options;
+    public $plugins;
+    public $themes;
+    public $settings;
+
     public function __construct($site)
     {
-        $config = $site->config;
-        $this->host = $config['host'];
-        $this->port = $config['port'];
-        $this->path = $config['path'];
-        $this->suUser = $config['suUser'];
-
         $this->wp = app_path('Manager/Wordpress/wp');
 
-        $this->info();
+        parent::__construct($site);
         // dd($this);
-
     }
 
     /**
      * Coleta as informações da instalação WP e guarda no objeto
      * 
-     * Retorna: cli, core, plugins, themes, configs, optiuons 
+     * Retorna: cli, core, plugins, themes, configs, options 
      */
     public function info()
     {
@@ -64,7 +67,7 @@ class Wordpress
             $cmd = "ssh $this->host -p $this->port php /root/sites-remoto.php";
         }
 
-        if ($this->suUser) {
+        if (isset($this->suUser)) {
             $params['suUser'] = $this->suUser;
         }
         $params['path'] = $this->path;
@@ -85,32 +88,6 @@ class Wordpress
 
         $this->errorMsg = $exec['statusMsg'];
         return $exec['data'];
-    }
-
-    protected function testaSsh()
-    {
-        $cmd = "ssh -o BatchMode=yes -o ConnectTimeout=5 $this->host -p $this->port echo ok 2>&1";
-        $exec = shell_exec($cmd);
-        return $exec == "ok\n" ? true : false;
-    }
-
-    /**
-     * Copia os arquivos a serem executados no servidor remoto
-     */
-    protected function copy()
-    {
-        $path = app_path('Manager/Wordpress');
-        $cmd = "scp -P $this->port $path/sites-remoto.php $this->host:/root/sites-remoto.php 2>&1";
-        $exec = shell_exec($cmd);
-        if ($exec) {
-            dd('copy error', $cmd, $exec);
-        }
-
-        $cmd = "scp -P $this->port $path/wp $this->host:/root/wp 2>&1";
-        $exec = shell_exec($cmd);
-        if ($exec) {
-            dd('copy error', $cmd, $exec);
-        }
     }
 
     public function isWp()

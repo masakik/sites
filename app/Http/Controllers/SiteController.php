@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Manager\Wordpress\Wordpress;
 use App\Mail\AprovaSiteMail;
 use App\Mail\DeletaAdminMail;
 use App\Mail\NovoAdminMail;
 use App\Mail\SiteMail;
 use App\Mail\TrocaResponsavelMail;
+use App\Manager\Wordpress\Wordpress;
 use App\Models\Site;
 use App\Models\User;
 use App\Rules\Domain;
@@ -132,10 +132,15 @@ class SiteController extends Controller
         $this->authorize('sites.view', $site);
 
         // pegando dados do WP via ajax
-        if (isset($request->get) && $request->get == 'wp_detalhes') {
-            $wp = new Wordpress($site);
-            $html = view('sites.ajax.wp-detalhes', compact('wp', 'site'))->render();
-            return $html;
+        if (isset($request->get)) {
+            if ($request->get == 'wp_detalhes') {
+                $wp = new Wordpress($site);
+                $html = view('sites.ajax.wp-detalhes', compact('wp', 'site'))->render();
+                return $html;
+            }
+            if ($request->get == 'html_detalhes') {
+                return 'nada a exibir por enquanto';
+            }
         }
 
         if ($site->status != 'Solicitado') {
