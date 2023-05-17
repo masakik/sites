@@ -12,7 +12,6 @@
     @method('patch')
 
     <x-input.text label="Domínio" name="dominio" value="{{ $site->dominio }}"></x-input-text>
-    <x-input.text label="Gerenciador" name="manager" value="{{ $site->config['manager'] }}"></x-input-text>
 
     <div class="form-group">
       <label for="justificativa">Justificativa:</label>
