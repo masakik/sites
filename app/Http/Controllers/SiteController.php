@@ -63,7 +63,9 @@ class SiteController extends Controller
         $this->novoToken();
         $hashlogin = $user = \Auth::user()->temp_token;
 
-        return view('sites/index', compact('sites', 'dnszone', 'hashlogin'));
+        $str = 'Illuminate\Support\Str';
+
+        return view('sites/index', compact('sites', 'dnszone', 'hashlogin', 'str'));
     }
 
     /**
@@ -129,6 +131,7 @@ class SiteController extends Controller
     {
         $this->authorize('sites.view', $site);
 
+        // pegando dados do WP via ajax
         if (isset($request->get) && $request->get == 'wp_detalhes') {
             $wp = new Wordpress($site);
             $html = view('sites.ajax.wp-detalhes', compact('wp', 'site'))->render();
@@ -197,14 +200,11 @@ class SiteController extends Controller
                 'categoria' => ['required'],
                 'justificativa' => ['required'],
                 'dominio' => ['nullable'],
-                'manager' => ['required'],
             ]);
 
             $site->categoria = $request->categoria;
             $site->justificativa = $request->justificativa;
             $site->dominio = $request->dominio ? $request->dominio : $site->dominio;
-            $config['manager'] = $request->manager;
-            $site->config = array_merge($site->config, $config);
             $request->session()->flash('alert-info', 'Site atualizado com sucesso');
         }
 
