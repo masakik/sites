@@ -9,7 +9,11 @@
 
 @can('admin')
   <div>
-    <b class=""><i class="fas fa-lock text-danger"></i> Servidor:</b> {{ $site->config['manager'] }}
+    <b class=""><i class="fas fa-lock text-danger"></i></b> 
+    {{ $site->config['manager'] }} 
+    | {{ $str::limit($site->config['host'], 10) }} 
+    | {{ $site->config['port'] }}
+    | {{ $site->config['path'] }}
   </div>
 @endcan
 @if(config('sites.chamados') == 'local')
