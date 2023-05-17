@@ -5,20 +5,19 @@
 
   <div class="card">
     <div class="card-header h4 form-inline py-1">
-      Site {{ $site->url }} &nbsp;
+      Site {{ $site->dominio }} &nbsp;
       @include('sites.partials.status-badge') &nbsp;
-      @include('sites.partials.site-edit-btn') &nbsp;
       @includeWhen($site->config['manager'] == 'drupal', 'sites.partials.logon-btn') &nbsp;
       @includeWhen(Gate::check('admin'), 'sites.partials.admin-btns')
     </div>
     <div class="card-body">
       <div class="row">
         <div class="col-md-6">
-          @include('sites.show.partials.principal')
-          @include('sites.show.partials.pessoas')
+          @include('sites.show.card-principal')
+          @include('sites.show.card-pessoas')
         </div>
         <div class="col-md-6">
-          @include('sites.show.gerenciador')
+          @include('sites.show.card-gerenciador')
         </div>
       </div>
 

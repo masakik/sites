@@ -1,5 +1,6 @@
 <div class="card">
   <div class="card-header py-1">
+    <i class="fas fa-house-user"></i>
     Gerenciador
     @include('sites.partials.config-btn')
   </div>
@@ -12,5 +13,5 @@
 </div>
 
 @if ($site->config['manager'] == 'wordpress')
-  @include('sites.show.partials.wordpress')
+  @include('sites.show.card-wordpress')
 @endif
