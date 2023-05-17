@@ -1,5 +1,6 @@
 <div class="card">
   <div class="card-header py-1">
+    <i class="fas fa-university"></i>
     Site
     @include('sites.partials.site-edit-btn') &nbsp;
   </div>

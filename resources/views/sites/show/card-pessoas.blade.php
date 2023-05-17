@@ -1,6 +1,6 @@
 <div class="card mt-3">
   <div class="card-header py-1">
-    <i class="fab fa-wordpress"></i>
+    <i class="fas fa-users"></i>
     Pessoas
   </div>
   <div class="card-body py-1">
