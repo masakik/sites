@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Cms\Wordpress;
+use App\Manager\Wordpress\Wordpress;
 use App\Mail\AprovaSiteMail;
 use App\Mail\DeletaAdminMail;
 use App\Mail\NovoAdminMail;
@@ -260,11 +260,13 @@ class SiteController extends Controller
         if (isset($request->acao) && $request->acao == 'config') {
             $this->authorize('admin');
             $request->validate([
+                'manager' => 'required',
                 'host' => ['nullable'],
                 'port' => ['nullable', 'integer'],
                 'path' => ['nullable'],
             ]);
 
+            $config['manager'] = $request->manager;
             $config['host'] = $request->host;
             $config['port'] = $request->port;
             $config['path'] = $request->path;
