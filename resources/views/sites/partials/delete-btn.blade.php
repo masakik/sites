@@ -1,7 +1,7 @@
 <form method="POST" action="sites/{{ $site->id }}" class="delete-form">
   @csrf
   @method('delete')
-  <button type="submit" class="delete-item btn btn-danger">Deletar <i class="fas fa-trash-alt"></i></button>
+  <button type="submit" class="delete-item btn btn-sm btn-danger">Deletar <i class="fas fa-trash-alt"></i></button>
 </form>
 
 @once

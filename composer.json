@@ -72,7 +72,7 @@
             "@wp-cli-update"
         ],
         "wp-cli-update": [
-            "./app/Cms/wp cli update"
+            "./app/Manager/Wordpress/wp cli update"
         ]
     }
 }

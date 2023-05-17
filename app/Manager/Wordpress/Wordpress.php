@@ -1,5 +1,5 @@
 <?php
-namespace App\Cms;
+namespace App\Manager\Wordpress;
 
 class Wordpress
 {
@@ -15,7 +15,7 @@ class Wordpress
         $this->path = $config['path'];
         $this->suUser = $config['suUser'];
 
-        $this->wp = app_path('Cms/wp');
+        $this->wp = app_path('Manager/Wordpress/wp');
 
         $this->info();
         // dd($this);
@@ -52,9 +52,10 @@ class Wordpress
     {
         if ($this->host == 'localhost') {
             // se localhost, vamos usar o wp-cli do projeto
-            $params['wp'] = app_path('Cms/wp');
-            $cmd = 'php ' . app_path('Cms/sites-remoto.php');
+            $params['wp'] = app_path('Manager/Wordpress/wp');
+            $cmd = 'php ' . app_path('Manager/Wordpress/sites-remoto.php');
         } else {
+            // se remoto, tem de ter o wp instalado no servidor
             if (!$this->testaSsh()) {
                 $this->error = 'ssh sem conexão';
                 return [];
@@ -98,7 +99,7 @@ class Wordpress
      */
     protected function copy()
     {
-        $path = app_path('Cms');
+        $path = app_path('Manager/Wordpress');
         $cmd = "scp -P $this->port $path/sites-remoto.php $this->host:/root/sites-remoto.php 2>&1";
         $exec = shell_exec($cmd);
         if ($exec) {
@@ -135,6 +136,7 @@ class Wordpress
         $updates = !is_array($this->core['updates'])
         ? json_decode($this->core['updates'], true)
         : [];
+
         if (!empty($updates)) {
             foreach ($updates as $update) {
                 $ret .= $update['update_type'] . ': ' . $update['version'] . ', ';
