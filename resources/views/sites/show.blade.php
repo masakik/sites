@@ -18,9 +18,7 @@
           @include('sites.show.partials.pessoas')
         </div>
         <div class="col-md-6">
-          @if ($site->config['manager'] == 'wordpress')
-            @include('sites.show.partials.wordpress')
-          @endif
+          @include('sites.show.gerenciador')
         </div>
       </div>
 

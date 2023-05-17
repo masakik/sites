@@ -6,6 +6,7 @@
 
 @once
   @section('javascripts_bottom')
+  @parent
     <script>
       $(document).ready(function() {
         $(".delete-form").submit(function() {

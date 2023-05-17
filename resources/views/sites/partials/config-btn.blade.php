@@ -18,7 +18,8 @@
           @csrf
           @method('patch')
           <input type="hidden" name="acao" value="config">
-          <x-input.text name="host" label="Host" value="{{ $site->config['host'] }}" />
+          <x-input.text label="Gerenciador" name="manager" value="{{ $site->config['manager'] }}" help="wordpress, drupal, html..."/>
+          <x-input.text name="host" label="Host" value="{{ $site->config['host'] }}" help="user@server, localhost ..." />
           <x-input.text type="number" name="port" label="Porta" value="{{ $site->config['port'] }}" />
           <x-input.text name="path" label="Path" value="{{ $site->config['path'] }}" />
         </div>
