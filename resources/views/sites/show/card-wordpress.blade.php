@@ -1,6 +1,6 @@
 <div class="card mt-3">
   <div class="card-header py-1 form-inline">
-    <i class="fab fa-wordpress"></i> Wordpress <span id="wp-info-date" class="ml-3"></span>
+    <i class="fab fa-wordpress mr-1"></i> Wordpress <span id="wp-info-date" class="ml-3"></span>
     @include('sites.show.partials.wp-refresh')
   </div>
   <div class="card-body py-1">
