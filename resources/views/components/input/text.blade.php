@@ -1,18 +1,23 @@
 @props([
-    'label' => $label,
+    'label' => '',
     'name' => $name,
     'type' => 'text',
     'value' => '',
     'placeholder' => '',
-    'id' => 'text' . $label . $name,
+    'id' => 'text' . $name,
     'help' => '',
+    'class' => '',
+    'required' => '',
 ])
 
 <div class="form-group">
-  <label for="{{ $id }}">{{ $label }}</label>
+  @if ($label)
+    <label for="{{ $id }}">{{ $label }}</label>
+  @endif
 
-  <input type=" {{ $type }}" class="form-control" name="{{ $name }}" id="{{ $id }}"
-    value="{{ $value }}" />
+  <input type="{{ $type }}" class="form-control {{ $class }}" name="{{ $name }}"
+    id="{{ $id }}" value="{{ $value }}" placeholder="{{ $placeholder }}"
+    @if ($required) required @endif />
 
   @if ($help)
     <small class="form-text text-muted">{{ $help }}</small>

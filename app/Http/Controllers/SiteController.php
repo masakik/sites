@@ -2,20 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Mail\AprovaSiteMail;
-use App\Mail\DeletaAdminMail;
-use App\Mail\NovoAdminMail;
-use App\Mail\SiteMail;
-use App\Mail\TrocaResponsavelMail;
-use App\Manager\Wordpress\Wordpress;
+use Mail;
 use App\Models\Site;
 use App\Models\User;
 use App\Rules\Domain;
-use App\Services\SiteManager;
-use Illuminate\Http\Request;
+use App\Mail\SiteMail;
+use App\Mail\NovoAdminMail;
 use Illuminate\Support\Str;
+use App\Mail\AprovaSiteMail;
+use Illuminate\Http\Request;
+use App\Mail\DeletaAdminMail;
+use App\Services\SiteManager;
 use Illuminate\Validation\Rule;
-use Mail;
+use App\Mail\TrocaResponsavelMail;
+use App\Manager\Wordpress\Wordpress;
+use Illuminate\Support\Facades\Session;
 
 class SiteController extends Controller
 {
@@ -135,6 +136,7 @@ class SiteController extends Controller
         if (isset($request->get)) {
             if ($request->get == 'wp_detalhes') {
                 $wp = new Wordpress($site);
+                $wp->info();
                 $html = view('sites.ajax.wp-detalhes', compact('wp', 'site'))->render();
                 return $html;
             }
@@ -385,5 +387,34 @@ class SiteController extends Controller
 
         $request->session()->flash('alert-info', 'Habilitação do site em andamento.');
         return back();
+    }
+
+    public function WpPlugin(Request $request, Site $site)
+    {
+        $this->authorize('admin');
+        $request->validate([
+            'acao' => 'nullable', Rule::in(['activate', 'deactivate', 'install', 'delete']),
+            'plugin_name' => 'nullable|string|max:150',
+        ]);
+
+        $wp = new Wordpress($site);
+        if ($wp->plugin($request->acao, $request->plugin_name) == 'sucesso') {
+            $request->session()->flash('alert-info', 'WP plugin: ação ' . $request->acao . ' realizado com sucesso.');
+        } else {
+            $request->session()->flash('alert-danger', 'WP plugin: houve problemas com a acao ' . $request->acao);
+        }
+        return back();
+    }
+
+    public function gerenciador(Request $request, Site $site)
+    {
+        $this->authorize('admin');
+        $request->validate([
+            'acao' => 'nullable', Rule::in(['reresh']),
+        ]);
+        if ($request->acao == 'refresh') {
+            Session::put('wp-info-refresh', true);
+            return back();
+        }
     }
 }

@@ -19,7 +19,7 @@ class Wordpress
     protected $statusMsg = null;
 
     /** acoes que a classe irá responder, somente info por enquanto */
-    protected static $acoes = ['info', 'raw'];
+    protected static $acoes = ['info', 'plugin'];
 
     public function __construct($params)
     {
@@ -57,16 +57,38 @@ class Wordpress
 
         $ret['status'] = 'success';
         if ($acao == 'info') {
-            $data['cli'] = $this->wp('cli info');
-            $data['core'] = $this->wp_core_info();
-            $data['plugins'] = $this->wp('plugin list');
-            $data['themes'] = $this->wp('theme list');
-            $data['configs'] = $this->wp('config list');
-            $data['options'] = $this->wp('option list');
+            $data = $this->acaoInfo();
+        }
+        if ($acao == 'plugin') {
+            $data = $this->acaoPlugin();
         }
         $ret['data'] = $data;
         $ret['statusMsg'] = $this->statusMsg;
         return $ret;
+    }
+
+    protected function acaoInfo()
+    {
+        $data['cli'] = $this->wp('cli info');
+        $data['core'] = $this->wp_core_info();
+        $data['plugins'] = $this->wp('plugin list');
+        $data['themes'] = $this->wp('theme list');
+        $data['configs'] = $this->wp('config list');
+        $data['options'] = $this->wp('option list');
+        return $data;
+    }
+
+    protected function acaoPlugin()
+    {
+        $pluginAction = $this->pluginAction;
+        $pluginName = $this->pluginName;
+        $exec = $this->wp("plugin $pluginAction '$pluginName'", '');
+        if (strpos($exec, 'Success') !== false) {
+            return ['exec' => 'sucesso'];
+        } else {
+            $this->statusMsg = $exec;
+            return ['exec' => 'falha'];
+        }
     }
 
     /**
@@ -123,7 +145,7 @@ class Wordpress
      * @param Bool $retry se true, corresponde a nova tentativa desativando plugins e themes
      * @return String|Json
      */
-    public function wp(String $cmd = 'cli info', String $outFormat = 'json', $retry = false)
+    public function wp(String $cmd, String $outFormat = 'json', $retry = false)
     {
         $wp = !empty($this->wp) ? $this->wp : 'wp';
         if (posix_getpwuid(posix_geteuid())['name'] == 'root') {
@@ -139,7 +161,7 @@ class Wordpress
 
         $exec = shell_exec($cmdline);
 
-        // vamos verificar se retornou algum erro php, 
+        // vamos verificar se retornou algum erro php,
         // se sim vamos ocultar o retorno e setar o statusMsg
         if ($this->checkError($exec, $cmd)) {
             if (!$retry) {

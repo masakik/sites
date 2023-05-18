@@ -4,9 +4,10 @@ namespace App\Manager;
 
 class Manager
 {
-    /** Mensagem caso tenha algum erro que impeça de coletar informações do WP */
-    public $error = null;
-    public $errorMsg; // erro nao fatal
+    public $host;
+    public $port;
+    public $path;
+    public $url;
 
     public function __construct($site)
     {
@@ -14,9 +15,9 @@ class Manager
         $this->host = $config['host'];
         $this->port = $config['port'];
         $this->path = $config['path'];
+        $this->url = $site->url;
         // $this->suUser = $config['suUser'];
 
-        $this->info();
     }
 
     /**

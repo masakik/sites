@@ -2,14 +2,13 @@
 namespace App\Manager\Wordpress;
 
 use App\Manager\Manager;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Session;
 
 class Wordpress extends Manager
 {
-    // variáveis no Manager
-    public $error = null;
-    public $errorMsg; // erro nao fatal
-
     // variáveis locais retornadas por exec
+    public $info;
     public $cli;
     public $core;
     public $options;
@@ -20,25 +19,55 @@ class Wordpress extends Manager
     public function __construct($site)
     {
         $this->wp = app_path('Manager/Wordpress/wp');
-
         parent::__construct($site);
-        // dd($this);
     }
 
     /**
      * Coleta as informações da instalação WP e guarda no objeto
-     * 
-     * Retorna: cli, core, plugins, themes, configs, options 
+     *
+     * Retorna: info, cli, core, plugins, themes, configs, options
      */
     public function info()
     {
-        $returns = $this->exec('info');
-        // dd($returns);
-        foreach ($returns as $k => $v) {
+        $key = sha1('info' . $this->host . $this->port . $this->path . $this->url);
+        if (Session::pull('wp-info-refresh', false) == true) {
+            $ret = $this->exec('info');
+            Cache::put($key, $ret);
+        } else {
+            $ret = Cache::rememberForever($key, function () {
+                return $this->exec('info');
+            });
+        }
+
+        // dd($ret);
+        foreach ($ret as $k => $v) {
             $value = json_decode($v, true);
             $this->$k = $value ? $value : [];
         }
+        // dd($this);
         return true;
+    }
+
+    /**
+     * Ações de plugin
+     *
+     * 'activate','deactivate','install','delete'
+     */
+    public function plugin($acao, $pluginName)
+    {
+        $params = [
+            'pluginAction' => $acao,
+            'pluginName' => $pluginName,
+        ];
+        $exec = $this->exec('plugin', $params);
+        // dd($exec, $params);
+        if ($exec['exec'] == 'sucesso') {
+            Session::put('wp-info-refresh', true);
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     /**
@@ -51,7 +80,7 @@ class Wordpress extends Manager
      * @param String $acao
      * @return Array
      */
-    protected function exec(String $acao = 'info')
+    protected function exec(String $acao, $params = [])
     {
         if ($this->host == 'localhost') {
             // se localhost, vamos usar o wp-cli do projeto
@@ -76,23 +105,28 @@ class Wordpress extends Manager
         $cmd .= " $acao $encodedParams 2>&1";
         $execRaw = shell_exec($cmd);
         $exec = json_decode($execRaw, true);
-        // dd($execRaw);
+        // dd($exec);
         if (json_last_error() !== JSON_ERROR_NONE) {
             dd('exec error json: ', json_last_error_msg(), $cmd, $execRaw);
         }
+
+        $info['error'] = null;
+        $info['date'] = now()->format('d/m/y H:i:s');
+        $info['errorMsg'] = $exec['statusMsg'];
+
         if ($exec['status'] != 'success') {
             // mostra erro por enquanto
-            $this->error = 'exec ' . $exec['status'] . ': ' . $exec['statusMsg'] . '. Veja log para mais detalhes';
-            return [];
+            $info['error'] = 'exec ' . $exec['status'] . ': ' . $exec['statusMsg'] . '. Veja log para mais detalhes';
+            $ret['info'] = json_encode($info);
+            return $ret;
         }
-
-        $this->errorMsg = $exec['statusMsg'];
-        return $exec['data'];
+        $ret = array_merge(['info' => json_encode($info)], $exec['data']);
+        return $ret;
     }
 
     public function isWp()
     {
-        if ($this->error) {
+        if ($this->info['error']) {
             return false;
         }
         // if (is_numeric($this->core['version'])) {

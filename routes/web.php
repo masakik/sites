@@ -27,6 +27,9 @@ Route::post('/sites/{site}/enable', [SiteController::class, 'enableSite']);
 Route::get('/sites/{site}/changeowner', [SiteController::class, 'changeOwner']);
 Route::get('/sites/{site}/novoadmin', [SiteController::class, 'novoAdmin']);
 
+Route::post('/sites/{site}/gerenciador', [SiteController::class, 'gerenciador']);
+Route::post('/sites/{site}/wp-plugin', [SiteController::class, 'WpPlugin']);
+
 Route::get('check', [SiteController::class, 'check']);
 
 # rotas para chamados
