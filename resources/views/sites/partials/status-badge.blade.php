@@ -13,7 +13,7 @@
 
   @case('Aprovado - Habilitado')
     <span class="badge badge-success">
-      Aprovado - Habilitado
+      Habilitado
     </span>
   @break
 

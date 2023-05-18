@@ -27,6 +27,8 @@ class Site extends Model
         'port' => '2221',
         'path' => '/home/dominio',
         'suUser' => null,
+        'status' => '?', // mostra se tem erros no site
+        'statusMsg' => '',
     ];
 
     public function getConfigAttribute($value)

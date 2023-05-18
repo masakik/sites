@@ -15,7 +15,7 @@ class Manager
         $this->host = $config['host'];
         $this->port = $config['port'];
         $this->path = $config['path'];
-        $this->url = $site->url;
+        $this->site = $site;
         // $this->suUser = $config['suUser'];
 
     }

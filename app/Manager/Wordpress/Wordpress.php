@@ -2,6 +2,7 @@
 namespace App\Manager\Wordpress;
 
 use App\Manager\Manager;
+use App\Models\Site;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 
@@ -29,7 +30,7 @@ class Wordpress extends Manager
      */
     public function info()
     {
-        $key = sha1('info' . $this->host . $this->port . $this->path . $this->url);
+        $key = sha1('info' . $this->host . $this->port . $this->path . $this->site->url);
         if (Session::pull('wp-info-refresh', false) == true) {
             $ret = $this->exec('info');
             Cache::put($key, $ret);
@@ -44,7 +45,18 @@ class Wordpress extends Manager
             $value = json_decode($v, true);
             $this->$k = $value ? $value : [];
         }
+
         // dd($this);
+        $config = $this->site->config;
+        if ($this->info['error'] || $this->info['errorMsg']) {
+            $config['status'] = 'erro';
+            $config['statusMsg'] = $this->info['error'] . $this->info['errorMsg'];
+        } else {
+            $config['status'] = 'ok';
+        }
+        $this->site->config = $config;
+        $this->site->save();
+
         return true;
     }
 
@@ -67,7 +79,18 @@ class Wordpress extends Manager
         } else {
             return false;
         }
+    }
 
+    public static function runDaily()
+    {
+        // aqui usa notação de json no where. Para isso funcionar no mariadb precisa DB_CONNECTION=mariadb no .env
+        $sites = Site::where('config->manager', 'wordpress')->get();
+        foreach ($sites as $site) {
+            Session::put('wp-info-refresh', true);
+            $wp = new Self($site);
+            $wp->info();
+            echo '.';
+        }
     }
 
     /**
@@ -82,6 +105,10 @@ class Wordpress extends Manager
      */
     protected function exec(String $acao, $params = [])
     {
+        $info['error'] = null;
+        $info['errorMsg'] = null;
+        $info['date'] = now()->format('d/m/y H:i:s');
+
         if ($this->host == 'localhost') {
             // se localhost, vamos usar o wp-cli do projeto
             $params['wp'] = app_path('Manager/Wordpress/wp');
@@ -89,8 +116,9 @@ class Wordpress extends Manager
         } else {
             // se remoto, tem de ter o wp instalado no servidor
             if (!$this->testaSsh()) {
-                $this->error = 'ssh sem conexão';
-                return [];
+                $info['error'] = 'ssh sem conexão';
+                $ret['info'] = json_encode($info);
+                return $ret;
             }
             $this->copy();
             $cmd = "ssh $this->host -p $this->port php /root/sites-remoto.php";
@@ -110,8 +138,6 @@ class Wordpress extends Manager
             dd('exec error json: ', json_last_error_msg(), $cmd, $execRaw);
         }
 
-        $info['error'] = null;
-        $info['date'] = now()->format('d/m/y H:i:s');
         $info['errorMsg'] = $exec['statusMsg'];
 
         if ($exec['status'] != 'success') {

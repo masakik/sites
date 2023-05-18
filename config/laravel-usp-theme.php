@@ -43,6 +43,10 @@ $right_menu = [
         'key' => 'senhaunica-socialite',
     ],
     [
+        // menu utilizado para views da biblioteca senhaunica-socialite.
+        'key' => 'laravel-tools',
+    ],
+    [
         'text' => '<span class="text-danger" title="Configurações da aplicação"><i class="fas fa-cog"></i></span>',
         'url' => 'settings',
         'can' => 'gerente',
