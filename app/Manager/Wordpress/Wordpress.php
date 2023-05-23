@@ -81,6 +81,9 @@ class Wordpress extends Manager
         }
     }
 
+    /**
+     * Lê os remotos e coloca as informações no cache local
+     */
     public static function runDaily()
     {
         // aqui usa notação de json no where. Para isso funcionar no mariadb precisa DB_CONNECTION=mariadb no .env

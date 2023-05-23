@@ -33,8 +33,8 @@ class Site extends Model
 
     public function getConfigAttribute($value)
     {
-        $value = json_decode($value, TRUE);
-        foreach ($this->configDefaults as $key=>$default) {
+        $value = json_decode($value, true);
+        foreach ($this->configDefaults as $key => $default) {
             $value[$key] = $value[$key] ?? $default;
         }
         return $value;
@@ -65,8 +65,49 @@ class Site extends Model
     }
 
     /**
+     * Adiciona um codpes à lista numeros_usp sem salvar o objeto
+     */
+    public function addAdmin($codpes) {
+        $numeros_usp = explode(',', $this->numeros_usp);
+        if (!in_array($codpes, $numeros_usp)) {
+            array_push($numeros_usp, $codpes);
+        }
+        $numeros_usp = array_map('trim', $numeros_usp);
+        $numeros_usp = implode(',', $numeros_usp);
+        $this->numeros_usp = $numeros_usp;
+        return true;
+    }
+
+     /**
+     * Remove um codpes da lista numeros_usp sem salvar o objeto
+     */
+    public function deleteAdmin($codpes) {
+        $numeros_usp = explode(',', $this->numeros_usp);
+        if (in_array($codpes, $numeros_usp)) {
+            $key = array_search($codpes, $numeros_usp);
+            unset($numeros_usp[$key]);
+        }
+        $numeros_usp = array_map('trim', $numeros_usp);
+        $numeros_usp = implode(',', $numeros_usp);
+        $this->numeros_usp = $numeros_usp;
+        return true;
+    }   
+
+    // public function config($array = [])
+    // {
+    //     $config = $this->config;
+    //     if (empty($array)) {
+    //         return $config;
+    //     }
+    //     foreach ($array as $k => $v) {
+    //         $config[$k] = $v;
+    //     }
+    //     $this->config = $config;
+    // }
+
+    /**
      * Escopo que permite filtrar os sites a serem exibidos pelo codpes de quem estiver logado
-     * 
+     *
      * Deve ser chamado $sites = Site::allowed();, pode incluir outras entradas de query
      */
     public function scopeAllowed($query)
@@ -109,7 +150,7 @@ class Site extends Model
             'Laboratório',
             'Comissão',
             'Evento',
-            'Programa de Pós-Graduação'
+            'Programa de Pós-Graduação',
         ];
     }
 

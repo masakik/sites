@@ -2,13 +2,10 @@
   <a href="sites/{{ $site->id }}">{{ $site->dominio }}{{ config('sites.dnszone') }}</a>
   @include('sites.partials.status-badge')
 </div>
-
-<div>
-  <b>categoria: </b>{{ $site->categoria }}
-</div>
+<div class="ml-3"><b>categoria: </b>{{ $site->categoria }}</div>
 
 @can('admin')
-  <div>
+  <div class="ml-3">
     <b class=""><i class="fas fa-lock text-danger"></i></b>
     {{ $site->config['manager'] }}
     | {{ $str::limit($site->config['host'], 10) }}

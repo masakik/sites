@@ -33,7 +33,7 @@ return [
     ],
 
     // Define o gate para a rota de busca de pessoas
-    'findUsersGate' => 'admin',
+    'findUsersGate' => 'user',
 
     // fim views internas
     // -----------------------------------------------------

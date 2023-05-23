@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Mail;
+use App\Mail\AprovaSiteMail;
+use App\Mail\DeletaAdminMail;
+use App\Mail\NovoAdminMail;
+use App\Mail\SiteMail;
+use App\Mail\TrocaResponsavelMail;
+use App\Manager\Wordpress\Wordpress;
 use App\Models\Site;
 use App\Models\User;
 use App\Rules\Domain;
-use App\Mail\SiteMail;
-use App\Mail\NovoAdminMail;
-use Illuminate\Support\Str;
-use App\Mail\AprovaSiteMail;
-use Illuminate\Http\Request;
-use App\Mail\DeletaAdminMail;
 use App\Services\SiteManager;
-use Illuminate\Validation\Rule;
-use App\Mail\TrocaResponsavelMail;
-use App\Manager\Wordpress\Wordpress;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Mail;
 
 class SiteController extends Controller
 {
@@ -50,7 +51,7 @@ class SiteController extends Controller
         //dd($sites->toSql());
 
         // Executa a query
-        $sites = $sites->orderBy('dominio')->paginate(10);
+        $sites = $sites->orderBy('dominio')->paginate(15);
 
         // Busca o status dos sites
 
@@ -180,22 +181,13 @@ class SiteController extends Controller
     {
         $this->authorize('sites.update', $site);
 
-        // if (isset($request->acao) && in_array($request->acao, ['config'])) {
-        //     //
-        // } else {
-        //     $request->session()->flash('alert-info', 'Ação inválida');
-        //     return back();
-        // }
-
-        if (isset($request->owner)) {
+        if (isset($request->acao) && $request->acao == 'changeOwner') {
             // troca de responsável
             $request->validate([
-                'owner' => ['required', 'codpes', 'integer'],
+                'codpes' => ['required', 'codpes', 'integer'],
             ]);
-
-            $novo_responsavel = $request->owner;
-            Mail::send(new TrocaResponsavelMail($site, $novo_responsavel));
-            $site->owner = $request->owner;
+            Mail::send(new TrocaResponsavelMail($site, $request->codpes));
+            $site->owner = $request->codpes;
             $request->session()->flash('alert-info', 'Responsável alterado com sucesso');
             $site->save();
             return back();
@@ -215,36 +207,23 @@ class SiteController extends Controller
             $request->session()->flash('alert-info', 'Site atualizado com sucesso');
         }
 
-        if (isset($request->novoadmin)) {
+        if (isset($request->acao) && $request->acao == 'addAdmin') {
             // adiciona admin
             $request->validate([
-                'novoadmin' => ['required', 'codpes', 'integer'],
+                'codpes' => ['required', 'codpes', 'integer'],
             ]);
-            $novo_admin = $request->novoadmin;
-
-            $numeros_usp = explode(',', $site->numeros_usp);
-            if (!in_array($request->novoadmin, $numeros_usp)) {
-                array_push($numeros_usp, $request->novoadmin);
-            }
-            $numeros_usp = array_map('trim', $numeros_usp);
-            $numeros_usp = implode(',', $numeros_usp);
-            $site->numeros_usp = $numeros_usp;
-            Mail::send(new NovoAdminMail($site, $novo_admin));
+            $site->addAdmin($request->codpes);
+            Mail::send(new NovoAdminMail($site, $request->codpes));
             $request->session()->flash('alert-info', 'Administrador adicionado com sucesso');
         }
 
-        if (isset($request->deleteadmin)) {
+        if (isset($request->acao) && $request->acao == 'deleteAdmin') {
             // remove admin
-            $numeros_usp = explode(',', $site->numeros_usp);
-            $deleta_admin = $request->deleteadmin;
-            if (in_array($request->deleteadmin, $numeros_usp)) {
-                $key = array_search($request->deleteadmin, $numeros_usp);
-                unset($numeros_usp[$key]);
-            }
-            $numeros_usp = array_map('trim', $numeros_usp);
-            $numeros_usp = implode(',', $numeros_usp);
-            $site->numeros_usp = $numeros_usp;
-            Mail::send(new DeletaAdminMail($site, $deleta_admin));
+            $request->validate([
+                'codpes' => ['required', 'codpes', 'integer'],
+            ]);
+            $site->deleteAdmin($request->codpes);
+            Mail::send(new DeletaAdminMail($site, $request->codpes));
             $request->session()->flash('alert-info', 'Administrador removido com sucesso');
         }
 
@@ -293,17 +272,17 @@ class SiteController extends Controller
      * @param  \App\Models\Site  $site
      * @return \Illuminate\Http\Response
      */
-    public function changeowner(Site $site)
-    {
-        $this->authorize('sites.update', $site);
-        return view('sites/changeowner', compact('site'));
-    }
+    // public function changeowner(Site $site)
+    // {
+    //     $this->authorize('sites.update', $site);
+    //     return view('sites/changeowner', compact('site'));
+    // }
 
-    public function novoAdmin(Site $site)
-    {
-        $this->authorize('sites.update', $site);
-        return view('sites/novoadmin', compact('site'));
-    }
+    // public function novoAdmin(Site $site)
+    // {
+    //     $this->authorize('sites.update', $site);
+    //     return view('sites/novoadmin', compact('site'));
+    // }
 
     /**
      * Remove the specified resource from storage.
@@ -391,7 +370,7 @@ class SiteController extends Controller
 
     public function WpPlugin(Request $request, Site $site)
     {
-        $this->authorize('admin');
+        $this->authorize('sites.update', $site);
         $request->validate([
             'acao' => 'nullable', Rule::in(['activate', 'deactivate', 'install', 'delete']),
             'plugin_name' => 'nullable|string|max:150',
@@ -408,7 +387,7 @@ class SiteController extends Controller
 
     public function gerenciador(Request $request, Site $site)
     {
-        $this->authorize('admin');
+        $this->authorize('sites.update', $site);
         $request->validate([
             'acao' => 'nullable', Rule::in(['reresh']),
         ]);

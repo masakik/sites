@@ -1,5 +1,5 @@
 <?php
-namespace App\Manager\Wordpress;
+namespace App\Manager\Html;
 
 use App\Manager\Manager;
 
@@ -12,6 +12,10 @@ class Html extends Manager
     {
         parent::__construct($site);
         $this->info();
+    }
+
+    public function info() {
+
     }
 
     public function exec(String $acao)

@@ -24,8 +24,8 @@ Route::resource('/sites', SiteController::class);
 Route::post('/sites/{site}/install', [SiteController::class, 'installSite']);
 Route::post('/sites/{site}/disable', [SiteController::class, 'disableSite']);
 Route::post('/sites/{site}/enable', [SiteController::class, 'enableSite']);
-Route::get('/sites/{site}/changeowner', [SiteController::class, 'changeOwner']);
-Route::get('/sites/{site}/novoadmin', [SiteController::class, 'novoAdmin']);
+// Route::get('/sites/{site}/changeowner', [SiteController::class, 'changeOwner']);
+// Route::get('/sites/{site}/novoadmin', [SiteController::class, 'novoAdmin']);
 
 Route::post('/sites/{site}/gerenciador', [SiteController::class, 'gerenciador']);
 Route::post('/sites/{site}/wp-plugin', [SiteController::class, 'WpPlugin']);

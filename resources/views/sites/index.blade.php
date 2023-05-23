@@ -15,7 +15,7 @@
             <tr>
               <th>Site</th>
               <th>Pessoas</th>
-              <th>Ações</th>
+              <th>Status</th>
             </tr>
           </thead>
 
@@ -24,7 +24,8 @@
               <tr>
                 <td>@include('sites.partials.index-list-site')</td>
                 <td>@include('sites.partials.index-list-pessoas')</td>
-                <td>@include('sites.partials.index-list-acoes')</td>
+                <td>&nbsp;</td>
+                {{-- <td>@include('sites.partials.index-list-acoes')</td> --}}
               </tr>
             @endforeach
           </tbody>
