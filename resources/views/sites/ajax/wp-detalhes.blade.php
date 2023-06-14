@@ -18,8 +18,8 @@
 
 <div class="d-none wp-info-date">{{ $wp->info['date'] }}</div>
 
-<div>
+{{-- <div>
   <div class="mt-2"><b>Docs</b></div>
   <div><a href="https://endoflife.date/wordpress" target="_wp_endoflife">End of life</a></div>
   <div> Testado desde WP 5.6 até 6.2</div>
-</div>
+</div> --}}
