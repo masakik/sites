@@ -2,7 +2,8 @@
   <div class="card-header py-1">
     <i class="fas fa-university"></i>
     Site
-    @include('sites.partials.principal-edit-btn') &nbsp;
+    @includeWhen(Gate::allows('admin'), 'sites.partials.principal-edit-btn')
+    <a href="{{ $site->url }}" class="btn btn-sm text-info" target="_blank" title="Visitar o site"><i class="fas fa-share-square"></i></a>
   </div>
   <div class="card-body py-1">
     <div>Host: <b>{{ $site->url }}</b></div>
