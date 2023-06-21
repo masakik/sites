@@ -3,9 +3,12 @@
   <form class="form-inline" method="POST" action="sites/{{ $site->id }}/wp-plugin">
     @csrf
     <input type="hidden" name="acao" value="install">
-    <x-input.text name="plugin_name" class="btn-sm py-0 my-0" required="required" placeholder="Digite o nome do plugin.." />
+    <x-input.text name="plugin_name" class="btn-sm py-0 my-0" required="required"
+      placeholder="Nome do plugin ou zip.." />
     <button type="submit" class="btn btn-sm btn-link">ok</button>
-    <button type="cancel" class="btn btn-sm btn-link plugin-cancel-btn"><i class="fas fa-times text-danger"></i></button>
+    <button type="cancel" class="btn btn-sm btn-link plugin-cancel-btn">
+      <i class="fas fa-times text-danger"></i>
+    </button>
   </form>
 </div>
 
@@ -19,7 +22,7 @@
     })
 
     // escondendo form
-    $('.plugin-cancel-btn').on('click', function(){
+    $('.plugin-cancel-btn').on('click', function() {
       $('.plugin-install-form').addClass('d-none')
       $('.plugin-install-btn').show()
     })

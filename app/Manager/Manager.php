@@ -8,6 +8,9 @@ class Manager
     public $port;
     public $path;
     public $url;
+    public $gerenciador = [];
+
+    protected $config;
 
     public function __construct($site)
     {
@@ -16,8 +19,6 @@ class Manager
         $this->port = $config['port'];
         $this->path = $config['path'];
         $this->site = $site;
-        // $this->suUser = $config['suUser'];
-
     }
 
     /**
@@ -75,6 +76,12 @@ class Manager
         }
 
         $cmd = "scp -P $this->port $path/wp $this->host:/root/wp 2>&1";
+        $exec = shell_exec($cmd);
+        if ($exec) {
+            dd('copy error', $cmd, $exec);
+        }
+        
+        $cmd = "scp -P $this->port $path/sites-login.php $this->host:/root/sites-login.php 2>&1";
         $exec = shell_exec($cmd);
         if ($exec) {
             dd('copy error', $cmd, $exec);

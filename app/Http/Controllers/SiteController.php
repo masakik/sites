@@ -14,6 +14,7 @@ use App\Rules\Domain;
 use App\Services\SiteManager;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -366,6 +367,22 @@ class SiteController extends Controller
 
         $request->session()->flash('alert-info', 'Habilitação do site em andamento.');
         return back();
+    }
+
+    public function login(Request $request, Site $site)
+    {
+        $this->authorize('sites.update', $site);
+        $wp = new Wordpress($site);
+        $user = Auth::user();
+        $url = $wp->getLoginUrl($user);
+        if ($url) {
+            $context = ['codpes' => $user->codpes, 'site_id' => $site->id, 'site_url' => $site->url];
+            Log::channel('sites')->info("Usuário efetuou login remoto", $context);
+            return redirect($url);
+        } else {
+            $request->session()->flash('alert-danger', 'Erro ao gerar one-time-login token!');
+            return back();
+        }
     }
 
     public function WpPlugin(Request $request, Site $site)

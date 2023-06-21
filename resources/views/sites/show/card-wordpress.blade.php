@@ -1,7 +1,8 @@
 <div class="card mt-3">
-  <div class="card-header py-1 form-inline">
-    <i class="fab fa-wordpress mr-1"></i> Wordpress <span id="wp-info-date" class="ml-3"></span>
-    @include('sites.show.partials.wp-refresh')
+  <div class="card-header py-1 form-inline card-header-sticky">
+    <i class="fab fa-wordpress mr-1"></i> Wordpress
+    <div id="wp-info-header" class="form-inline"></div> 
+    &nbsp; @include('sites.show.partials.wp-refresh')
   </div>
   <div class="card-body py-1">
 
@@ -21,7 +22,13 @@
     $(document).ready(function() {
       $.get("{{ route('sites.show', $site) }}?get=wp_detalhes", function(data) {
           $('#wordpress-details').hide().html(data).slideDown()
-          $('#wp-info-date').html($('#wordpress-details').find('.wp-info-date').html())
+          
+          // popula o header do card wordpress
+          $('#wp-info-header').html($('#wordpress-details').find('.wp-info-header').html())
+          
+          //popula o card gerenciador
+          $('#gerenciador-data-insert').html($('#wordpress-details').find('.gerenciador-data').html())
+          
         })
         .fail(function() {
           $('#wordpress-details').html('Algo saiu errado ...')

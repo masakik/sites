@@ -7,7 +7,6 @@
     <div class="card-header h4 form-inline">
       Site {{ $site->dominio }} &nbsp;
       @include('sites.partials.status-badge') &nbsp;
-      @include('sites.partials.logon-btn') &nbsp;
       @includeWhen(Gate::check('admin'), 'sites.partials.admin-btns')
     </div>
     <div class="card-body">

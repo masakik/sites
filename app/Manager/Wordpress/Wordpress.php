@@ -9,13 +9,14 @@ use Illuminate\Support\Facades\Session;
 class Wordpress extends Manager
 {
     // variáveis locais retornadas por exec
-    public $info;
-    public $cli;
-    public $core;
-    public $options;
-    public $plugins;
-    public $themes;
-    public $settings;
+    public $info = [];
+    public $cli = [];
+    public $core = [];
+    public $options = [];
+    public $plugins = [];
+    public $themes = [];
+    public $settings = [];
+    public $users = [];
 
     public function __construct($site)
     {
@@ -32,31 +33,54 @@ class Wordpress extends Manager
     {
         $key = sha1('info' . $this->host . $this->port . $this->path . $this->site->url);
         if (Session::pull('wp-info-refresh', false) == true) {
+            // vamos dar refresh no cache
             $ret = $this->exec('info');
             Cache::put($key, $ret);
         } else {
+            // vamos pegar do cache
             $ret = Cache::rememberForever($key, function () {
                 return $this->exec('info');
             });
         }
 
         // dd($ret);
+        if (isset($ret['data'])) {
+            foreach ($ret['data'] as $k => $v) {
+                $value = json_decode($v, true);
+                $this->$k = $value ? $value : [];
+            }
+            unset($ret['data']);
+        } 
+
+        // $infos = json_decode($ret['info'], true);
         foreach ($ret as $k => $v) {
-            $value = json_decode($v, true);
-            $this->$k = $value ? $value : [];
+            $this->info[$k] = $v;
         }
 
-        // dd($this);
         $config = $this->site->config;
+
+        // setando status do site
         if ($this->info['error'] || $this->info['errorMsg']) {
             $config['status'] = 'erro';
             $config['statusMsg'] = $this->info['error'] . $this->info['errorMsg'];
         } else {
             $config['status'] = 'ok';
         }
+
+        // verificando remote login
+        $config['remoteLogin'] = false;
+        foreach ($this->plugins as $plugin) {
+            if ($plugin['name'] == 'sites-login' && $plugin['status'] == 'must-use') {
+                $config['remoteLogin'] = true;
+                break;
+            }
+        }
+
         $this->site->config = $config;
         $this->site->save();
-
+        
+        // dd($this);
+        
         return true;
     }
 
@@ -71,11 +95,50 @@ class Wordpress extends Manager
             'pluginAction' => $acao,
             'pluginName' => $pluginName,
         ];
-        $exec = $this->exec('plugin', $params);
+        $exec = $this->exec("plugin $acao '$pluginName'");
         // dd($exec, $params);
-        if ($exec['exec'] == 'sucesso') {
+
+        if (strpos($exec['data'], 'Success') !== false) {
             Session::put('wp-info-refresh', true);
             return true;
+        } else {
+            return false;
+            $this->statusMsg = $exec['data'];
+            return ['exec' => 'falha'];
+        }
+    }
+
+    protected function obterPluginStatus($pluginName)
+    {
+        foreach ($this->plugins as $plugin) {
+            if ($plugin['name'] == $pluginName) {
+                return $plugin['status'];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Retorna url para realizar login usando mu-plugins/sites-login
+     * wp user sites-login admin
+     */
+    public function getLoginUrl($user)
+    {
+        $createUser = true;
+        foreach ($this->users as $user) {
+            if ($user['user_login'] == $user->codpes) {
+                $createUser = false;
+                break;
+            }
+        }
+        if ($createUser) {
+            $now = date('Y-m-d-H-i-s');
+            $exec1 = $this->exec("user create $user->codpes $user->email --role='administrator' --user_registered='$now'");
+        }
+        $exec = $this->exec("user sites-login $user->codpes");
+        // dd($exec, $exec1);
+        if ($exec['status'] == 'success') {
+            return $exec['data'];
         } else {
             return false;
         }
@@ -99,6 +162,8 @@ class Wordpress extends Manager
     /**
      * Executa um comando do wp-cli
      *
+     * Executa wp $acao $params
+     *
      * Se for localhost, executa como usuário do script,
      * se for remoto conecta via root@ssh e faz sudo para
      * o dono da pasta onde está o WP
@@ -117,7 +182,7 @@ class Wordpress extends Manager
             $params['wp'] = app_path('Manager/Wordpress/wp');
             $cmd = 'php ' . app_path('Manager/Wordpress/sites-remoto.php');
         } else {
-            // se remoto, tem de ter o wp instalado no servidor
+            // se remoto, tem de copiar os arquivos necessários
             if (!$this->testaSsh()) {
                 $info['error'] = 'ssh sem conexão';
                 $ret['info'] = json_encode($info);
@@ -131,17 +196,23 @@ class Wordpress extends Manager
             $params['suUser'] = $this->suUser;
         }
         $params['path'] = $this->path;
+        $params['acao'] = $acao;
 
         $encodedParams = base64_encode(json_encode($params));
-        $cmd .= " $acao $encodedParams 2>&1";
+        $cmd .= " $encodedParams 2>&1";
+
+        // vamos executar remoto aqui !!!
         $execRaw = shell_exec($cmd);
         $exec = json_decode($execRaw, true);
         // dd($exec);
         if (json_last_error() !== JSON_ERROR_NONE) {
             dd('exec error json: ', json_last_error_msg(), $cmd, $execRaw);
         }
-
-        $info['errorMsg'] = $exec['statusMsg'];
+        $info = array_merge($info,$exec);
+        return $info;
+        // $info['errorMsg'] = $exec['statusMsg']; // desativar rsrsr
+        $info['statusMsg'] = $exec['statusMsg'];
+        $info['status'] = $exec['status'];
 
         if ($exec['status'] != 'success') {
             // mostra erro por enquanto
@@ -149,18 +220,16 @@ class Wordpress extends Manager
             $ret['info'] = json_encode($info);
             return $ret;
         }
-        $ret = array_merge(['info' => json_encode($info)], $exec['data']);
+        $ret = ['info' => json_encode($info), 'data' => $exec['data']];
         return $ret;
     }
 
     public function isWp()
     {
-        if ($this->info['error']) {
+        // dd($this);
+        if ($this->info['status'] == 'error') {
             return false;
         }
-        // if (is_numeric($this->core['version'])) {
-        //     return true;
-        // }
         return true;
     }
 
@@ -198,13 +267,4 @@ class Wordpress extends Manager
         return null;
     }
 
-    public function uspdevSenhaunicaWP()
-    {
-        return '';
-        $plugins = $this->plugins();
-        if (!$plugins) {
-            return false;
-        }
-        return $this->wp('config get SENHAUNICA_ADMINS');
-    }
 }

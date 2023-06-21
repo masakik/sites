@@ -16,7 +16,18 @@
   </div>
 @endif
 
-<div class="d-none wp-info-date">{{ $wp->info['date'] }}</div>
+{{-- aqui carrega os dados que serão exibidos no header do card wordpress --}}
+<div class="d-none wp-info-header">
+  &nbsp; @include('sites.partials.logon-btn')
+  &nbsp; {{ $wp->info['date'] }}
+</div>
+
+{{-- aqui carrega os dados que serão exibidos no div do card do gerenciador --}}
+<div class="d-none gerenciador-data">
+  @foreach ($wp->gerenciador as $k => $v)
+    {{ $k }}: <b>{{ $v }}</b><br>
+  @endforeach
+</div>
 
 {{-- <div>
   <div class="mt-2"><b>Docs</b></div>

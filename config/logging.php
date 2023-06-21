@@ -34,6 +34,12 @@ return [
             'driver' => 'stack',
             'channels' => ['single','syslog'],
         ],
+        
+        'sites' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/sites.log'),  
+            'level' => 'debug',
+        ],
 
         'single' => [
             'driver' => 'single',
