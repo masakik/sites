@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="css/sites.css">
 @stop
 
+@include('laravel-usp-theme::blocos.sticky')
+
 @section('javascripts_bottom')
     @parent
     <script src="js/sites.js"></script>
