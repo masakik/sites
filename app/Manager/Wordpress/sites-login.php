@@ -13,6 +13,11 @@
  * @package         Sites_Login
  */
 
+/* Exit if accessed directly */
+if (!defined('ABSPATH')) {
+    return;
+}
+
 /**
  * Generate sites one-time tokens using WP CLI.
  *
