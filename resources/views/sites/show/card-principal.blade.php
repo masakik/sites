@@ -3,7 +3,7 @@
     <i class="fas fa-university"></i>
     Site
     @includeWhen(Gate::allows('admin'), 'sites.partials.principal-edit-btn')
-    <a href="{{ $site->url }}" class="btn btn-sm text-info" target="_blank" title="Visitar o site"><i class="fas fa-share-square"></i></a>
+    <a href="http://{{ $site->url }}" class="btn btn-sm text-info" target="_blank" title="Visitar o site"><i class="fas fa-share-square"></i></a>
   </div>
   <div class="card-body py-1">
     <div>Host: <b>{{ $site->url }}</b></div>
