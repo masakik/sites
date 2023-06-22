@@ -304,6 +304,9 @@ class SiteController extends Controller
         return redirect('/sites');
     }
 
+    /**
+     * Aparentemente não usa em lugar algum
+     */
     public function check(Request $request)
     {
         $request->validate([
@@ -368,7 +371,11 @@ class SiteController extends Controller
         $request->session()->flash('alert-info', 'Habilitação do site em andamento.');
         return back();
     }
-
+    /**
+     * Realiza o login do usuário na administração do site remoto
+     * 
+     * @return Redireciona o usuário para o site
+    */
     public function login(Request $request, Site $site)
     {
         $this->authorize('sites.update', $site);
@@ -385,6 +392,9 @@ class SiteController extends Controller
         }
     }
 
+    /**
+     * Executa ações em plugins do wordpress
+     */
     public function WpPlugin(Request $request, Site $site)
     {
         $this->authorize('sites.update', $site);
@@ -406,7 +416,7 @@ class SiteController extends Controller
     {
         $this->authorize('sites.update', $site);
         $request->validate([
-            'acao' => 'nullable', Rule::in(['reresh']),
+            'acao' => 'nullable', Rule::in(['refresh']),
         ]);
         if ($request->acao == 'refresh') {
             Session::put('wp-info-refresh', true);
