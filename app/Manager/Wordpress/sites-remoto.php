@@ -162,6 +162,10 @@ class Wordpress extends Manager
         if (!is_dir($this->path . '/wp-content/mu-plugins')) {
             mkdir($this->path . '/wp-content/mu-plugins');
         }
+        // cria index.php vazio
+        if (!file_exists($this->path . '/wp-content/mu-plugins/index.php')) {
+            file_put_contents($this->path . '/wp-content/mu-plugins/index.php', '<?php // Silence is golden.');
+        }        
         // copiar como root
         if (file_exists(__DIR__ . '/sites-login.php')) {
             copy(__DIR__ . '/sites-login.php', $this->path . '/wp-content/mu-plugins/sites-login.php');
