@@ -59,7 +59,7 @@ $right_menu = [
     [
         'text' => '<span class="text-danger" title="Configurações da aplicação"><i class="fas fa-cog"></i></span>',
         'url' => 'settings',
-        'can' => 'gerente',
+        'can' => 'admin',
     ],
 ];
 
