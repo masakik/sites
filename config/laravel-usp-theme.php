@@ -37,6 +37,11 @@ $menu = [
         'can' => 'admin',
     ],
     [
+        'text' => '<span class="text-danger">Relatório</span>',
+        'url' => 'sites/relatorio',
+        'can' => 'admin',
+    ],
+    [
         # este item de menu será substituido no momento da renderização
         'key' => 'menu_dinamico',
     ],

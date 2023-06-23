@@ -92,7 +92,7 @@ class SiteController extends Controller
     {
         $this->authorize('sites.create');
         \UspTheme::activeUrl('sites/create');
-        
+
         return view('sites/create', ['dnszone' => config('sites.dnszone')]);
     }
 
@@ -376,9 +376,9 @@ class SiteController extends Controller
     }
     /**
      * Realiza o login do usuário na administração do site remoto
-     * 
+     *
      * @return Redireciona o usuário para o site
-    */
+     */
     public function login(Request $request, Site $site)
     {
         $this->authorize('sites.update', $site);
@@ -425,5 +425,17 @@ class SiteController extends Controller
             Session::put('wp-info-refresh', true);
             return back();
         }
+    }
+
+    /**
+     * Gera listagem dos sites mostrando as pendências para fins gerenciais
+     */
+    public function relatorio()
+    {
+        $this->authorize('admin');
+        \UspTheme::activeUrl('sites/relatorio');
+
+        $sites = Site::orderBy('dominio', 'ASC')->orderBy('categoria', 'ASC')->get();
+        return view('sites.relatorio', compact('sites'));
     }
 }
