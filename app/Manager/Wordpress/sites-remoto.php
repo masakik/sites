@@ -258,7 +258,7 @@ class Wordpress extends Manager
         $cmdline .= ($this->path) ? ' --path=' . $this->path : '';
         $cmdline .= ($outFormat == 'json') ? ' --format=json' : '';
         $cmdline .= ($retry) ? ' --skip-plugins --skip-themes' : '';
-        $cmdline .= " 2>&1";
+        $cmdline .= " 2>/dev/null"; // redirecionando para null ao inves da saida
 
         // echo 'cmd ', $cmdline;
         // expected: WP_CLI_FORCE_USER_LOGIN=1  /home/kawabata/web/sites/app/Manager/Wordpress/wp cli info --path=/home/kawabata/web/wordpress --format=json 2>&1
