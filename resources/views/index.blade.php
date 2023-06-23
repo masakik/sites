@@ -12,12 +12,7 @@
   <div class="card">
     <div class="card-header h4">Relação de sites</div>
     <div class="card-body">
-      <div>
-        Total de sites existentes: <b>{{ $sites->where('status', '!=', 'Solicitado')->count() }}</b> <br>
-        Total de sites ainda não aprovados: <b>{{ $sites->where('status', 'Solicitado')->count() }} </b>
-      </div>
-
-      <table class="table table-striped mt-3">
+      <table class="table table-striped mt-3 datatable-simples dt-fixed-headers responsive">
         <thead>
           <tr>
             <th scope="col">Site</th>

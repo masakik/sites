@@ -6,6 +6,7 @@
 @stop
 
 @include('laravel-usp-theme::blocos.sticky')
+@include('laravel-usp-theme::blocos.datatable-simples')
 
 @section('javascripts_bottom')
     @parent
