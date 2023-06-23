@@ -30,6 +30,7 @@ class SiteController extends Controller
     public function index(Request $request)
     {
         $this->authorize('sites.create'); // verificar porque isso não funciona
+        \UspTheme::activeUrl('sites');
         $dnszone = config('sites.dnszone');
 
         # todos sites
@@ -90,6 +91,8 @@ class SiteController extends Controller
     public function create()
     {
         $this->authorize('sites.create');
+        \UspTheme::activeUrl('sites/create');
+        
         return view('sites/create', ['dnszone' => config('sites.dnszone')]);
     }
 

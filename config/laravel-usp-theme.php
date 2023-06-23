@@ -14,6 +14,11 @@ $avisos = [
 
 $menu = [
     [
+        'text' => 'Meus sites',
+        'url' => 'sites',
+        'can' => 'sites.create',
+    ],
+    [
         'text' => 'Solicitar um Site',
         'url' => 'sites/create',
         'can' => 'sites.create',

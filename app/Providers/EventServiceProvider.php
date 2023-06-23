@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Support\Facades\Event;
 use Uspdev\UspTheme\Events\UspThemeParseKey;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -40,6 +41,12 @@ class EventServiceProvider extends ServiceProvider
                 return $event->item;
             });
         }
+        
+        // adicionando listener de login para poder redirecionar para
+        // meus sites logo que logar
+        Event::listen(Login::class, function ($event) {
+            session()->flash('loginRedirect', true);
+        });
 
     }
 }

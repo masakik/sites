@@ -1,8 +1,10 @@
 @extends('layouts.app')
 
-@section('menu')
-  {{-- sem menu se não logado --}}
-@endsection
+@if (!auth()->check())
+  @section('menu')
+    {{-- sem menu se não logado --}}
+  @endsection
+@endif
 
 @section('content')
   @parent
