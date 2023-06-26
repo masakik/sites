@@ -1,22 +1,21 @@
 @if ($site->status != 'Solicitado' && $site->status != 'Aprovado - Em Processamento')
 
   @if ($site->config['manager'] == 'wordpress')
-    @if ($site->config['remoteLogin'])
-      <form method="post" target="_blank" action="sites/{{ $site->id }}/login">
-        @csrf
+    <form method="post" target="_blank" action="sites/{{ $site->id }}/login">
+      @csrf
+      @if ($site->config['remoteLogin'])
         <button class="btn btn-sm btn-outline-success" title="Login remoto">
           <i class="fas fa-tools"></i>
         </button>
-      </form>
-    @else
-      <span class="btn btn-sm btn-outline-success p-0" title="Instale one-time-login plugin para habilitar!" disabled>
-        <span class="fa-stack fa-1x">
-          <i class="fas fa-tools fa-stack-1x"></i>
-          <i class="fas fa-ban fa-2x fa-stack-1x text-danger"></i>
-        </span>
-        {{-- <i class="fas fa-tools"></i> --}}
-      </span>
-    @endif
+      @else
+        <button class="btn btn-sm btn-outline-success p-0" title="Login remoto pode não estar disponível!">
+          <span class="fa-stack fa-1x">
+            <i class="fas fa-tools fa-stack-1x"></i>
+            <i class="fas fa-ban fa-2x fa-stack-1x text-danger"></i>
+          </span>
+        </button>
+      @endif
+    </form>
   @endif
 
   @if ($site->config['manager'] == 'drupal')
