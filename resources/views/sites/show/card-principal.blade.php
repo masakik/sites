@@ -13,5 +13,6 @@
     <div>
       Justificativa: {!! nl2br($site->justificativa) !!}
     </div>
+    <div>Criado em: <b>{{ $site->created_at->format('d/m/Y') }}</b></div>
   </div>
 </div>
