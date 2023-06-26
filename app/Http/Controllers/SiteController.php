@@ -385,12 +385,13 @@ class SiteController extends Controller
         $wp = new Wordpress($site);
         $user = Auth::user();
         $url = $wp->getLoginUrl($user);
+        $context = ['codpes' => $user->codpes, 'site_id' => $site->id, 'site_url' => $site->url];
         if ($url) {
-            $context = ['codpes' => $user->codpes, 'site_id' => $site->id, 'site_url' => $site->url];
             Log::channel('sites')->info("Usuário efetuou login remoto", $context);
             return redirect($url);
         } else {
-            $request->session()->flash('alert-danger', 'Erro ao gerar one-time-login token!');
+            $request->session()->flash('alert-danger', 'Erro ao gerar token de login remoto!');
+            Log::channel('sites')->info('Erro ao gerar token de login remoto', $context);
             return back();
         }
     }

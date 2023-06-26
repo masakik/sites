@@ -4,7 +4,7 @@
   @parent
 
   <div class="card">
-    <div class="card-header h4">Relação de sites</div>
+    <div class="card-header h4">Relatório gerencial</div>
     <div class="card-body">
       <table class="table table-striped datatable-simples dt-fixed-header responsive">
         <thead>
