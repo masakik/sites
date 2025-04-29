@@ -22,7 +22,7 @@ class Site extends Model
     ];
 
     protected $configDefaults = [
-        'manager' => 'wordpress',
+        'manager' => '',
         'host' => 'localhost',
         'port' => '2221',
         'path' => '/home/dominio',
@@ -30,6 +30,21 @@ class Site extends Model
         'status' => '?', // mostra se tem erros no site
         'statusMsg' => '',
     ];
+
+    public $managers = [
+        'wordpress',
+        'html/php',
+        'redirecionador',
+        'drupal',
+    ];
+    
+    public function getManagersAttribute($value) {
+        $valuesFromDB = Site::whereNotNull('config->manager')->select('config->manager as manager')->groupBy('manager')->get();
+        array_push($value, $valuesFromDB);
+        // dd($value->pluck('manager'));
+        return $value->pluck('manager');
+        // https://stackoverflow.com/questions/47616701/laravel-eloquent-json-field-selecting-attribute-produces-extra-double-quote
+    }
 
     public function getConfigAttribute($value)
     {
@@ -67,7 +82,8 @@ class Site extends Model
     /**
      * Adiciona um codpes à lista numeros_usp sem salvar o objeto
      */
-    public function addAdmin($codpes) {
+    public function addAdmin($codpes)
+    {
         $numeros_usp = explode(',', $this->numeros_usp);
         if (!in_array($codpes, $numeros_usp)) {
             array_push($numeros_usp, $codpes);
@@ -78,10 +94,11 @@ class Site extends Model
         return true;
     }
 
-     /**
+    /**
      * Remove um codpes da lista numeros_usp sem salvar o objeto
      */
-    public function deleteAdmin($codpes) {
+    public function deleteAdmin($codpes)
+    {
         $numeros_usp = explode(',', $this->numeros_usp);
         if (in_array($codpes, $numeros_usp)) {
             $key = array_search($codpes, $numeros_usp);
@@ -91,7 +108,7 @@ class Site extends Model
         $numeros_usp = implode(',', $numeros_usp);
         $this->numeros_usp = $numeros_usp;
         return true;
-    }   
+    }
 
     // public function config($array = [])
     // {

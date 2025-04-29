@@ -1,8 +1,9 @@
 <?php
 namespace App\Manager\Wordpress;
 
-use App\Manager\Manager;
 use App\Models\Site;
+use App\Manager\Manager;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Session;
 
@@ -203,8 +204,11 @@ class Wordpress extends Manager
 
         // vamos executar remoto aqui !!!
         $execRaw = shell_exec($cmd);
+        
         $exec = json_decode($execRaw, true);
-        // dd($exec);
+        
+        Log::channel('sites')->info('Exec remoto ', ['params' => $params, 'retorno' => $exec]);
+        
         if (json_last_error() !== JSON_ERROR_NONE) {
             dd('exec error json: ', json_last_error_msg(), $cmd, $execRaw);
         }
