@@ -54,7 +54,10 @@ class SitePolicy
      */
     public function update(User $user, Site $site)
     {
-        return ($user->codpes == $site->owner) || $this->is_admin;
+        // responsavel, administradores e admin do sites
+        return ($user->codpes == $site->owner) 
+          || str_contains($site->numeros_usp, $user->codpes)
+          || $this->is_admin;
     }
 
     /**
