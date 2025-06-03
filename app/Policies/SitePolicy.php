@@ -31,6 +31,11 @@ class SitePolicy
         if(in_array($user->codpes,explode(",",$all))) {
             return true;
         }
+        
+        if ($this->is_admin) {
+            return true;
+        }
+        
         return false;
     }
 
