@@ -10,7 +10,7 @@ class LocalManager
     {
         if ($site->status == 'Servidor Offline') {
             $site->status = 'Aprovado - Habilitado';
-            $site->save();
+            // $site->save();
         }
         return $site->status;
     }

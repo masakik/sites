@@ -24,7 +24,7 @@
               <tr>
                 <td>@include('sites.partials.index-list-site')</td>
                 <td>@include('sites.partials.index-list-pessoas')</td>
-                <td>&nbsp;</td>
+                <td>{{ $site->status }}</td>
                 {{-- <td>@include('sites.partials.index-list-acoes')</td> --}}
               </tr>
             @endforeach
