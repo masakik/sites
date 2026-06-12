@@ -33,21 +33,19 @@ class SiteController extends Controller
         \UspTheme::activeUrl('sites');
         $dnszone = config('sites.dnszone');
 
-        # todos sites
-        $sites = Site::allowed();
-
-        // 1. query com a busca
-        if (isset($request->dominio) || isset($request->status) || isset($request->categoria)) {
-            $dominio = explode('.', $request->dominio);
-            $sites->where('dominio', 'LIKE', '%' . $dominio[0] . '%');
-
-            if (!is_null($request->status)) {
-                $sites->where('status', $request->status);
-            }
-            if (!is_null($request->categoria)) {
-                $sites->where('categoria', $request->categoria);
-            }
-        }
+        # todos sites com filtros
+        $sites = Site::query()
+            ->allowed()
+            ->when(!empty($request->dominio), function ($query) use ($request) {
+                $dominio = explode('.', $request->dominio);
+                $query->where('dominio', 'LIKE', '%' . $dominio[0] . '%');
+            })
+            ->when(!is_null($request->status), function ($query) use ($request) {
+                $query->where('status', $request->status);
+            })
+            ->when(!is_null($request->categoria), function ($query) use ($request) {
+                $query->where('categoria', $request->categoria);
+            });
 
         // Dica de ouro para debugar SQL gerado:
         //dd($sites->toSql());
@@ -403,7 +401,8 @@ class SiteController extends Controller
     {
         $this->authorize('sites.update', $site);
         $request->validate([
-            'acao' => 'nullable', Rule::in(['activate', 'deactivate', 'install', 'delete']),
+            'acao' => 'nullable',
+            Rule::in(['activate', 'deactivate', 'install', 'delete']),
             'plugin_name' => 'nullable|string|max:150',
         ]);
 
@@ -420,7 +419,8 @@ class SiteController extends Controller
     {
         $this->authorize('sites.update', $site);
         $request->validate([
-            'acao' => 'nullable', Rule::in(['refresh']),
+            'acao' => 'nullable',
+            Rule::in(['refresh']),
         ]);
         if ($request->acao == 'refresh') {
             Session::put('wp-info-refresh', true);
