@@ -4,6 +4,11 @@ Frontend em laravel para gerenciar sites.
 
 Permite interagir com AEGIR (gerenciador do Drupal) ou operar standalone (LOCAL).
 
+## Produção
+
+- Deve rodar no cron
+    * * * * * cd /home/sistemas/sites && php artisan schedule:run >> /dev/null 2>&1
+
 ## Histórico
 
 1.2.0 - 4/8/2022

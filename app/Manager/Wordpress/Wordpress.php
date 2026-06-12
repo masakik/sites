@@ -18,6 +18,9 @@ class Wordpress extends Manager
     public $themes = [];
     public $settings = [];
     public $users = [];
+    public $wp;
+    public $site;
+
 
     public function __construct($site)
     {
@@ -61,7 +64,7 @@ class Wordpress extends Manager
         $config = $this->site->config;
 
         // setando status do site
-        if ($this->info['error'] || $this->info['errorMsg']) {
+        if (!empty($this->info['error']) || !empty($this->info['errorMsg'])) {
             $config['status'] = 'erro';
             $config['statusMsg'] = $this->info['error'] . $this->info['errorMsg'];
         } else {
