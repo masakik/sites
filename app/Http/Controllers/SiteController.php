@@ -62,12 +62,12 @@ class SiteController extends Controller
             }
         }
 
-        $this->novoToken();
-        $hashlogin = $user = \Auth::user()->temp_token;
+        // $this->novoToken();
+        // $hashlogin = $user = \Auth::user()->temp_token;
 
         $str = 'Illuminate\Support\Str';
 
-        return view('sites/index', compact('sites', 'dnszone', 'hashlogin', 'str'));
+        return view('sites/index', compact('sites', 'dnszone', 'str'));
     }
 
     /**

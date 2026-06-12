@@ -9,7 +9,7 @@ class LocalManager
     public static function verificaStatus($site)
     {
         if ($site->status == 'Servidor Offline') {
-            $site->status = 'Aprovado - Habilitado';
+            return 'Aprovado - Habilitado';
             // $site->save();
         }
         return $site->status;
