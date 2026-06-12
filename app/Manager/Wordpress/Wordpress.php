@@ -18,8 +18,12 @@ class Wordpress extends Manager
     public $themes = [];
     public $settings = [];
     public $users = [];
+
+    // creation of dynamic properties deprecated
     public $wp;
     public $site;
+    public $sites;
+    public $configs;
 
 
     public function __construct($site)
@@ -50,7 +54,7 @@ class Wordpress extends Manager
         // dd($ret);
         if (isset($ret['data'])) {
             foreach ($ret['data'] as $k => $v) {
-                $value = json_decode($v, true);
+                $value = $v ? json_decode($v, true) : null;
                 $this->$k = $value ? $value : [];
             }
             unset($ret['data']);
