@@ -65,9 +65,8 @@ composer show nome/do-pacote --all
 
 Trocar `^9.0` pela versão que estiver sendo preparada. Se um pacote bloquear o upgrade: atualizar, remover se não usado, substituir ou, somente se indispensável, manter um fork temporário.
 
-## Commit 1 — preparar as dependências
+## 1 - Preparar as dependências
 
-Mensagem sugerida:
 
 ```text
 chore(deps): prepara dependências para atualização do Laravel
@@ -82,9 +81,8 @@ Implementação:
 5. Gerar e revisar o novo `composer.lock`.
 6. Confirmar que Artisan e as rotas continuam carregando.
 
-## Commit 2 — Laravel 8 para Laravel 9
+##  2 — Laravel 8 para Laravel 9
 
-Mensagem sugerida:
 
 ```text
 chore(deps): atualiza Laravel 8 para Laravel 9
@@ -113,9 +111,7 @@ No código/configuração:
    - manter `MAIL_MAILER` no lugar de `MAIL_DRIVER`.
 8. Atualizar `.env.example` e os secrets do ambiente de deploy.
 
-## Commit 3 — Laravel 9 para Laravel 10
-
-Mensagem sugerida:
+## 3 — Laravel 9 para Laravel 10
 
 ```text
 chore(deps): atualiza Laravel 9 para Laravel 10
@@ -141,9 +137,7 @@ No código/configuração:
 
 A inspeção inicial não encontrou esses usos incompatíveis no código próprio, mas a busca deve ser repetida depois da atualização dos pacotes.
 
-## Commit 4 — Laravel 10 para Laravel 11
-
-Mensagem sugerida:
+## 4 — Laravel 10 para Laravel 11
 
 ```text
 chore(deps): atualiza Laravel 10 para Laravel 11
@@ -167,9 +161,7 @@ No código/configuração:
 5. Validar Carbon 3 nas datas dos comentários, views e e-mails.
 6. Validar cache do WordPress, Senha Única e permissões Spatie.
 
-## Commit 5 — Laravel 11 para Laravel 12 e PHP 8.3
-
-Mensagem sugerida:
+## 5 — Laravel 11 para Laravel 12 e PHP 8.3
 
 ```text
 chore(deps): atualiza aplicação para Laravel 12 e PHP 8.3
@@ -194,9 +186,7 @@ No código/configuração:
 5. Confirmar que nenhum pacote instancia manualmente grammars ou blueprints do banco.
 6. Revisar Carbon, container e classes do framework estendidas pelos pacotes.
 
-## Commit 6 — atualizar a documentação
-
-Mensagem sugerida:
+## 6 — Atualizar a documentação
 
 ```text
 docs: atualiza requisitos para Laravel 12 e PHP 8.3
@@ -204,16 +194,16 @@ docs: atualiza requisitos para Laravel 12 e PHP 8.3
 
 Atualizar o README com PHP 8.3, Laravel 12, extensões necessárias, instalação, deploy, cron, novas variáveis de ambiente e pacotes removidos/substituídos.
 
-## Checklist manual após cada commit
+## Checklist manual após cada update
 
 Executar primeiro:
 
 ```bash
-composer validate
-composer check-platform-reqs
-composer audit
+composer validate # Valida o composer.json
+composer check-platform-reqs # verifica se o PHP e as extensões estão corretas
+composer audit # verifica vulnerabilidades
 php artisan --version
-php artisan package:discover --ansi
+php artisan package:discover --ansi # Registra os providers e aliases
 php artisan optimize:clear
 php artisan route:list
 php artisan migrate:status

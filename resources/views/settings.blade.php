@@ -7,7 +7,7 @@
   APP_NAME = {{ config('app.name') }}<br>
   APP_URL = {{ config('app.url') }}<br>
   DB_CONNECTION = {{ config('database.default') }}<br>
-  MAIL_MAILER = {{ config('mail.driver') }}<br>
+  MAIL_MAILER = {{ config('mail.default') }}<br>
 
   <br>
   DNSZONE = {{ config('sites.dnszone') }}<br>
