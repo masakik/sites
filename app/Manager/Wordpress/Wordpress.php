@@ -21,7 +21,6 @@ class Wordpress extends Manager
 
     // creation of dynamic properties deprecated
     public $wp;
-    public $site;
     public $sites;
     public $configs;
 

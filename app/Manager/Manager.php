@@ -8,6 +8,7 @@ class Manager
     public $port;
     public $path;
     public $url;
+    public $site;
     public $gerenciador = [];
 
     protected $config;

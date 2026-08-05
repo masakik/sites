@@ -31,8 +31,8 @@ class habilitaSiteAegir implements ShouldQueue
      */
     public function handle()
     {
-        $this->aegir = new Aegir;
+        $aegir = new Aegir;
         $dominio = $this->alvo;
-        $retorno = $this->aegir->habilitaSite($dominio);
+        $retorno = $aegir->habilitaSite($dominio);
     }
 }

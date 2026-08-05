@@ -31,8 +31,8 @@ class desabilitaSiteAegir implements ShouldQueue
      */
     public function handle()
     {
-        $this->aegir = new Aegir;
+        $aegir = new Aegir;
         $dominio = $this->alvo;
-        $retorno = $this->aegir->desabilitaSite($dominio);
+        $retorno = $aegir->desabilitaSite($dominio);
     }
 }
