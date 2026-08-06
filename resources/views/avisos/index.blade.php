@@ -2,7 +2,7 @@
 
 @section('content')
   @parent
-  <form method="get" action="avisos">
+  <form method="get" action="{{ route('avisos.index') }}">
     <div class="row">
       <div class=" col-sm input-group">
         <input type="text" class="form-control" name="busca" value="{{ Request()->busca }}">
@@ -29,11 +29,11 @@
             <tr>
               <td>{{ $aviso->titulo }}</a></td>
               <td>
-                <a class="row-sm" href="/avisos/{{ $aviso->id }}/edit"><i class="far fa-edit"></i></a>
-                <a class="row-sm" href="/avisos/{{ $aviso->id }}"><i class="fas fa-external-link-alt"></i></a>
+                <a class="row-sm" href="{{ route('avisos.edit', $aviso) }}"><i class="far fa-edit"></i></a>
+                <a class="row-sm" href="{{ route('avisos.show', $aviso) }}"><i class="fas fa-external-link-alt"></i></a>
 
 
-                <form class="row-sm" method="POST" action="avisos/{{ $aviso->id }}">
+                <form class="row-sm" method="POST" action="{{ route('avisos.destroy', $aviso) }}">
                   @csrf
                   @method('delete')
                   <button type="submit" class=" btn btn-outline-primary btn-sm"><i class="fas fa-trash-alt"></i></button>
