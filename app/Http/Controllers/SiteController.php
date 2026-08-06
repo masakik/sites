@@ -437,6 +437,21 @@ class SiteController extends Controller
         \UspTheme::activeUrl('sites/relatorio');
 
         $sites = Site::orderBy('dominio', 'ASC')->orderBy('categoria', 'ASC')->get();
-        return view('sites.relatorio', compact('sites'));
+        $wordpress = [];
+
+        // As informações detalhadas do WordPress são mantidas no cache pelo
+        // gerenciador e atualizadas diariamente. O info() só consulta o remoto
+        // quando ainda não existe uma cópia em cache.
+        foreach ($sites as $site) {
+            if (($site->config['manager'] ?? '') !== 'wordpress') {
+                continue;
+            }
+
+            $wp = new Wordpress($site);
+            $wp->info();
+            $wordpress[$site->id] = $wp;
+        }
+
+        return view('sites.relatorio', compact('sites', 'wordpress'));
     }
 }
