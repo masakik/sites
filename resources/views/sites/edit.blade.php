@@ -13,21 +13,22 @@
 
     <x-input.text label="Domínio" name="dominio" value="{{ $site->dominio }}"></x-input-text>
 
-    <div class="form-group">
-      <label for="justificativa">Justificativa:</label>
-      <textarea class="form-control" id="justificativa" rows="5" name="justificativa">{{ $site->justificativa }}</textarea>
-    </div>
+      <div class="form-group">
+        <label for="justificativa">Justificativa:</label>
+        <textarea class="form-control" id="justificativa" rows="5" name="justificativa">{{ $site->justificativa }}</textarea>
+      </div>
 
-    <div class="form-group">
-      <label for="categoria">Categoria</label>
-      <select class="form-control" id="categoria" name="categoria">
-        @foreach (App\Models\Site::categorias() as $categoria)
-          <option {{ (old('categoria') == $categoria || $site->categoria == $categoria) ? 'selected' : '' }}>{{ $categoria }}</option>
-        @endforeach
-      </select>
-    </div>
-    <br>
-    <button type="submit" class="btn btn-primary"> Enviar </button>
+      <div class="form-group">
+        <label for="categoria">Categoria</label>
+        <select class="form-control" id="categoria" name="categoria">
+          @foreach ($categories as $categoria)
+            <option {{ old('categoria') == $categoria || $site->categoria == $categoria ? 'selected' : '' }}>
+              {{ $categoria }}</option>
+          @endforeach
+        </select>
+      </div>
+      <br>
+      <button type="submit" class="btn btn-primary"> Enviar </button>
   </form>
 
 @stop

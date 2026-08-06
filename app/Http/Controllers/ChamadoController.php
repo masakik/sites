@@ -34,7 +34,7 @@ class ChamadoController extends Controller
             $chamados= Chamado::where('status', 'aberto')->paginate(10);
         }
 
-        return view('chamados/admin',compact('chamados'));
+        return view('chamados.admin', compact('chamados'));
     }
 
     /**
@@ -46,7 +46,7 @@ class ChamadoController extends Controller
     {
         $this->authorize('sites.view',$site);
 
-        return view('chamados/index',compact('site'));
+        return view('chamados.index', compact('site'));
     }
 
     /**
@@ -57,7 +57,7 @@ class ChamadoController extends Controller
     public function create(Site $site)
     {
         $this->authorize('sites.view',$site);
-        return view('chamados/create',compact('site'));
+        return view('chamados.create', compact('site'));
     }
 
     /**
@@ -98,7 +98,7 @@ class ChamadoController extends Controller
     public function show(Chamado $chamado)
     {
         $this->authorize('sites.view', $chamado->site);
-        return view('chamados/show', compact('chamado'));
+        return view('chamados.show', compact('chamado'));
     }
 
     /**

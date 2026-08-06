@@ -14,9 +14,4 @@
   </div>
 </div>
 
-@if ($site->config['manager'] == 'wordpress')
-  @include('sites.show.card-wordpress')
-@endif
-@if ($site->config['manager'] == 'html')
-  @include('sites.show.card-html')
-@endif
+@includeIf($managerDetailsView)

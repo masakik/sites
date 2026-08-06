@@ -22,7 +22,7 @@
       <label for="categoria">Categoria:</label>
       <select class="form-control" id="categoria" name="categoria">
         <option>Escolha uma categoria ..</option>
-        @foreach (App\Models\Site::categorias() as $categoria)
+        @foreach ($categories as $categoria)
           <option {{ old('categoria') == $categoria ? 'selected' : '' }}>{{ $categoria }}</option>
         @endforeach
       </select>

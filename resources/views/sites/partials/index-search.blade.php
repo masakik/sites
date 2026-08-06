@@ -3,12 +3,12 @@
     <div class="input-group-prepend">
       <span class="input-group-text">Buscar</span>
     </div>
-    <input type="text" class="form-control" placeholder="Domínio ..." name="dominio" value="{{ Request()->dominio }}">
+    <input type="text" class="form-control" placeholder="Domínio ..." name="dominio" value="{{ $filters['dominio'] ?? '' }}">
 
     <select class="custom-select" id="status" name="status">
-      <option value="" selected>Todos os status</option>
-      @foreach (App\Models\Site::status() as $status)
-        <option value="{{ $status }}" @if (Request()->status == "$status") selected @endif>
+      <option value="" @selected(empty($filters['status']))>Todos os status</option>
+      @foreach ($statuses as $status)
+        <option value="{{ $status }}" @selected(($filters['status'] ?? null) === $status)>
           {{ $status }}
         </option>
       @endforeach
@@ -16,8 +16,8 @@
 
     <select class="custom-select" id="categoria" name="categoria">
       <option value="">Todas as categorias</option>
-      @foreach (App\Models\Site::categorias() as $categoria)
-        <option {{ Request()->categoria == $categoria ? 'selected' : '' }}>{{ $categoria }}</option>
+      @foreach ($categories as $categoria)
+        <option value="{{ $categoria }}" @selected(($filters['categoria'] ?? null) === $categoria)>{{ $categoria }}</option>
       @endforeach
     </select>
 

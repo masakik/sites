@@ -20,20 +20,20 @@
         </div>
       </div>
 
-      @if (config('sites.chamados') == 'local')
+      @if ($hasLocalTickets)
         <div class="row mt-3">
           <div class="col-md-12">
             <div class="h5">
               Chamados
               <span class="badge badge-primary">
-                {{ $site->chamados->where('status', 'aberto')->count() }} abertos
+                {{ $site->open_chamados_count }} abertos
               </span>
               <a href="chamados/{{ $site->id }}/create" title="Novo chamado"
                 class="btn btn-sm btn-outline-primary py-0">
                 <i class="fas fa-plus"></i>
               </a>
             </div>
-            @include('chamados/partials/index')
+            @include('chamados.partials.index')
           </div>
         </div>
       @endif

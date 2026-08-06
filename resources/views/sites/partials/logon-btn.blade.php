@@ -1,9 +1,8 @@
-@if ($site->status != 'Solicitado' && $site->status != 'Aprovado - Em Processamento')
-
-  @if ($site->config['manager'] == 'wordpress')
+@if ($loginData)
+  @if ($loginData['type'] === 'wordpress')
     <form method="post" target="_blank" action="sites/{{ $site->id }}/login">
       @csrf
-      @if ($site->config['remoteLogin'])
+      @if ($loginData['available'])
         <button class="btn btn-sm btn-outline-success" title="Login remoto">
           <i class="fas fa-tools"></i>
         </button>
@@ -18,22 +17,10 @@
     </form>
   @endif
 
-  @if ($site->config['manager'] == 'drupal')
-    @if (config('app.env') == 'production')
-      @php
-        $port = '';
-        $loginpath = '/loginbytoken/?temp_token=' . auth()->user()->temp_token . '&codpes=' . Auth::user()->codpes;
-      @endphp
-    @else
-      @php
-        $port = ':8088';
-        $loginpath = '/loginbytoken/?temp_token=' . auth()->user()->temp_token . '&codpes=' . Auth::user()->codpes;
-      @endphp
-    @endif
-    <a href="https://{{ $site->url }}{{ $port }}{{ $loginpath }}" class="btn btn-sm btn-outline-success"
+  @if ($loginData['type'] === 'drupal')
+    <a href="{{ $loginData['url'] }}" class="btn btn-sm btn-outline-success"
       target="_blank" title="Logon">
       <i class="fas fa-sign-in-alt"></i>
     </a>
   @endif
-
 @endif
