@@ -481,7 +481,7 @@ class SiteController extends Controller
 
         $rows = $sites->map(function (Site $site) use ($wordpress) {
             $wp = $wordpress[$site->id] ?? null;
-            $users = collect($wp->users ?? [])
+            $remoteUsers = collect($wp->users ?? [])
                 ->map(function ($user) {
                     $login = $user['user_login'] ?? '';
                     $roles = $user['roles'] ?? '';
@@ -489,13 +489,13 @@ class SiteController extends Controller
 
                     return $login . ($roles ? ' (' . $roles . ')' : '');
                 })
-                ->filter()
-                ->implode(', ');
-            $activePlugins = collect($wp->plugins ?? [])
+                ->filter();
+            $users = $remoteUsers->implode(', ');
+            $activePluginsList = collect($wp->plugins ?? [])
                 ->where('status', 'active')
                 ->pluck('name')
-                ->filter()
-                ->implode(', ');
+                ->filter();
+            $activePlugins = $activePluginsList->implode(', ');
 
             return [
                 'site' => $site,
@@ -509,8 +509,10 @@ class SiteController extends Controller
                 'manager_status' => $site->manager_status,
                 'remote_login' => $site->config['remoteLogin'] ?? '-',
                 'users' => $users,
+                'users_count' => $remoteUsers->count(),
                 'wordpress_version' => $wp->core['version'] ?? '-',
                 'active_plugins' => $activePlugins,
+                'active_plugins_count' => $activePluginsList->count(),
                 'php_version' => $wp->cli['php_version'] ?? '-',
             ];
         });

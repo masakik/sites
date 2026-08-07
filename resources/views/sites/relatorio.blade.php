@@ -1,34 +1,14 @@
 @extends('layouts.app')
 
-@section('styles')
-  @parent
-  <style>
-    .relatorio-table-wrapper {
-      max-width: 100%;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .relatorio-table {
-      min-width: 1500px;
-    }
-
-    .relatorio-table th,
-    .relatorio-table td {
-      white-space: nowrap;
-    }
-  </style>
-@endsection
-
 @section('content')
   @parent
 
   <div class="card">
     <div class="card-header h4">Relatório gerencial</div>
-    <div class="card-body">
-      <div class="table-responsive relatorio-table-wrapper">
+    <div class="card-body p-2">
+      <div>
         <table
-          class="table table-striped datatable-simples dt-buttons dt-buttons-pdf-landscape dt-fixed-header relatorio-table">
+          class="table table-sm table-striped small datatable-simples dt-buttons dt-buttons-pdf-landscape dt-fixed-header">
           <thead>
             <tr>
               <th scope="col">Site</th>
@@ -41,16 +21,16 @@
               <th scope="col">Status do site</th>
               <th scope="col">Login remoto</th>
               <th scope="col">Usuários remotos</th>
-              <th scope="col">Versão WordPress</th>
+              <th scope="col">WordPress</th>
               <th scope="col">Plugins ativos</th>
-              <th scope="col">Versão PHP</th>
+              <th scope="col">PHP</th>
             </tr>
           </thead>
           <tbody>
             @foreach ($rows as $row)
               <tr>
                 <td title="{{ $row['url'] }}">
-                  <a href="{{ route('sites.show', $row['site']) }}">
+                  <a class="d-block text-truncate" href="{{ route('sites.show', $row['site']) }}">
                     {{ $row['short_url'] }}
                   </a>
                 </td>
@@ -69,9 +49,35 @@
                 <td>
                   {{ $row['remote_login'] }}
                 </td>
-                <td title="{{ $row['users'] }}">{{ $row['users'] ?: '-' }}</td>
+                <td>
+                  @if ($row['users_count'])
+                    <button class="btn btn-link btn-sm p-0 text-left" type="button" data-toggle="collapse"
+                      data-target="#usuarios-{{ $row['site']->id }}" aria-expanded="false"
+                      aria-controls="usuarios-{{ $row['site']->id }}">
+                      Ver usuários ({{ $row['users_count'] }})
+                    </button>
+                    <div class="collapse mt-1" id="usuarios-{{ $row['site']->id }}">
+                      <div class="card card-body p-2 small">{{ $row['users'] }}</div>
+                    </div>
+                  @else
+                    -
+                  @endif
+                </td>
                 <td>{{ $row['wordpress_version'] }}</td>
-                <td title="{{ $row['active_plugins'] }}">{{ $row['active_plugins'] ?: '-' }}</td>
+                <td>
+                  @if ($row['active_plugins_count'])
+                    <button class="btn btn-link btn-sm p-0 text-left" type="button" data-toggle="collapse"
+                      data-target="#plugins-{{ $row['site']->id }}" aria-expanded="false"
+                      aria-controls="plugins-{{ $row['site']->id }}">
+                      Ver plugins ({{ $row['active_plugins_count'] }})
+                    </button>
+                    <div class="collapse mt-1" id="plugins-{{ $row['site']->id }}">
+                      <div class="card card-body p-2 small">{{ $row['active_plugins'] }}</div>
+                    </div>
+                  @else
+                    -
+                  @endif
+                </td>
                 <td>{{ $row['php_version'] }}</td>
               </tr>
             @endforeach
