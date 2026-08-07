@@ -473,16 +473,16 @@ class SiteController extends Controller
             }
         }
 
-        // As informações detalhadas do WordPress são mantidas no cache pelo
-        // gerenciador e atualizadas diariamente. O info() só consulta o remoto
-        // quando ainda não existe uma cópia em cache.
+        // As informações detalhadas do WordPress são atualizadas pelo job
+        // diário. O relatório nunca consulta o remoto: um host indisponível
+        // não pode bloquear a página inteira.
         foreach ($sites as $site) {
             if (($site->config['manager'] ?? '') !== 'wordpress') {
                 continue;
             }
 
             $wp = new Wordpress($site);
-            $wp->info();
+            $wp->loadCachedInfo();
             $wordpress[$site->id] = $wp;
         }
 
@@ -567,7 +567,9 @@ class SiteController extends Controller
             return;
         }
 
-        $site->status = $status;
-        $site->save();
+        if ($site->status !== $status) {
+            $site->status = $status;
+            $site->save();
+        }
     }
 }

@@ -36,10 +36,10 @@ class Wordpress extends Manager
      *
      * Retorna: info, cli, core, plugins, themes, configs, options
      */
-    public function info()
+    public function info(bool $refresh = false)
     {
-        $key = sha1('info' . $this->host . $this->port . $this->path . $this->site->url);
-        if (Session::pull('wp-info-refresh', false) == true) {
+        $key = $this->infoCacheKey();
+        if ($refresh || Session::pull('wp-info-refresh', false) == true) {
             // vamos dar refresh no cache
             $ret = $this->exec('info');
             Cache::put($key, $ret);
@@ -50,7 +50,33 @@ class Wordpress extends Manager
             });
         }
 
-        // dd($ret);
+        $this->hydrateInfo($ret);
+
+        return true;
+    }
+
+    /**
+     * Carrega o último snapshot do WordPress sem fazer chamadas remotas.
+     */
+    public function loadCachedInfo(): bool
+    {
+        $ret = Cache::get($this->infoCacheKey());
+        if (!is_array($ret)) {
+            return false;
+        }
+
+        $this->hydrateInfo($ret, false);
+
+        return true;
+    }
+
+    private function infoCacheKey(): string
+    {
+        return sha1('info' . $this->host . $this->port . $this->path . $this->site->url);
+    }
+
+    private function hydrateInfo(array $ret, bool $persistSiteConfig = true): void
+    {
         if (isset($ret['data'])) {
             foreach ($ret['data'] as $k => $v) {
                 $value = $v ? json_decode($v, true) : null;
@@ -83,12 +109,10 @@ class Wordpress extends Manager
             }
         }
 
-        $this->site->config = $config;
-        $this->site->save();
-        
-        // dd($this);
-        
-        return true;
+        if ($persistSiteConfig) {
+            $this->site->config = $config;
+            $this->site->save();
+        }
     }
 
     /**
@@ -159,9 +183,8 @@ class Wordpress extends Manager
         // aqui usa notação de json no where. Para isso funcionar no mariadb precisa DB_CONNECTION=mariadb no .env
         $sites = Site::where('config->manager', 'wordpress')->get();
         foreach ($sites as $site) {
-            Session::put('wp-info-refresh', true);
             $wp = new Self($site);
-            $wp->info();
+            $wp->info(true);
             echo '.';
         }
     }
@@ -187,7 +210,7 @@ class Wordpress extends Manager
         if ($this->host == 'localhost') {
             // se localhost, vamos usar o wp-cli do projeto
             $params['wp'] = app_path('Manager/Wordpress/wp');
-            $cmd = 'php ' . app_path('Manager/Wordpress/sites-remoto.php');
+            $cmd = ['php', app_path('Manager/Wordpress/sites-remoto.php')];
         } else {
             // se remoto, tem de copiar os arquivos necessários
             if (!$this->testaSsh()) {
@@ -195,8 +218,20 @@ class Wordpress extends Manager
                 $ret['info'] = json_encode($info);
                 return $ret;
             }
-            $this->copy();
-            $cmd = "ssh $this->host -p $this->port php /root/sites-remoto.php";
+            if (!$this->copy()) {
+                $info['error'] = 'não foi possível copiar os arquivos para o servidor remoto';
+                return $info;
+            }
+            $cmd = [
+                'ssh',
+                '-o', 'BatchMode=yes',
+                '-o', 'ConnectTimeout=5',
+                '-o', 'ServerAliveInterval=5',
+                '-o', 'ServerAliveCountMax=2',
+                '-p', (string) $this->port,
+                $this->host,
+                'php', '/root/sites-remoto.php',
+            ];
         }
 
         if (isset($this->suUser)) {
@@ -206,17 +241,46 @@ class Wordpress extends Manager
         $params['acao'] = $acao;
 
         $encodedParams = base64_encode(json_encode($params));
-        $cmd .= " $encodedParams 2>&1";
+        $cmd[] = $encodedParams;
 
-        // vamos executar remoto aqui !!!
-        $execRaw = shell_exec($cmd);
+        // A consulta pode envolver wp-cli e serviços externos do site remoto.
+        // Nunca deixe uma requisição web esperar indefinidamente por ela.
+        $result = $this->runCommand($cmd, 45);
+        if (!$result['successful']) {
+            $info['error'] = 'exec remoto excedeu o limite ou falhou';
+            $info['errorMsg'] = trim($result['output']);
+            Log::channel('sites')->warning('Execução remota do WordPress falhou.', [
+                'host' => $this->host,
+                'port' => $this->port,
+                'acao' => $acao,
+                'message' => $info['errorMsg'],
+            ]);
+
+            return $info;
+        }
+
+        $execRaw = $result['output'];
         
         $exec = json_decode($execRaw, true);
         
-        Log::channel('sites')->info('Exec remoto ', ['params' => $params, 'retorno' => $exec]);
+        Log::channel('sites')->info('Execução remota do WordPress concluída.', [
+            'host' => $this->host,
+            'port' => $this->port,
+            'acao' => $acao,
+            'status' => $exec['status'] ?? 'invalid-json',
+        ]);
         
         if (json_last_error() !== JSON_ERROR_NONE) {
-            dd('exec error json: ', json_last_error_msg(), $cmd, $execRaw);
+            $info['error'] = 'resposta inválida do servidor remoto';
+            $info['errorMsg'] = json_last_error_msg();
+            Log::channel('sites')->warning('Resposta inválida do WordPress remoto.', [
+                'host' => $this->host,
+                'port' => $this->port,
+                'acao' => $acao,
+                'json_error' => json_last_error_msg(),
+            ]);
+
+            return $info;
         }
         $info = array_merge($info,$exec);
         return $info;
