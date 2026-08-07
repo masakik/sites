@@ -7,7 +7,7 @@ Permite interagir com AEGIR (gerenciador do Drupal) ou operar standalone (LOCAL)
 ## Requisitos
 
 - PHP 8.3;
-- Laravel 12;
+- Laravel 13;
 - Composer;
 - MySQL/MariaDB;
 
@@ -17,6 +17,11 @@ Permite interagir com AEGIR (gerenciador do Drupal) ou operar standalone (LOCAL)
     * * * * * cd /home/sistemas/sites && php artisan schedule:run >> /dev/null 2>&1
 
 ## Histórico
+
+1.4.0 - 07/08/2026
+
+- migrando para Laravel 13
+- atualizando Laravel Tinker para 3 e PHPUnit para 12
 
 1.3.0 - 05/08/2026
 
