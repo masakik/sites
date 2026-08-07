@@ -61,8 +61,7 @@ class SiteController extends Controller
 
         foreach ($sites as $site) {
             if ($site->status != 'Solicitado') {
-                $site->status = SiteManager::verificaStatus($site);
-                $site->save();
+                $this->refreshSiteStatus($site);
             }
         }
 
@@ -166,8 +165,7 @@ class SiteController extends Controller
         }
 
         if ($site->status != 'Solicitado') {
-            $site->status = SiteManager::verificaStatus($site);
-            $site->save();
+            $this->refreshSiteStatus($site);
         }
 
         if ($site->config['manager'] == 'drupal') {
@@ -466,6 +464,15 @@ class SiteController extends Controller
         $sites = Site::orderBy('dominio', 'ASC')->orderBy('categoria', 'ASC')->get();
         $wordpress = [];
 
+        // O relatório também exibe o status persistido. Atualize-o antes de
+        // montar as linhas, para não mostrar um valor antigo diferente da
+        // página individual do site.
+        foreach ($sites as $site) {
+            if ($site->status !== 'Solicitado') {
+                $this->refreshSiteStatus($site);
+            }
+        }
+
         // As informações detalhadas do WordPress são mantidas no cache pelo
         // gerenciador e atualizadas diariamente. O info() só consulta o remoto
         // quando ainda não existe uma cópia em cache.
@@ -546,5 +553,21 @@ class SiteController extends Controller
             'html' => 'sites.show.card-html',
             default => null,
         };
+    }
+
+    /**
+     * Atualiza o status somente quando o gerenciador conseguiu verificá-lo.
+     * Falhas de comunicação com o Aegir não devem marcar o site como offline.
+     */
+    private function refreshSiteStatus(Site $site): void
+    {
+        $status = SiteManager::verificaStatus($site);
+
+        if ($status === null) {
+            return;
+        }
+
+        $site->status = $status;
+        $site->save();
     }
 }

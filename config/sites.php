@@ -8,4 +8,9 @@ return [
     'subdominio' => env('HABILITAR_SUBDOMINIO', false),
     'chamados' => env('CHAMADOS', 'local'),
     'siteManager' => env('SITE_MANAGER', 'aegir'),
+    'aegir' => [
+        'protocol' => env('AEGIR_PROTOCOL'),
+        'host' => env('AEGIR_HOST'),
+        'key' => env('AEGIR_KEY'),
+    ],
 ];
