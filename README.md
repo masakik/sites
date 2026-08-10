@@ -18,14 +18,10 @@ Permite interagir com AEGIR (gerenciador do Drupal) ou operar standalone (LOCAL)
 
 ## Histórico
 
-1.4.0 - 07/08/2026
+1.3.0 - 07/08/2026
 
-- migrando para Laravel 13
+- migrando para Laravel 13 e PHP 8.3
 - atualizando Laravel Tinker para 3 e PHPUnit para 12
-
-1.3.0 - 05/08/2026
-
-- migrando para Laravel 12 e PHP 8.3
 
 1.2.0 - 4/8/2022
 
