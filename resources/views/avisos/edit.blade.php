@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-  <form method="POST" action="avisos/{{ $aviso->id }}">
+  <form method="POST" action="{{ route('avisos.update', $aviso) }}">
     @csrf
     @method('patch')
     <div class="card">

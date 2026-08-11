@@ -44,7 +44,7 @@ Route::post('/comentarios/{chamado}/', [ComentarioController::class, 'store'])->
 Route::get('/emails', [EmailController::class, 'emails']);
 
 # Rotas Avisos
-Route::resource('/avisos', AvisoController::class);
+Route::resource('avisos', AvisoController::class);
 
 # Configurações
 Route::get('/settings', function () {

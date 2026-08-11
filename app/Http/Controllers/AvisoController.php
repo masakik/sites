@@ -42,7 +42,7 @@ class AvisoController extends Controller
         $validated = $request->validated();
         Aviso::create($validated);
 
-        return redirect('/avisos/');
+        return redirect()->route('avisos.index');
     }
 
     public function edit(Aviso $aviso){
@@ -58,7 +58,7 @@ class AvisoController extends Controller
         $validated = $request->validated();
         $aviso->update($validated);
 
-        return redirect("avisos/$aviso->id");
+        return redirect()->route('avisos.show', $aviso);
     }
 
     public function destroy(Aviso $aviso){
@@ -66,6 +66,6 @@ class AvisoController extends Controller
         $this->authorize('admin');
 
         $aviso->delete();
-        return redirect('/avisos');
+        return redirect()->route('avisos.index');
     }
 }

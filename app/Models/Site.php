@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 use Uspdev\Replicado\Pessoa;
 
 class Site extends Model
@@ -29,6 +31,7 @@ class Site extends Model
         'suUser' => null,
         'status' => '?', // mostra se tem erros no site
         'statusMsg' => '',
+        'remoteLogin' => false,
     ];
 
     public $managers = [
@@ -48,7 +51,7 @@ class Site extends Model
 
     public function getConfigAttribute($value)
     {
-        $value = json_decode($value, true);
+        $value = is_array($value) ? $value : (json_decode($value, true) ?: []);
         foreach ($this->configDefaults as $key => $default) {
             $value[$key] = $value[$key] ?? $default;
         }
@@ -61,6 +64,142 @@ class Site extends Model
     public function getUrlAttribute()
     {
         return $this->dominio . config('sites.dnszone');
+    }
+
+    /**
+     * Retorna os dados usados para exibir o status do gerenciador.
+     */
+    public function getManagerStatusAttribute()
+    {
+        return match ($this->config['status']) {
+            'erro' => [
+                'value' => 'erro',
+                'icon' => 'fas fa-exclamation-circle text-warning',
+                'title' => Str::limit($this->config['statusMsg'], 200),
+            ],
+            '?' => [
+                'value' => '?',
+                'icon' => 'fas fa-question-circle text-secondary',
+                'title' => 'Não verificado',
+            ],
+            default => [
+                'value' => $this->config['status'],
+                'icon' => 'fas fa-check-circle text-success',
+                'title' => 'Parece estar tudo certo',
+            ],
+        };
+    }
+
+    /**
+     * Retorna o host truncado para a listagem de sites.
+     */
+    public function getShortHostAttribute(): string
+    {
+        return Str::limit($this->config['host'], 10);
+    }
+
+    /**
+     * Retorna os dados usados pelo badge de status do site.
+     */
+    public function getStatusBadgeAttribute()
+    {
+        return match ($this->status) {
+            'Solicitado' => ['class' => 'badge-primary', 'label' => 'Aguardando aprovação'],
+            'Aprovado - Desabilitado' => ['class' => 'badge-warning', 'label' => 'Desabilitado'],
+            'Aprovado - Habilitado' => ['class' => 'badge-success', 'label' => 'Habilitado'],
+            default => ['class' => 'badge-secondary', 'label' => $this->status],
+        };
+    }
+
+    /**
+     * Retorna as ações administrativas disponíveis para o status atual.
+     */
+    public function getAdminActionsAttribute()
+    {
+        return match ($this->status) {
+            'Solicitado' => ['aprovar', 'delete'],
+            'Aprovado - Habilitado' => ['desabilitar'],
+            'Aprovado - Desabilitado' => ['habilitar', 'delete'],
+            'Aprovado - Em Processamento' => ['voltar'],
+            default => [],
+        };
+    }
+
+    /**
+     * Retorna os números USP dos administradores do site sem entradas vazias.
+     */
+    public function administratorNumbers(): array
+    {
+        return collect(explode(',', (string) $this->numeros_usp))
+            ->map(fn ($number) => trim($number))
+            ->filter()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Monta os dados dos administradores para a camada de apresentação.
+     * A coleção de usuários pode ser fornecida pelo controller para evitar N+1.
+     */
+    public function administratorDetails(?Collection $users = null): Collection
+    {
+        $numbers = $this->administratorNumbers();
+        $users ??= User::whereIn('codpes', $numbers)->get()->keyBy('codpes');
+
+        return collect($numbers)->map(function ($number) use ($users) {
+            $user = $users->get($number);
+
+            return [
+                'codpes' => $number,
+                'name' => $user?->name,
+                'email' => $user?->email,
+            ];
+        });
+    }
+
+    /**
+     * Retorna o total de chamados abertos do site.
+     */
+    public function getOpenChamadosCountAttribute(): int
+    {
+        if (array_key_exists('open_chamados_count', $this->attributes)) {
+            return (int) $this->attributes['open_chamados_count'];
+        }
+
+        if ($this->relationLoaded('chamados')) {
+            return $this->chamados->where('status', 'aberto')->count();
+        }
+
+        return $this->chamados()->where('status', 'aberto')->count();
+    }
+
+    /**
+     * Monta as opções de login remoto para o usuário atual.
+     */
+    public function loginData($user): ?array
+    {
+        if (in_array($this->status, ['Solicitado', 'Aprovado - Em Processamento'])) {
+            return null;
+        }
+
+        if ($this->config['manager'] === 'wordpress') {
+            return [
+                'type' => 'wordpress',
+                'available' => (bool) $this->config['remoteLogin'],
+            ];
+        }
+
+        if ($this->config['manager'] === 'drupal') {
+            $port = config('app.env') === 'production' ? '' : ':8088';
+            $path = '/loginbytoken/?temp_token=' . $user->temp_token . '&codpes=' . $user->codpes;
+
+            return [
+                'type' => 'drupal',
+                'url' => 'https://' . $this->url . $port . $path,
+            ];
+        }
+
+        return null;
     }
 
     /**

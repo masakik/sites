@@ -2,5 +2,5 @@
 
 @section('content')
   @parent
-  @include('chamados/partials/index')
+  @include('chamados.partials.index')
 @stop

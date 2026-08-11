@@ -28,7 +28,7 @@ class SiteManager
         return SELF::$manager;
     }
 
-    public static function verificaStatus(Site $site)
+    public static function verificaStatus(Site $site): ?string
     {
         switch (config('sites.siteManager')) {
             case 'aegir':

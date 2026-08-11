@@ -8,24 +8,17 @@
   <div class="ml-3">
     <b class=""><i class="fas fa-lock text-danger"></i></b>
     {{ $site->config['manager'] }}
-    | {{ $str::limit($site->config['host'], 10) }}
+    | {{ $site->short_host }}
     | {{ $site->config['port'] }}
     | {{ $site->config['path'] }}
-    | @if ($site->config['status'] == 'erro')
-      <i class="fas fa-exclamation-circle text-warning"
-        title="{{ Illuminate\Support\Str::limit($site->config['statusMsg'], 200) }}"></i>
-    @elseif ($site->config['status'] == '?')
-      <i class="fas fa-question-circle text-secondary" title="Não verificado"></i>
-    @else
-      <i class="fas fa-check-circle text-success" title="Parece estar tudo certo"></i>
-    @endif
+    | <i class="{{ $site->manager_status['icon'] }}" title="{{ $site->manager_status['title'] }}"></i>
   </div>
 @endcan
-@if (config('sites.chamados') == 'local')
+@if ($hasLocalTickets)
   <div>
     <b>chamados: </b>
     <a href="sites/{{ $site->id }}">
-      {{ $site->chamados->where('status', 'aberto')->count() }} abertos
+      {{ $site->open_chamados_count }} abertos
     </a>
     <a href="chamados/{{ $site->id }}/create" title="Novo chamado" class="btn btn-sm">
       <i class="fas fa-plus"></i>

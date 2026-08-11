@@ -31,11 +31,11 @@ class instalaSiteAegir implements ShouldQueue
      */
     public function handle()
     {
-        $this->aegir = new Aegir;
+        $aegir = new Aegir;
         $dominio = $this->alvo;
         //$site_modelo = env('SITE_MODELO');
         $id_node_bd = env('ID_NODE_BD');
         $id_node_plataforma = env('ID_NODE_PLATAFORMA');
-        $retorno = $this->aegir->instalaSite($dominio);
+        $retorno = $aegir->instalaSite($dominio);
     }
 }

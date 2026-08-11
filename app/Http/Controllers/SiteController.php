@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Rules\Domain;
 use App\Services\SiteManager;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Session;
@@ -31,8 +32,6 @@ class SiteController extends Controller
     {
         $this->authorize('sites.create'); // verificar porque isso não funciona
         \UspTheme::activeUrl('sites');
-        $dnszone = config('sites.dnszone');
-
         # todos sites com filtros
         $sites = Site::query()
             ->allowed()
@@ -51,23 +50,33 @@ class SiteController extends Controller
         //dd($sites->toSql());
 
         // Executa a query
-        $sites = $sites->orderBy('dominio')->paginate(15);
+        $sites = $sites
+            ->withCount(['chamados as open_chamados_count' => function ($query) {
+                $query->where('status', 'aberto');
+            }])
+            ->orderBy('dominio')
+            ->paginate(15);
 
         // Busca o status dos sites
 
         foreach ($sites as $site) {
             if ($site->status != 'Solicitado') {
-                $site->status = SiteManager::verificaStatus($site);
-                $site->save();
+                $this->refreshSiteStatus($site);
             }
         }
 
         // $this->novoToken();
         // $hashlogin = $user = \Auth::user()->temp_token;
 
-        $str = 'Illuminate\Support\Str';
+        $this->prepareSitesForView($sites);
 
-        return view('sites/index', compact('sites', 'dnszone', 'str'));
+        return view('sites.index', [
+            'sites' => $sites,
+            'categories' => Site::categorias(),
+            'statuses' => Site::status(),
+            'filters' => $request->only(['dominio', 'status', 'categoria']),
+            'hasLocalTickets' => config('sites.chamados') === 'local',
+        ]);
     }
 
     /**
@@ -91,7 +100,10 @@ class SiteController extends Controller
         $this->authorize('sites.create');
         \UspTheme::activeUrl('sites/create');
 
-        return view('sites/create', ['dnszone' => config('sites.dnszone')]);
+        return view('sites.create', [
+            'dnszone' => config('sites.dnszone'),
+            'categories' => Site::categorias(),
+        ]);
     }
 
     /**
@@ -140,7 +152,11 @@ class SiteController extends Controller
             if ($request->get == 'wp_detalhes') {
                 $wp = new Wordpress($site);
                 $wp->info();
-                $html = view('sites.ajax.wp-detalhes', compact('wp', 'site'))->render();
+                $html = view('sites.ajax.wp-detalhes', [
+                    'wp' => $wp,
+                    'site' => $site,
+                    'loginData' => $site->loginData(Auth::user()),
+                ])->render();
                 return $html;
             }
             if ($request->get == 'html_detalhes') {
@@ -149,15 +165,21 @@ class SiteController extends Controller
         }
 
         if ($site->status != 'Solicitado') {
-            $site->status = SiteManager::verificaStatus($site);
-            $site->save();
+            $this->refreshSiteStatus($site);
         }
 
         if ($site->config['manager'] == 'drupal') {
             $this->novoToken(); // gera novo token em $user->temp_token
         }
 
-        return view('sites/show', compact('site'));
+        $site->load('chamados');
+        $this->prepareSitesForView(collect([$site]));
+
+        return view('sites.show', [
+            'site' => $site,
+            'hasLocalTickets' => config('sites.chamados') === 'local',
+            'managerDetailsView' => $this->managerDetailsView($site),
+        ]);
     }
 
     /**
@@ -169,7 +191,10 @@ class SiteController extends Controller
     public function edit(Site $site)
     {
         $this->authorize('sites.update', $site);
-        return view('sites/edit', compact('site'));
+        return view('sites.edit', [
+            'site' => $site,
+            'categories' => Site::categorias(),
+        ]);
     }
 
     /**
@@ -277,13 +302,13 @@ class SiteController extends Controller
     // public function changeowner(Site $site)
     // {
     //     $this->authorize('sites.update', $site);
-    //     return view('sites/changeowner', compact('site'));
+    //     return view('sites.changeowner', compact('site'));
     // }
 
     // public function novoAdmin(Site $site)
     // {
     //     $this->authorize('sites.update', $site);
-    //     return view('sites/novoadmin', compact('site'));
+    //     return view('sites.novoadmin', compact('site'));
     // }
 
     /**
@@ -437,6 +462,114 @@ class SiteController extends Controller
         \UspTheme::activeUrl('sites/relatorio');
 
         $sites = Site::orderBy('dominio', 'ASC')->orderBy('categoria', 'ASC')->get();
-        return view('sites.relatorio', compact('sites'));
+        $wordpress = [];
+
+        // O relatório também exibe o status persistido. Atualize-o antes de
+        // montar as linhas, para não mostrar um valor antigo diferente da
+        // página individual do site.
+        foreach ($sites as $site) {
+            if ($site->status !== 'Solicitado') {
+                $this->refreshSiteStatus($site);
+            }
+        }
+
+        // As informações detalhadas do WordPress são atualizadas pelo job
+        // diário. O relatório nunca consulta o remoto: um host indisponível
+        // não pode bloquear a página inteira.
+        foreach ($sites as $site) {
+            if (($site->config['manager'] ?? '') !== 'wordpress') {
+                continue;
+            }
+
+            $wp = new Wordpress($site);
+            $wp->loadCachedInfo();
+            $wordpress[$site->id] = $wp;
+        }
+
+        $rows = $sites->map(function (Site $site) use ($wordpress) {
+            $wp = $wordpress[$site->id] ?? null;
+            $remoteUsers = collect($wp->users ?? [])
+                ->map(function ($user) {
+                    $login = $user['user_login'] ?? '';
+                    $roles = $user['roles'] ?? '';
+                    $roles = is_array($roles) ? implode(', ', $roles) : $roles;
+
+                    return $login . ($roles ? ' (' . $roles . ')' : '');
+                })
+                ->filter();
+            $users = $remoteUsers->implode(', ');
+            $activePluginsList = collect($wp->plugins ?? [])
+                ->where('status', 'active')
+                ->pluck('name')
+                ->filter();
+            $activePlugins = $activePluginsList->implode(', ');
+
+            return [
+                'site' => $site,
+                'url' => $site->url,
+                'short_url' => Str::limit($site->url, 15),
+                'manager' => $site->config['manager'],
+                'host' => $site->config['host'],
+                'short_host' => Str::limit($site->config['host'], 15),
+                'port' => $site->config['port'],
+                'path' => $site->config['path'],
+                'manager_status' => $site->manager_status,
+                'remote_login' => $site->config['remoteLogin'] ?? '-',
+                'users' => $users,
+                'users_count' => $remoteUsers->count(),
+                'wordpress_version' => $wp->core['version'] ?? '-',
+                'active_plugins' => $activePlugins,
+                'active_plugins_count' => $activePluginsList->count(),
+                'php_version' => $wp->cli['php_version'] ?? '-',
+            ];
+        });
+
+        return view('sites.relatorio', compact('rows'));
+    }
+
+    /**
+     * Prepara dados compartilhados pelas views de listagem e detalhe.
+     */
+    private function prepareSitesForView($sites): void
+    {
+        $items = $sites instanceof LengthAwarePaginator ? $sites->getCollection() : collect($sites);
+        $numbers = $items
+            ->flatMap(fn (Site $site) => $site->administratorNumbers())
+            ->unique()
+            ->values();
+        $users = User::whereIn('codpes', $numbers)->get()->keyBy('codpes');
+        $user = Auth::user();
+
+        $items->each(function (Site $site) use ($users, $user) {
+            $site->setAttribute('administrators', $site->administratorDetails($users));
+            $site->setAttribute('login_data', $site->loginData($user));
+        });
+    }
+
+    private function managerDetailsView(Site $site): ?string
+    {
+        return match ($site->config['manager']) {
+            'wordpress' => 'sites.show.card-wordpress',
+            'html' => 'sites.show.card-html',
+            default => null,
+        };
+    }
+
+    /**
+     * Atualiza o status somente quando o gerenciador conseguiu verificá-lo.
+     * Falhas de comunicação com o Aegir não devem marcar o site como offline.
+     */
+    private function refreshSiteStatus(Site $site): void
+    {
+        $status = SiteManager::verificaStatus($site);
+
+        if ($status === null) {
+            return;
+        }
+
+        if ($site->status !== $status) {
+            $site->status = $status;
+            $site->save();
+        }
     }
 }

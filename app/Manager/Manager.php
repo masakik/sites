@@ -2,12 +2,17 @@
 
 namespace App\Manager;
 
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\Process\Exception\ProcessTimedOutException;
+use Symfony\Component\Process\Process;
+
 class Manager
 {
     public $host;
     public $port;
     public $path;
     public $url;
+    public $site;
     public $gerenciador = [];
 
     protected $config;
@@ -58,33 +63,74 @@ class Manager
      */
     protected function testaSsh()
     {
-        $cmd = "ssh -o BatchMode=yes -o ConnectTimeout=5 $this->host -p $this->port echo ok 2>&1";
-        $exec = shell_exec($cmd);
-        return $exec == "ok\n" ? true : false;
+        $result = $this->runCommand([
+            'ssh',
+            '-o', 'BatchMode=yes',
+            '-o', 'ConnectTimeout=5',
+            '-o', 'ConnectionAttempts=1',
+            '-p', (string) $this->port,
+            $this->host,
+            'echo ok',
+        ], 8);
+
+        return $result['successful'] && trim($result['output']) === 'ok';
     }
 
     /**
      * Copia os arquivos a serem executados no servidor remoto
      */
-    protected function copy()
+    protected function copy(): bool
     {
         $path = app_path('Manager/Wordpress');
-        $cmd = "scp -P $this->port $path/sites-remoto.php $this->host:/root/sites-remoto.php 2>&1";
-        $exec = shell_exec($cmd);
-        if ($exec) {
-            dd('copy error', $cmd, $exec);
+        foreach (['sites-remoto.php', 'wp', 'sites-login.php'] as $file) {
+            $result = $this->runCommand([
+                'scp',
+                '-o', 'BatchMode=yes',
+                '-o', 'ConnectTimeout=5',
+                '-o', 'ConnectionAttempts=1',
+                '-P', (string) $this->port,
+                "$path/$file",
+                "$this->host:/root/$file",
+            ], 15);
+
+            if (!$result['successful']) {
+                Log::channel('sites')->warning('Não foi possível copiar arquivos para o servidor remoto.', [
+                    'host' => $this->host,
+                    'port' => $this->port,
+                    'file' => $file,
+                    'output' => trim($result['output']),
+                ]);
+
+                return false;
+            }
         }
 
-        $cmd = "scp -P $this->port $path/wp $this->host:/root/wp 2>&1";
-        $exec = shell_exec($cmd);
-        if ($exec) {
-            dd('copy error', $cmd, $exec);
+        return true;
+    }
+
+    /**
+     * Executa um processo externo com limite rígido de duração.
+     *
+     * @return array{successful: bool, output: string}
+     */
+    protected function runCommand(array $command, int $timeout): array
+    {
+        $process = new Process($command);
+        $process->setTimeout($timeout);
+        $process->setIdleTimeout($timeout);
+
+        try {
+            $process->run();
+        } catch (ProcessTimedOutException $e) {
+            return [
+                'successful' => false,
+                'output' => "Processo excedeu o limite de {$timeout}s.",
+            ];
         }
-        
-        $cmd = "scp -P $this->port $path/sites-login.php $this->host:/root/sites-login.php 2>&1";
-        $exec = shell_exec($cmd);
-        if ($exec) {
-            dd('copy error', $cmd, $exec);
-        }
+
+        return [
+            'successful' => $process->isSuccessful(),
+            'output' => $process->getOutput() . $process->getErrorOutput(),
+        ];
     }
 }
